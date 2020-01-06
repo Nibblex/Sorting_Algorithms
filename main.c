@@ -65,37 +65,61 @@ static char *parse_filepath(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
     char *filepath = NULL;
+    int c = 0;
     double elapsed;
-    bool check;
-    if (argc == 3) {
-      check = atoi(argv[2]);
-    }
+    /* create an array of MAX_SIZE elements and a copy, to do some checks later */
+    int array[MAX_SIZE], copy[MAX_SIZE];
+    bool dump_array = false;
+    bool sorted_test = false;
+    bool permutation_test = false;
 
     /* parse the filepath given in command line arguments */
     filepath = parse_filepath(argc, argv);
-    
-    /* create an array of MAX_SIZE elements */
-    int array[MAX_SIZE];
-    
+
     /* parse the file to fill the array and obtain the actual length */
     unsigned int length = array_from_file(array, MAX_SIZE, filepath);
 
-    /* create a copy of the array, to do some checks later */
-    int copy[MAX_SIZE];
-
+    while ((c = getopt(argc, argv, "dsp")) != -1) {
+        switch (c) {
+            case 'd': dump_array = true; break;
+            case 's': sorted_test = true; break;
+            case 'p': permutation_test = true; break;
+            case '?':
+                print_help(argv[0]);
+                exit(EXIT_FAILURE);
+                break;
+            default: break;
+        }
+    }
+    
     for (unsigned int i = 0; i < FUNC_NUM; i++) {
         reset_counters();
         array_copy(copy, array, length);
         elapsed = getMilliseconds();
         func_array[i](copy, length);
         elapsed = getMilliseconds() - elapsed;
-        //array_dump(copy, length);
+
+        if (dump_array)
+            array_dump(copy, length);
+
         printf("Statistics for %s:\n", func_names[i]);
         printf("Elapsed milliseconds = %g\n", elapsed);
         printf("Comparisons: %u  Swaps: %d\n\n", goesb_counter, swap_counter);
-        if (check) {
-            assert(array_is_sorted(copy, length));
-            assert(array_is_permutation_of(copy, array, length));
+
+        if (sorted_test) {
+            if (array_is_sorted(copy, length)) {
+                printf("The array was sorted correctly.\n\n");
+            } else {
+                printf("The array was not sorted correctly.\n\n");
+            }
+        }
+
+        if (permutation_test) {
+            if (array_is_permutation_of(copy, array, length)) {
+                printf("The array is a permutation of the original one.\n\n");
+            } else {
+                printf("The array is not a permutation of the original one.\n\n");
+            }
         }
     }
     return EXIT_SUCCESS;

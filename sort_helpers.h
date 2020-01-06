@@ -1,7 +1,6 @@
 #ifndef _SORT_HELPERS_H
 #define _SORT_HELPERS_H
 
-#include <assert.h>
 #include <getopt.h>
 #include <math.h>
 #include <stdbool.h>

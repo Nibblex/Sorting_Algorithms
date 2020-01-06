@@ -40,7 +40,7 @@ static void reset_counters(void) {
 
 static void print_help(char *program_name) {
     /* Print the usage help of this program. */
-    printf("Usage: %s <input file path>\n\n"
+    printf("Usage: %s <input file path> [ OPTIONS ]\n\n"
            "Sort an array given in a file in disk.\n"
            "\n"
            "The input file must have the following format:\n"
@@ -51,7 +51,10 @@ static void print_help(char *program_name) {
            "\n\n"
            "In other words, the file format is:\n"
            "<amount of array elements>\n"
-           "<array elem 1> <array elem 2> ... <array elem N>\n\n",
+           "<array elem 1> <array elem 2> ... <array elem N>\n\n"
+           "OPTIONS:\n-d dump the array on screen after running the sorting algorithm\n"
+           "-s check if the array is sorted after running the algorithm\n"
+           "-p check if the array is a permutation of the original one\n\n",
            program_name);
 }
 

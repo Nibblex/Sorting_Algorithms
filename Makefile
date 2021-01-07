@@ -1,8 +1,7 @@
 TARGET=sorter
 CC=gcc
-CFLAGS=-std=c99 -Wall -Wextra -Wbad-function-cast -Wstrict-prototypes\
-		-Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -Werror\
-		-pedantic -g
+CFLAGS= -Wall -Werror -Wextra -pedantic -std=c99 -Wbad-function-cast -Wstrict-prototypes\
+		-Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -g
 
 LIBS += -lm
 

@@ -61,5 +61,5 @@ unsigned int array_from_file(int array[], unsigned int max_size, const char *fil
         i++;
     }
     fclose(file);
-    return (size);
+    return size;
 }

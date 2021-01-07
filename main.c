@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
             default: break;
         }
     }
-    
+
     for (unsigned int i = 0; i < FUNC_NUM; i++) {
         reset_counters();
         array_copy(copy, array, length);

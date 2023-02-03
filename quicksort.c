@@ -2,21 +2,21 @@
 
 static unsigned int partition(int a[], unsigned int izq, unsigned int der)
 {
-    unsigned int pivot = izq, i = izq + 1, j = der;
-    while (i <= j)
+    unsigned int pivot = izq;
+    while (izq <= der)
     {
-        if (goes_before(a[i], a[pivot]))
+        if (goes_before(a[izq], a[pivot]))
         {
-            i++;
+            izq++;
         }
         else
         {
-            swap(a, i, j);
-            j--;
+            swap(a, izq, der);
+            der--;
         }
     }
-    swap(a, j, pivot);
-    return (pivot = j);
+
+    return swap(a, der, pivot);
 }
 
 static void quicksort_rec(int a[], unsigned int izq, unsigned int der)

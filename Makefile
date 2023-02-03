@@ -5,10 +5,7 @@ CFLAGS= -Wall -Werror -Wextra -pedantic -std=c99 -Wbad-function-cast -Wstrict-pr
 
 LIBS += -lm
 
-MSET=multi_set_da.c
-vpath $(MSET) multiset
-
-SOURCES=$(shell echo *.c) $(MSET)
+SOURCES=$(shell echo *.c)
 OBJECTS=$(SOURCES:.c=.o)
 
 all: $(TARGET)

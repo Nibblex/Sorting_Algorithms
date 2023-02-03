@@ -5,7 +5,7 @@
 #include "sort_helpers.h"
 
 #define MAX_SIZE 100000
-#define FUNC_NUM 12
+#define FUNC_NUM 11
 
 typedef void (*func)(int a[], unsigned int length);
 
@@ -17,7 +17,6 @@ char *func_names[FUNC_NUM] = {"mergesort",
                               "quicksort_cp",
                               "quicksort_dp",
                               "quicksort_rp",
-                              "multi_set_sort",
                               "insertion_sort",
                               "selection_sort",
                               "permutation_sort"};
@@ -30,7 +29,6 @@ func func_array[FUNC_NUM] = {&mergesort,
                              &quicksort_cp,
                              &quicksort_dp,
                              &quicksort_rp,
-                             &multi_set_sort,
                              &insertion_sort,
                              &selection_sort,
                              &permutation_sort};

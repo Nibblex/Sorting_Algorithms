@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "sort_helpers.h"
 
 static void merge(int a[], unsigned int izq, unsigned int med, unsigned int der)
@@ -5,7 +7,9 @@ static void merge(int a[], unsigned int izq, unsigned int med, unsigned int der)
     int tmp[der + 1];
     unsigned int j = izq, k = med + 1;
     for (unsigned int i = izq; i <= med; i++)
+    {
         tmp[i] = a[i];
+    }
 
     for (unsigned int i = izq; i <= der; i++)
     {
@@ -37,12 +41,16 @@ static void merge_each(int a[], unsigned int k, unsigned int length)
         der = der + 2 * bl;
     }
     if (izq - 1 < length)
+    {
         merge(a, izq - 2 * bl, izq - 1, length - 1);
+    }
 }
 
-void merge_sort_iterative(int a[], unsigned int length)
+void mergesort_iterative(int a[], unsigned int length)
 {
     unsigned int l = log(length) / log(2);
     for (unsigned int i = 0; i < l; i++)
+    {
         merge_each(a, i, length);
+    }
 }

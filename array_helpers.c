@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "array_helpers.h"
 
 static unsigned int array_value_count(int a[], unsigned int length, int value)
@@ -6,15 +8,16 @@ static unsigned int array_value_count(int a[], unsigned int length, int value)
     for (unsigned int i = 0; i < length; i++)
     {
         if (a[i] == value)
+        {
             count++;
+        }
     }
     return count;
 }
 
 void array_copy(int copy[], int array[], unsigned int length)
 {
-    for (unsigned int i = 0; i < length; i++)
-        copy[i] = array[i];
+    memcpy(copy, array, length * sizeof(int));
 }
 
 void array_dump(int a[], unsigned int length)
@@ -25,6 +28,17 @@ void array_dump(int a[], unsigned int length)
         fprintf(stdout, "%i", a[i]);
         fprintf(stdout, (i < length - 1) ? " " : "\n");
     }
+}
+
+bool array_is_sorted(int a[], unsigned int length)
+{
+    unsigned int i = 1;
+    while (i < length && goes_before(a[i - 1], a[i]))
+    {
+        i++;
+    }
+
+    return i == length;
 }
 
 bool array_is_permutation_of(int a[], int b[], unsigned int length)

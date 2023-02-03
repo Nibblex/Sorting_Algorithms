@@ -1,9 +1,7 @@
 #ifndef _ARRAY_HELPERS_H
 #define _ARRAY_HELPERS_H
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "sort_helpers.h"
 
 unsigned int array_from_file(int a[], unsigned int max_size, const char *filepath);
 /*
@@ -25,6 +23,8 @@ unsigned int array_from_file(int a[], unsigned int max_size, const char *filepat
 */
 
 void array_copy(int dst[], int src[], unsigned int length);
+
+bool array_is_sorted(int a[], unsigned int length);
 
 bool array_is_permutation_of(int a[], int other[], unsigned int length);
 

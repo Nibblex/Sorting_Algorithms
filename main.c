@@ -1,29 +1,35 @@
+#include <getopt.h>
+#include <time.h>
+
+#include "array_helpers.h"
 #include "sort_helpers.h"
 
 #define MAX_SIZE 100000
-#define FUNC_NUM 11
+#define FUNC_NUM 12
 
 typedef void (*func)(int a[], unsigned int length);
 
-char *func_names[FUNC_NUM] = {"merge_sort",
-                              "merge_sort_alt",
-                              "merge_sort_iterative",
-                              "quick_sort",
-                              "quick_sort_cp",
-                              "quick_sort_dp",
-                              "quick_sort_rp",
+char *func_names[FUNC_NUM] = {"mergesort",
+                              "mergesort_alt",
+                              "mergesort_iterative",
+                              "quicksort_std",
+                              "quicksort",
+                              "quicksort_cp",
+                              "quicksort_dp",
+                              "quicksort_rp",
                               "multi_set_sort",
                               "insertion_sort",
                               "selection_sort",
                               "permutation_sort"};
 
-func func_array[FUNC_NUM] = {&merge_sort,
-                             &merge_sort_alt,
-                             &merge_sort_iterative,
-                             &quick_sort,
-                             &quick_sort_cp,
-                             &quick_sort_dp,
-                             &quick_sort_rp,
+func func_array[FUNC_NUM] = {&mergesort,
+                             &mergesort_alt,
+                             &mergesort_iterative,
+                             &quicksort_std,
+                             &quicksort,
+                             &quicksort_cp,
+                             &quicksort_dp,
+                             &quicksort_rp,
                              &multi_set_sort,
                              &insertion_sort,
                              &selection_sort,
@@ -32,12 +38,6 @@ func func_array[FUNC_NUM] = {&merge_sort,
 static double getMilliseconds(void)
 {
     return 1000.0 * clock() / CLOCKS_PER_SEC;
-}
-
-static void reset_counters(void)
-{
-    swap_counter = 0;
-    goesb_counter = 0;
 }
 
 static void print_help(char *program_name)
@@ -68,26 +68,25 @@ static char *parse_filepath(int argc, char *argv[])
         print_help(argv[0]);
         exit(EXIT_FAILURE);
     }
+
     return argv[1];
 }
 
 int main(int argc, char *argv[])
 {
-    char *filepath = NULL;
-    int c = 0;
     double elapsed;
     /* create an array of MAX_SIZE elements and a copy, to do some checks later */
     int array[MAX_SIZE], copy[MAX_SIZE];
-    bool dump_array = false;
-    bool sorted_test = false;
-    bool permutation_test = false;
+
+    bool dump_array = false, sorted_test = false, permutation_test = false;
 
     /* parse the filepath given in command line arguments */
-    filepath = parse_filepath(argc, argv);
+    char *filepath = parse_filepath(argc, argv);
 
     /* parse the file to fill the array and obtain the actual length */
     unsigned int length = array_from_file(array, MAX_SIZE, filepath);
 
+    int c = 0;
     while ((c = getopt(argc, argv, "dsp")) != -1)
     {
         switch (c)
@@ -110,6 +109,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    printf("Algorithm:                Elapsed miliseconds:      Comparisons:              Swaps:\n");
+    printf("-------------------------------------------------------------------------------------------\n");
     for (unsigned int i = 0; i < FUNC_NUM; i++)
     {
         reset_counters();
@@ -119,35 +120,14 @@ int main(int argc, char *argv[])
         elapsed = getMilliseconds() - elapsed;
 
         if (dump_array)
+        {
             array_dump(copy, length);
-
-        printf("Statistics for %s: ", func_names[i]);
-        printf("Elapsed milliseconds = %g ", elapsed);
-        printf("Comparisons: %u  Swaps: %d\n", goesb_counter, swap_counter);
-
-        if (sorted_test)
-        {
-            if (array_is_sorted(copy, length))
-            {
-                printf("The array was sorted correctly.\n\n");
-            }
-            else
-            {
-                printf("The array was not sorted correctly.\n\n");
-            }
         }
 
-        if (permutation_test)
-        {
-            if (array_is_permutation_of(copy, array, length))
-            {
-                printf("The array is a permutation of the original one.\n\n");
-            }
-            else
-            {
-                printf("The array is not a permutation of the original one.\n\n");
-            }
-        }
+        printf("%-25s %-25g %-25lu %-25lu %s %s\n", func_names[i], elapsed, goesb_counter, swap_counter,
+               sorted_test ? (array_is_sorted(copy, length) ? "sorted_test=OK" : "sorted_test=FAIL") : "",
+               permutation_test ? (array_is_permutation_of(copy, array, length) ? "permutation_test=OK" : "permutation_test=FAIL") : "");
     }
+
     return EXIT_SUCCESS;
 }

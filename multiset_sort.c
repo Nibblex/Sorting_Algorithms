@@ -4,7 +4,9 @@
 static void load_mset(int a[], multi_set m, unsigned int length)
 {
 	for (unsigned int i = 0; i < length; i++)
+	{
 		add(m, a[i]);
+	}
 }
 
 static void load_array(int a[], multi_set m, unsigned int length)

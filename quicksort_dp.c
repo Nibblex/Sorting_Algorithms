@@ -34,18 +34,18 @@ static pivotes_t partition(int a[], unsigned int izq, unsigned int der)
     return p;
 }
 
-static void quick_sort_rec(int a[], unsigned int izq, unsigned int der)
+static void quicksort_rec(int a[], unsigned int izq, unsigned int der)
 {
     pivotes_t p;
     if (izq < der + 1)
     {
         p = partition(a, izq, der);
-        quick_sort_rec(a, izq, p.pivot_izq - 1);
-        quick_sort_rec(a, p.pivot_der + 1, der);
+        quicksort_rec(a, izq, p.pivot_izq - 1);
+        quicksort_rec(a, p.pivot_der + 1, der);
     }
 }
 
-void quick_sort_dp(int a[], unsigned int length)
+void quicksort_dp(int a[], unsigned int length)
 {
-    quick_sort_rec(a, 0, !length ? 0 : length - 1);
+    quicksort_rec(a, 0, !length ? 0 : length - 1);
 }

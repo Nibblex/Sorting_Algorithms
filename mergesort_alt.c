@@ -11,10 +11,14 @@ static void merge(int a[], unsigned int izq, unsigned int med, unsigned int der)
 
     /* Copy data to temp arrays L[] and R[] */
     for (i = 0; i < n1; i++)
+    {
         L[i] = a[izq + i];
+    }
 
     for (j = 0; j < n2; j++)
+    {
         R[j] = a[med + 1 + j];
+    }
 
     /* Merge the temp arrays back into a[l..r]*/
     i = 0, j = 0, k = izq;
@@ -22,45 +26,39 @@ static void merge(int a[], unsigned int izq, unsigned int med, unsigned int der)
     {
         if (goes_before(L[i], R[j]))
         {
-            a[k] = L[i];
-            i++;
+            a[k] = L[i++];
         }
         else
         {
-            a[k] = R[j];
-            j++;
+            a[k] = R[j++];
         }
         k++;
     }
     /* Copy the remaining elements of L[], if there are any */
     while (i < n1)
     {
-        a[k] = L[i];
-        i++;
-        k++;
+        a[k++] = L[i++];
     }
     /* Copy the remaining elements of R[], if there are any */
     while (j < n2)
     {
-        a[k] = R[j];
-        j++;
-        k++;
+        a[k++] = R[j++];
     }
 }
 
-static void merge_sort_rec(int a[], unsigned int izq, unsigned int der)
+static void mergesort_rec(int a[], unsigned int izq, unsigned int der)
 {
     unsigned int med;
     if (der > izq)
     {
         med = (izq + der) / 2;
-        merge_sort_rec(a, izq, med);
-        merge_sort_rec(a, med + 1, der);
+        mergesort_rec(a, izq, med);
+        mergesort_rec(a, med + 1, der);
         merge(a, izq, med, der);
     }
 }
 
-void merge_sort_alt(int a[], unsigned int length)
+void mergesort_alt(int a[], unsigned int length)
 {
-    merge_sort_rec(a, 0, !length ? 0 : length - 1);
+    mergesort_rec(a, 0, !length ? 0 : length - 1);
 }

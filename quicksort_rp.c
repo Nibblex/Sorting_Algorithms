@@ -1,6 +1,6 @@
 #include <time.h>
 
-#include "sort_helpers.h"
+#include "./helpers/sort_helpers.h"
 
 #define rand_pos(izq, der) (srand(time(NULL)), (rand() % ((der) - (izq) + 1)) + (izq))
 

@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "sort_helpers.h"
+#include "./helpers/sort_helpers.h"
 
 static void merge(int a[], unsigned int izq, unsigned int med, unsigned int der)
 {

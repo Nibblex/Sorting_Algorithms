@@ -1,8 +1,8 @@
 #include <getopt.h>
 #include <time.h>
 
-#include "array_helpers.h"
-#include "sort_helpers.h"
+#include "./helpers/array_helpers.h"
+#include "./helpers/sort_helpers.h"
 
 #define MAX_SIZE 100000
 #define FUNC_NUM 11

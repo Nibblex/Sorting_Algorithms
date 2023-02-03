@@ -5,7 +5,10 @@ CFLAGS= -Wall -Werror -Wextra -pedantic -std=c99 -Wbad-function-cast -Wstrict-pr
 
 LIBS += -lm
 
-SOURCES=$(shell echo *.c)
+HELPERS=array_helpers.c sort_helpers.c
+vpath %.c helpers
+
+SOURCES=$(shell echo *.c) $(HELPERS)
 OBJECTS=$(SOURCES:.c=.o)
 
 all: $(TARGET)

@@ -1,4 +1,4 @@
-#include "sort_helpers.h"
+#include "./helpers/sort_helpers.h"
 
 static void update(int a[], unsigned int perm[], unsigned int length)
 {

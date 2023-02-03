@@ -19,7 +19,6 @@ void swap(int a[], unsigned int i, unsigned int j);
 
 bool array_is_sorted(int a[], unsigned int length);
 
-
 /* Sorting algorithms */
 void merge_sort(int a[], unsigned int length);
 

@@ -1,14 +1,19 @@
 #include "sort_helpers.h"
 
+static unsigned int pivot_selection(int a[], unsigned int izq, unsigned int der)
+{
+    unsigned int pivot, med = (izq + der) / 2;
 
-static unsigned int pivot_selection(int a[], unsigned int izq, unsigned int der) {
-    unsigned int pivot, med = (izq+der)/2;
-
-    if ((a[izq] <= a[med] && a[med] <= a[der]) || (a[der] <= a[med] && a[med] <= a[izq])) {
+    if ((a[izq] <= a[med] && a[med] <= a[der]) || (a[der] <= a[med] && a[med] <= a[izq]))
+    {
         pivot = med;
-    } else if ((a[med] <= a[izq] && a[izq] <= a[der]) || (a[der] <= a[izq] && a[izq] <= a[med])) {
+    }
+    else if ((a[med] <= a[izq] && a[izq] <= a[der]) || (a[der] <= a[izq] && a[izq] <= a[med]))
+    {
         pivot = izq;
-    } else {
+    }
+    else
+    {
         pivot = der;
     }
 
@@ -16,13 +21,18 @@ static unsigned int pivot_selection(int a[], unsigned int izq, unsigned int der)
     return (pivot = izq);
 }
 
-static unsigned int partition(int a[], unsigned int izq, unsigned int der) {
-    unsigned int pivot, i = izq+1, j = der;
+static unsigned int partition(int a[], unsigned int izq, unsigned int der)
+{
+    unsigned int pivot, i = izq + 1, j = der;
     pivot = pivot_selection(a, izq, der);
-    while (i <= j) {
-        if (goes_before(a[i], a[pivot])) {
+    while (i <= j)
+    {
+        if (goes_before(a[i], a[pivot]))
+        {
             i++;
-        } else {
+        }
+        else
+        {
             swap(a, i, j);
             j--;
         }
@@ -31,15 +41,18 @@ static unsigned int partition(int a[], unsigned int izq, unsigned int der) {
     return (pivot = j);
 }
 
-static void quick_sort_rec(int a[], unsigned int izq, unsigned int der) {
+static void quick_sort_rec(int a[], unsigned int izq, unsigned int der)
+{
     unsigned int pivot;
-    if (izq < der+1) {
+    if (izq < der + 1)
+    {
         pivot = partition(a, izq, der);
-        quick_sort_rec(a, izq, pivot-1);
-        quick_sort_rec(a, pivot+1, der);
+        quick_sort_rec(a, izq, pivot - 1);
+        quick_sort_rec(a, pivot + 1, der);
     }
 }
 
-void quick_sort_cp(int a[], unsigned int length) {
+void quick_sort_cp(int a[], unsigned int length)
+{
     quick_sort_rec(a, 0, !length ? 0 : length - 1);
 }

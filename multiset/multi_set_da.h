@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 typedef int elem_t;
 
 typedef unsigned int pos_t;
@@ -14,12 +13,12 @@ typedef struct node_s *node_t;
 
 typedef struct multi_set_s *multi_set;
 
-typedef enum {
+typedef enum
+{
     ENULL = -1,
     ACTION_FAILURE = -2,
     ACTION_SUCCESS = 1
 } action_status;
-
 
 /* Create a new multi_set */
 multi_set init(void);

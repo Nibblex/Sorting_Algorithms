@@ -2,8 +2,6 @@
 
 #include "./helpers/sort_helpers.h"
 
-#define CHUNK_SIZE 10
-
 #define SIZE_MAX (unsigned int)(-1)
 
 static void merge(int a[], unsigned int izq, unsigned int mid, unsigned int der)

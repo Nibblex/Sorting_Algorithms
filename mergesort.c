@@ -40,7 +40,7 @@ static void merge(int a[], unsigned int izq, unsigned int mid, unsigned int der)
 static void mergesort_rec(int a[], unsigned int izq, unsigned int der)
 {
     unsigned int mid, length = der - izq + 1;
-    if (length <= 16)
+    if (length <= CHUNK_SIZE)
     {
         insertion_sort(a + izq, length);
         return;

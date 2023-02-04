@@ -5,15 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define CHUNK_SIZE 20
+
 #define min(a, b) (cmp(a, b) < 0 ? a : b)
 
 #define max(a, b) (cmp(a, b) > 0 ? a : b)
-
-#define med3(arr, a, b, c)                                                                                                         \
-    ({                                                                                                                             \
-        int _a = arr[a], _b = arr[b], _c = arr[c];                                                                                 \
-        (cmp(_a, _b) < 0 ? (cmp(_b, _c) < 0 ? b : (cmp(_a, _c) < 0 ? c : a)) : (cmp(_b, _c) > 0 ? b : (cmp(_b, _c) > 0 ? c : a))); \
-    })
 
 #define reset_counters    \
     ({                    \

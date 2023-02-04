@@ -23,7 +23,7 @@ static unsigned int partition(int a[], unsigned int izq, unsigned int der)
 static void quicksort_rec(int a[], unsigned int izq, unsigned int der)
 {
     unsigned int pivot, length = der - izq + 1;
-    if (length < 10)
+    if (length < CHUNK_SIZE)
     {
         insertion_sort(a + izq, length);
         return;

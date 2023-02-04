@@ -1,36 +1,36 @@
 #include "./helpers/sort_helpers.h"
 
-static unsigned int partition(int a[], unsigned int izq, unsigned int der)
+static unsigned int partition(int a[], unsigned int left, unsigned int right)
 {
-    unsigned int pivot = izq;
+    unsigned int pivot = left;
     int pivot_value = a[pivot];
-    while (izq <= der)
+    while (left <= right)
     {
-        if (cmp(a[izq], pivot_value) <= 0)
+        if (cmp(a[left], pivot_value) <= 0)
         {
-            izq++;
+            left++;
         }
         else
         {
-            swap(a, izq, der--);
+            swap(a, left, right--);
         }
     }
 
-    return swap(a, der, pivot);
+    return swap(a, right, pivot);
 }
 
-static void quicksort_rec(int a[], unsigned int izq, unsigned int der)
+static void quicksort_rec(int a[], unsigned int left, unsigned int right)
 {
-    unsigned int pivot, length = der - izq + 1;
+    unsigned int pivot, length = right - left + 1;
     if (length < CHUNK_SIZE)
     {
-        insertion_sort(a + izq, length);
+        insertion_sort(a + left, length);
     }
     else
     {
-        pivot = partition(a, izq, der);
-        quicksort_rec(a, izq, pivot - 1);
-        quicksort_rec(a, pivot + 1, der);
+        pivot = partition(a, left, right);
+        quicksort_rec(a, left, pivot - 1);
+        quicksort_rec(a, pivot + 1, right);
     }
 }
 

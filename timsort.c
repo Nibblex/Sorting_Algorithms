@@ -2,7 +2,9 @@
 
 #include "./helpers/sort_helpers.h"
 
+#ifndef SIZE_MAX
 #define SIZE_MAX (unsigned int)(-1)
+#endif
 
 static void merge(int a[], unsigned int left, unsigned int mid, unsigned int right)
 {
@@ -37,23 +39,35 @@ static void merge(int a[], unsigned int left, unsigned int mid, unsigned int rig
     }
 }
 
-static void mergesort_rec(int a[], unsigned int left, unsigned int right)
+static void timsort_it(int a[], unsigned int length)
 {
-    unsigned int mid, length = right - left + 1;
-    if (length < CHUNK_SIZE)
+    unsigned int left, mid, right, chunks = length / CHUNK_SIZE;
+    for (unsigned int i = 0; i <= chunks; i++)
     {
-        insertion_sort(a + left, length);
+        left = i * CHUNK_SIZE;
+        right = min(left + CHUNK_SIZE - 1, length - 1);
+        insertion_sort(a + left, right - left + 1);
     }
-    else
+
+    unsigned int size = CHUNK_SIZE;
+    while (size < length)
     {
-        mid = (left + right) >> 1;
-        mergesort_rec(a, left, mid);
-        mergesort_rec(a, mid + 1, right);
-        merge(a, left, mid, right);
+        left = 0;
+        size <<= 1;
+        while (left < length)
+        {
+            mid = left + (size >> 1) - 1;
+            right = min(left + size - 1, length - 1);
+            if (mid < right)
+            {
+                merge(a, left, mid, right);
+            }
+            left += size;
+        }
     }
 }
 
-void mergesort(int a[], unsigned int length)
+void timsort(int a[], unsigned int length)
 {
-    mergesort_rec(a, 0, !length ? 0 : length - 1);
+    timsort_it(a, length);
 }

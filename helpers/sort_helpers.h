@@ -5,11 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define CHUNK_SIZE 100
+#define CHUNK_SIZE 32
 
-#define min(a, b) (cmp(a, b) < 0 ? a : b)
+#define min(a, b) (cmp(a, b) < 0 ? (a) : (b))
 
-#define max(a, b) (cmp(a, b) > 0 ? a : b)
+#define max(a, b) (cmp(a, b) > 0 ? (a) : (b))
 
 #define reset_counters    \
     ({                    \
@@ -41,7 +41,7 @@ void mergesort(int a[], unsigned int length);
 
 void mergesort_iterative(int a[], unsigned int length);
 
-void mergesort_alt(int a[], unsigned int length);
+void timsort(int a[], unsigned int length);
 
 void quicksort(int a[], unsigned int length);
 

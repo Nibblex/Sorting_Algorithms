@@ -4,45 +4,45 @@
 
 #include "xoroshiro128plus.h"
 
-#define rand_pos(state, izq, der) (xrshr128p_next(state) % ((der) - (izq) + 1)) + (izq)
+#define rand_pos(state, left, right) (xrshr128p_next(state) % ((right) - (left) + 1)) + (left)
 
-#define pivot_selection(a, izq, der, state)             \
+#define pivot_selection(a, left, right, state)             \
     ({                                                  \
-        unsigned int pivot = rand_pos(state, izq, der); \
-        swap(a, izq, pivot);                            \
+        unsigned int pivot = rand_pos(state, left, right); \
+        swap(a, left, pivot);                            \
     })
 
-static unsigned int partition(int a[], unsigned int izq, unsigned int der, xrshr128p_state_t *state)
+static unsigned int partition(int a[], unsigned int left, unsigned int right, xrshr128p_state_t *state)
 {
-    unsigned int pivot = pivot_selection(a, izq, der, *state);
+    unsigned int pivot = pivot_selection(a, left, right, *state);
     int pivot_value = a[pivot];
-    while (izq <= der)
+    while (left <= right)
     {
-        if (cmp(a[izq], pivot_value) <= 0)
+        if (cmp(a[left], pivot_value) <= 0)
         {
-            izq++;
+            left++;
         }
         else
         {
-            swap(a, izq, der--);
+            swap(a, left, right--);
         }
     }
 
-    return swap(a, der, pivot);
+    return swap(a, right, pivot);
 }
 
-static void quicksort_rec(int a[], unsigned int izq, unsigned int der, xrshr128p_state_t *state)
+static void quicksort_rec(int a[], unsigned int left, unsigned int right, xrshr128p_state_t *state)
 {
-    unsigned int pivot, length = der - izq + 1;
+    unsigned int pivot, length = right - left + 1;
     if (length < CHUNK_SIZE)
     {
-        insertion_sort(a + izq, length);
+        insertion_sort(a + left, length);
     }
     else
     {
-        pivot = partition(a, izq, der, state);
-        quicksort_rec(a, izq, pivot - 1, state);
-        quicksort_rec(a, pivot + 1, der, state);
+        pivot = partition(a, left, right, state);
+        quicksort_rec(a, left, pivot - 1, state);
+        quicksort_rec(a, pivot + 1, right, state);
     }
 }
 

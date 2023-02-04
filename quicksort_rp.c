@@ -4,16 +4,6 @@
 
 #include "xoroshiro128plus.h"
 
-#define min(a, b) (cmp(a, b) < 0 ? a : b)
-
-#define max(a, b) (cmp(a, b) > 0 ? a : b)
-
-#define med3(arr, a, b, c)                                                                                                         \
-    ({                                                                                                                             \
-        int _a = arr[a], _b = arr[b], _c = arr[c];                                                                                 \
-        (cmp(_a, _b) < 0 ? (cmp(_b, _c) < 0 ? b : (cmp(_a, _c) < 0 ? c : a)) : (cmp(_b, _c) > 0 ? b : (cmp(_b, _c) > 0 ? c : a))); \
-    })
-
 #define rand_pos(state, izq, der) (xrshr128p_next(state) % ((der) - (izq) + 1)) + (izq)
 
 #define pivot_selection(a, izq, der, state)             \

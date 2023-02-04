@@ -2,6 +2,8 @@
 
 #include "./helpers/sort_helpers.h"
 
+#define SIZE_MAX (unsigned int)(-1)
+
 static void merge(int a[], unsigned int izq, unsigned int mid, unsigned int der)
 {
     unsigned int n1 = mid - izq + 1;
@@ -11,33 +13,39 @@ static void merge(int a[], unsigned int izq, unsigned int mid, unsigned int der)
     memcpy(L, a + izq, n1 * sizeof(int));
     memcpy(R, a + mid + 1, n2 * sizeof(int));
 
-    unsigned int i = 0, j = 0, k = izq;
-    while (i < n1 && j < n2)
+    unsigned int i = n1 - 1, j = n2 - 1, k = der;
+    while (i != SIZE_MAX && j != SIZE_MAX)
     {
         if (cmp(L[i], R[j]) < 0)
         {
-            a[k++] = L[i++];
+            a[k--] = R[j--];
         }
         else
         {
-            a[k++] = R[j++];
+            a[k--] = L[i--];
         }
     }
 
-    while (i < n1)
+    if (i)
     {
-        a[k++] = L[i++];
+        memcpy(a + izq, L, (i + 1) * sizeof(int));
     }
 
-    while (j < n2)
+    if (j)
     {
-        a[k++] = R[j++];
+        memcpy(a + izq, R, (j + 1) * sizeof(int));
     }
 }
 
 static void mergesort_rec(int a[], unsigned int izq, unsigned int der)
 {
-    unsigned int mid;
+    unsigned int mid, length = der - izq + 1;
+    if (length <= 16)
+    {
+        insertion_sort(a + izq, length);
+        return;
+    }
+
     if (der > izq)
     {
         mid = (izq + der) >> 1;

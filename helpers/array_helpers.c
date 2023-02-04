@@ -33,7 +33,7 @@ void array_dump(int a[], unsigned int length)
 bool array_is_sorted(int a[], unsigned int length)
 {
     unsigned int i = 1;
-    while (i < length && goes_before(a[i - 1], a[i]))
+    while (i < length && cmp(a[i - 1], a[i]) <= 0)
     {
         i++;
     }

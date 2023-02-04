@@ -24,7 +24,7 @@ static void merge(int a[], unsigned int izq, unsigned int med, unsigned int der)
     i = 0, j = 0, k = izq;
     while (i < n1 && j < n2)
     {
-        if (goes_before(L[i], R[j]))
+        if (cmp(L[i], R[j]) <= 0)
         {
             a[k] = L[i++];
         }
@@ -51,7 +51,7 @@ static void mergesort_rec(int a[], unsigned int izq, unsigned int der)
     unsigned int med;
     if (der > izq)
     {
-        med = (izq + der) / 2;
+        med = (izq + der) >> 1;
         mergesort_rec(a, izq, med);
         mergesort_rec(a, med + 1, der);
         merge(a, izq, med, der);

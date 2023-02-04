@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
             array_dump(copy, length);
         }
 
-        printf("%-25s %-25g %-25lu %-25lu %s %s\n", func_names[i], elapsed, goesb_counter, swap_counter,
+        printf("%-25s %-25g %-25lu %-25lu %s %s\n", func_names[i], elapsed, cmp_counter, swap_counter,
                sorted_test ? (array_is_sorted(copy, length) ? "sorted_test=OK" : "sorted_test=FAIL") : "",
                permutation_test ? (array_is_permutation_of(copy, array, length) ? "permutation_test=OK" : "permutation_test=FAIL") : "");
     }

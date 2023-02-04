@@ -13,7 +13,7 @@ static void merge(int a[], unsigned int izq, unsigned int med, unsigned int der)
 
     for (unsigned int i = izq; i <= der; i++)
     {
-        if (j <= med && (k > der || goes_before(tmp[j], a[k])))
+        if (j <= med && (k > der || cmp(tmp[j], a[k]) <= 0))
         {
             a[i] = tmp[j];
             j++;

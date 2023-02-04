@@ -2,7 +2,7 @@
 
 static int compare(const void *a, const void *b)
 {
-    return goes_before(*(int *)a, *(int *)b) ? -1 : 1;
+    return cmp(*(int *)a, *(int *)b);
 }
 
 void quicksort_std(int a[], unsigned int length)

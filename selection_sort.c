@@ -5,7 +5,7 @@ static unsigned int min_pos_from(int a[], unsigned int i, unsigned int length)
     unsigned int min_pos = i;
     for (unsigned int j = i + 1; j < length; j++)
     {
-        if (goes_before(a[j], a[min_pos]))
+        if (cmp(a[j], a[min_pos]) <= 0)
         {
             min_pos = j;
         }

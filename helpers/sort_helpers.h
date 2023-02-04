@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define reset_counters     \
-    ({                     \
-        swap_counter = 0;  \
-        goesb_counter = 0; \
+#define reset_counters    \
+    ({                    \
+        swap_counter = 0; \
+        cmp_counter = 0;  \
     })
 
-#define goes_before(x, y) ({goesb_counter++; abs(x) <= abs(y); })
+#define cmp(x, y) ({cmp_counter++; abs(x) < abs(y) ? -1 : abs(x) > abs(y) ? 1 : 0; })
 
 #define swap(a, i, j)   \
     ({                  \
@@ -22,7 +22,7 @@
         i;              \
     })
 
-long unsigned int goesb_counter, swap_counter;
+long unsigned int cmp_counter, swap_counter;
 
 /* Sorting algorithms */
 void mergesort(int a[], unsigned int length);

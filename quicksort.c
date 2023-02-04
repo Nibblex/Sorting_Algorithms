@@ -3,9 +3,10 @@
 static unsigned int partition(int a[], unsigned int izq, unsigned int der)
 {
     unsigned int pivot = izq;
+    int pivot_value = a[pivot];
     while (izq <= der)
     {
-        if (goes_before(a[izq], a[pivot]))
+        if (cmp(a[izq], pivot_value) <= 0)
         {
             izq++;
         }

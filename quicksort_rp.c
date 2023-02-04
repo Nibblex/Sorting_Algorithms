@@ -4,30 +4,31 @@
 
 #include "xoroshiro128plus.h"
 
-#define between(a, b, c) (((a) <= (c)) ? ((a) <= (b) && (b) <= (c)) : ((c) <= (b) && (b) <= (a)))
+#define min(a, b) (cmp(a, b) < 0 ? a : b)
+
+#define max(a, b) (cmp(a, b) > 0 ? a : b)
+
+#define med3(arr, a, b, c)                                                                                                         \
+    ({                                                                                                                             \
+        int _a = arr[a], _b = arr[b], _c = arr[c];                                                                                 \
+        (cmp(_a, _b) < 0 ? (cmp(_b, _c) < 0 ? b : (cmp(_a, _c) < 0 ? c : a)) : (cmp(_b, _c) > 0 ? b : (cmp(_b, _c) > 0 ? c : a))); \
+    })
 
 #define rand_pos(state, izq, der) (xrshr128p_next(state) % ((der) - (izq) + 1)) + (izq)
 
-#define pivot_selection(a, izq, der, state)    \
-    ({                                         \
-        unsigned int pivot = (der - izq) >> 1; \
-        if (between(a[izq], a[pivot], a[der])) \
-        {                                      \
-            pivot = izq;                       \
-        }                                      \
-        else                                   \
-        {                                      \
-            pivot = rand_pos(state, izq, der); \
-        }                                      \
-        swap(a, izq, pivot);                   \
+#define pivot_selection(a, izq, der, state)             \
+    ({                                                  \
+        unsigned int pivot = rand_pos(state, izq, der); \
+        swap(a, izq, pivot);                            \
     })
 
 static unsigned int partition(int a[], unsigned int izq, unsigned int der, xrshr128p_state_t *state)
 {
     unsigned int pivot = pivot_selection(a, izq, der, *state);
+    int pivot_value = a[pivot];
     while (izq <= der)
     {
-        if (goes_before(a[izq], a[pivot]))
+        if (cmp(a[izq], pivot_value) <= 0)
         {
             izq++;
         }

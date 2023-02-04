@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define CHUNK_SIZE 20
+#define CHUNK_SIZE 100
 
 #define min(a, b) (cmp(a, b) < 0 ? a : b)
 
@@ -24,13 +24,14 @@
         abs(_x)<abs(_y) ? -1 : abs(_x)> abs(_y) ? 1 : 0; \
     })
 
-#define swap(a, i, j)   \
-    ({                  \
-        swap_counter++; \
-        int tmp = a[i]; \
-        a[i] = a[j];    \
-        a[j] = tmp;     \
-        i;              \
+#define swap(a, i, j)                    \
+    ({                                   \
+        swap_counter++;                  \
+        unsigned int _i = (i), _j = (j); \
+        int tmp = a[_i];                 \
+        a[_i] = a[_j];                   \
+        a[_j] = tmp;                     \
+        _i;                              \
     })
 
 long unsigned int cmp_counter, swap_counter;

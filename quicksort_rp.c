@@ -24,8 +24,7 @@ static unsigned int partition(int a[], unsigned int izq, unsigned int der, xrshr
         }
         else
         {
-            swap(a, izq, der);
-            der--;
+            swap(a, izq, der--);
         }
     }
 
@@ -38,10 +37,8 @@ static void quicksort_rec(int a[], unsigned int izq, unsigned int der, xrshr128p
     if (length < CHUNK_SIZE)
     {
         insertion_sort(a + izq, length);
-        return;
     }
-
-    if (izq < der + 1)
+    else
     {
         pivot = partition(a, izq, der, state);
         quicksort_rec(a, izq, pivot - 1, state);

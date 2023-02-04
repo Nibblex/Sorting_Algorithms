@@ -4,20 +4,34 @@
 
 static void merge(int a[], unsigned int izq, unsigned int mid, unsigned int der)
 {
-    int tmp[der + 1];
-    memcpy(tmp + izq, a + izq, (mid - izq + 1) * sizeof(int));
+    unsigned int n1 = mid - izq + 1;
+    unsigned int n2 = der - mid;
 
-    unsigned int k = mid + 1;
-    for (unsigned int i = izq; i <= der; i++)
+    int L[n1], R[n2];
+    memcpy(L, a + izq, n1 * sizeof(int));
+    memcpy(R, a + mid + 1, n2 * sizeof(int));
+
+    unsigned int i = 0, j = 0, k = izq;
+    while (i < n1 && j < n2)
     {
-        if (izq <= mid && (k > der || cmp(tmp[izq], a[k]) <= 0))
+        if (cmp(L[i], R[j]) < 0)
         {
-            a[i] = tmp[izq++];
+            a[k++] = L[i++];
         }
         else
         {
-            a[i] = a[k++];
+            a[k++] = R[j++];
         }
+    }
+
+    while (i < n1)
+    {
+        a[k++] = L[i++];
+    }
+
+    while (j < n2)
+    {
+        a[k++] = R[j++];
     }
 }
 

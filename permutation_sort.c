@@ -29,12 +29,12 @@ static void next_permutation(unsigned int perm[], unsigned int length)
         j--;
     }
 
-    swap((int *)perm, i - 1, j);
+    swap(perm, i - 1, j);
 
     j = length - 1;
     while (i < j)
     {
-        swap((int *)perm, i++, j--);
+        swap(perm, i++, j--);
     }
 }
 

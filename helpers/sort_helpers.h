@@ -5,14 +5,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define reset_counters     \
+    ({                     \
+        swap_counter = 0;  \
+        goesb_counter = 0; \
+    })
+
+#define goes_before(x, y) ({goesb_counter++; abs(x) <= abs(y); })
+
+#define swap(a, i, j)   \
+    ({                  \
+        swap_counter++; \
+        int tmp = a[i]; \
+        a[i] = a[j];    \
+        a[j] = tmp;     \
+        i;              \
+    })
+
 long unsigned int goesb_counter, swap_counter;
-
-/* Helpers */
-void reset_counters(void);
-
-bool goes_before(int x, int y);
-
-unsigned int swap(int a[], unsigned int i, unsigned int j);
 
 /* Sorting algorithms */
 void mergesort(int a[], unsigned int length);
@@ -24,10 +34,6 @@ void mergesort_alt(int a[], unsigned int length);
 void quicksort(int a[], unsigned int length);
 
 void quicksort_std(int a[], unsigned int length);
-
-void quicksort_cp(int a[], unsigned int length);
-
-void quicksort_dp(int a[], unsigned int length);
 
 void quicksort_rp(int a[], unsigned int length);
 

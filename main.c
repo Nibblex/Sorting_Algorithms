@@ -5,7 +5,7 @@
 #include "./helpers/sort_helpers.h"
 
 #define MAX_SIZE 100000
-#define FUNC_NUM 11
+#define FUNC_NUM 9
 
 typedef void (*func)(int a[], unsigned int length);
 
@@ -14,8 +14,6 @@ char *func_names[FUNC_NUM] = {"mergesort",
                               "mergesort_iterative",
                               "quicksort_std",
                               "quicksort",
-                              "quicksort_cp",
-                              "quicksort_dp",
                               "quicksort_rp",
                               "insertion_sort",
                               "selection_sort",
@@ -26,8 +24,6 @@ func func_array[FUNC_NUM] = {&mergesort,
                              &mergesort_iterative,
                              &quicksort_std,
                              &quicksort,
-                             &quicksort_cp,
-                             &quicksort_dp,
                              &quicksort_rp,
                              &insertion_sort,
                              &selection_sort,
@@ -111,7 +107,7 @@ int main(int argc, char *argv[])
     printf("-------------------------------------------------------------------------------------------\n");
     for (unsigned int i = 0; i < FUNC_NUM; i++)
     {
-        reset_counters();
+        reset_counters;
         array_copy(copy, array, length);
         elapsed = getMilliseconds();
         func_array[i](copy, length);

@@ -4,8 +4,8 @@
 #include "./helpers/array_helpers.h"
 #include "./helpers/sort_helpers.h"
 
-#define MAX_SIZE 100000
-#define FUNC_NUM 9
+#define MAX_SIZE 200000
+#define FUNC_NUM 8
 
 typedef void (*func)(int a[], unsigned int length);
 
@@ -15,8 +15,7 @@ char *func_names[FUNC_NUM] = {"quicksort",
                               "timsort",
                               "mergesort",
                               "insertion_sort",
-                              "selection_sort",
-                              "permutation_sort"};
+                              "selection_sort"};
 
 func func_array[FUNC_NUM] = {&quicksort,
                              &quicksort_rp,
@@ -24,8 +23,7 @@ func func_array[FUNC_NUM] = {&quicksort,
                              &timsort,
                              &mergesort,
                              &insertion_sort,
-                             &selection_sort,
-                             &permutation_sort};
+                             &selection_sort};
 
 static double getMilliseconds(void)
 {

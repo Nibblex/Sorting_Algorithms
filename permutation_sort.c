@@ -41,7 +41,7 @@ static void next_permutation(unsigned int perm[], unsigned int length)
 static bool sorted(int a[], unsigned int perm[], unsigned int length)
 {
     unsigned int i = 1;
-    while (i < length && cmp(a[perm[i - 1]], a[perm[i]]) <= 0)
+    while (i < length && cmp(a + perm[i - 1], a + perm[i]) <= 0)
     {
         i++;
     }

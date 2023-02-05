@@ -16,7 +16,7 @@ static void merge(int a[], unsigned int left, unsigned int mid, unsigned int rig
     unsigned int i = n1 - 1, j = n2 - 1, k = right;
     while (i != SIZE_MAX && j != SIZE_MAX)
     {
-        if (cmp(L[i], R[j]) < 0)
+        if (cmp(L + i, R + j) < 0)
         {
             a[k--] = R[j--];
         }

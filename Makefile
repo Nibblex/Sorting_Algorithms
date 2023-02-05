@@ -3,7 +3,7 @@ CC=gcc
 CFLAGS= -Wall -Werror -Wextra -std=c99 -Wbad-function-cast -Wstrict-prototypes\
 		-Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -O3 -g
 
-HELPERS=array_helpers.c
+HELPERS=array_helpers.c sort_helpers.c
 vpath %.c helpers
 
 SOURCES=$(shell echo *.c) $(HELPERS)

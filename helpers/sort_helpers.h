@@ -7,21 +7,21 @@
 
 #define CHUNK_SIZE 32
 
-#define min(a, b) (cmp(a, b) < 0 ? (a) : (b))
+#define _cmp(x, y)                                       \
+    ({                                                   \
+        cmp_counter++;                                   \
+        int _x = (x), _y = (y);                          \
+        abs(_x)<abs(_y) ? -1 : abs(_x)> abs(_y) ? 1 : 0; \
+    })
 
-#define max(a, b) (cmp(a, b) > 0 ? (a) : (b))
+#define min(a, b) (_cmp(a, b) < 0 ? (a) : (b))
+
+#define max(a, b) (_cmp(a, b) > 0 ? (a) : (b))
 
 #define reset_counters    \
     ({                    \
         swap_counter = 0; \
         cmp_counter = 0;  \
-    })
-
-#define cmp(x, y)                                        \
-    ({                                                   \
-        cmp_counter++;                                   \
-        int _x = (x), _y = (y);                          \
-        abs(_x)<abs(_y) ? -1 : abs(_x)> abs(_y) ? 1 : 0; \
     })
 
 #define swap(a, i, j)                    \
@@ -35,6 +35,8 @@
     })
 
 long unsigned int cmp_counter, swap_counter;
+
+int cmp(const void *a, const void *b);
 
 /* Sorting algorithms */
 void mergesort(int a[], unsigned int length);

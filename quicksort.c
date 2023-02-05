@@ -6,7 +6,7 @@ static unsigned int partition(int a[], unsigned int left, unsigned int right)
     int pivot_value = a[pivot];
     while (left <= right)
     {
-        if (cmp(a[left], pivot_value) <= 0)
+        if (cmp(a + left, &pivot_value) <= 0)
         {
             left++;
         }

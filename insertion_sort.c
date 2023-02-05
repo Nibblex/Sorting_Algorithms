@@ -3,7 +3,7 @@
 static void insert(int a[], unsigned int i)
 {
     unsigned int j = i;
-    while (j > 0 && cmp(a[j - 1], a[j]) > 0)
+    while (j > 0 && cmp(a + j - 1, a + j) > 0)
     {
         swap(a, j, j - 1);
         j--;

@@ -4,21 +4,34 @@
 
 #include "xoroshiro128plus.h"
 
-#define rand_pos(state, left, right) (xrshr128p_next(state) % ((right) - (left) + 1)) + (left)
-
-#define pivot_selection(a, left, right, state)             \
-    ({                                                  \
-        unsigned int pivot = rand_pos(state, left, right); \
-        swap(a, left, pivot);                            \
+#define med3(arr, a, b, c)                                                                                                              \
+    ({                                                                                                                                  \
+        int _a = arr[a], _b = arr[b], _c = arr[c];                                                                                      \
+        (_cmp(_a, _b) > 0 ? (_cmp(_b, _c) > 0 ? b : (_cmp(_a, _c) > 0 ? c : a)) : (_cmp(_a, _c) > 0 ? a : (_cmp(_b, _c) > 0 ? c : b))); \
     })
 
-static unsigned int partition(int a[], unsigned int left, unsigned int right, xrshr128p_state_t *state)
+#define rand_pos(state, left, right) (xrshr128p_next(state) % ((right) - (left) + 1)) + (left)
+
+#define pivot(a, left, right, state)               \
+    ({                                             \
+        unsigned int pivot;                        \
+        if (state)                                 \
+        {                                          \
+            pivot = rand_pos(*state, left, right); \
+        }                                          \
+        else                                       \
+        {                                          \
+            pivot = med3(a, left, right, left);    \
+        }                                          \
+        swap(a, left, pivot);                      \
+    })
+
+static unsigned int partition(int a[], unsigned int left, unsigned int right, unsigned int pivot)
 {
-    unsigned int pivot = pivot_selection(a, left, right, *state);
     int pivot_value = a[pivot];
     while (left <= right)
     {
-        if (cmp(a[left], pivot_value) <= 0)
+        if (cmp(a + left, &pivot_value) <= 0)
         {
             left++;
         }
@@ -40,7 +53,8 @@ static void quicksort_rec(int a[], unsigned int left, unsigned int right, xrshr1
     }
     else
     {
-        pivot = partition(a, left, right, state);
+        pivot = pivot(a, left, right, state);
+        pivot = partition(a, left, right, pivot);
         quicksort_rec(a, left, pivot - 1, state);
         quicksort_rec(a, pivot + 1, right, state);
     }

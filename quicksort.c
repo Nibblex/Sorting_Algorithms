@@ -57,24 +57,43 @@ static unsigned int partition(int a[], unsigned int left, unsigned int right, un
     return swap(a, right, pivot);
 }
 
-static void quicksort_rec(int a[], unsigned int left, unsigned int right, xrshr128p_state_t *state)
+static void quicksort_it(int a[], unsigned int left, unsigned int right)
 {
-    unsigned int pivot, length = right - left + 1;
-    if (length < CHUNK_SIZE)
+    xrshr128p_state_t state = xrshr128p_init(time(NULL));
+    unsigned int stack[right - left + 1];
+    int top = -1;
+
+    stack[++top] = left;
+    stack[++top] = right;
+
+    while (top >= 0)
     {
-        insertion_sort(a + left, length);
-    }
-    else
-    {
-        pivot = pivot(a, left, right, state, MED3);
-        pivot = partition(a, left, right, pivot);
-        quicksort_rec(a, left, pivot - 1, state);
-        quicksort_rec(a, pivot + 1, right, state);
+        right = stack[top--];
+        left = stack[top--];
+
+        if (right - left < CHUNK_SIZE)
+        {
+            insertion_sort(a + left, right - left + 1);
+            continue;
+        }
+
+        unsigned int pivot = partition(a, left, right, pivot(a, left, right, &state, MED3));
+
+        if (pivot > left + 1)
+        {
+            stack[++top] = left;
+            stack[++top] = pivot - 1;
+        }
+
+        if (pivot < right - 1)
+        {
+            stack[++top] = pivot + 1;
+            stack[++top] = right;
+        }
     }
 }
 
 void quicksort(int a[], unsigned int length)
 {
-    xrshr128p_state_t state = xrshr128p_init(time(NULL));
-    quicksort_rec(a, 0, !length ? 0 : length - 1, &state);
+    quicksort_it(a, 0, !length ? 0 : length - 1);
 }

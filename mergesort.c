@@ -2,7 +2,9 @@
 
 #include "./helpers/sort_helpers.h"
 
+#ifndef SIZE_MAX
 #define SIZE_MAX (unsigned int)(-1)
+#endif
 
 static void merge(int a[], unsigned int left, unsigned int mid, unsigned int right)
 {
@@ -13,27 +15,28 @@ static void merge(int a[], unsigned int left, unsigned int mid, unsigned int rig
     memcpy(L, a + left, n1 * sizeof(int));
     memcpy(R, a + mid + 1, n2 * sizeof(int));
 
-    unsigned int i = n1 - 1, j = n2 - 1, k = right;
-    while (i != SIZE_MAX && j != SIZE_MAX)
+    unsigned int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2)
     {
-        if (cmp(L + i, R + j) < 0)
+        int _i = L[i], _j = R[j];
+        if (_cmp(_i, _j) <= 0)
         {
-            a[k--] = R[j--];
+            a[k++] = L[i++];
         }
         else
         {
-            a[k--] = L[i--];
+            a[k++] = R[j++];
         }
     }
 
     if (i)
     {
-        memcpy(a + left, L, (i + 1) * sizeof(int));
+        memcpy(a + k, L + i, (n1 - i) * sizeof(int));
     }
 
     if (j)
     {
-        memcpy(a + left, R, (j + 1) * sizeof(int));
+        memcpy(a + k, R + j, (n2 - j) * sizeof(int));
     }
 }
 

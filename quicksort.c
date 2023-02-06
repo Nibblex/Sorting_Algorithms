@@ -35,11 +35,12 @@ enum
             pivot = med3(a, left, mid, right);     \
             break;                                 \
         }                                          \
-        swap(a, left, pivot);                      \
+        pivot;                                     \
     })
 
 static unsigned int partition(int a[], unsigned int left, unsigned int right, unsigned int pivot)
 {
+    pivot = swap(a, left, pivot);
     int pivot_value = a[pivot];
     while (left <= right)
     {

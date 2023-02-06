@@ -9,17 +9,17 @@
 
 typedef void (*func)(int a[], unsigned int length);
 
-char *func_names[FUNC_NUM] = {"quicksort",
-                              "quicksort_std",
-                              "timsort",
+char *func_names[FUNC_NUM] = {"timsort",
                               "mergesort",
+                              "quicksort",
+                              "quicksort_std",
                               "insertion_sort",
                               "selection_sort"};
 
-func func_array[FUNC_NUM] = {&quicksort,
-                             &quicksort_std,
-                             &timsort,
+func func_array[FUNC_NUM] = {&timsort,
                              &mergesort,
+                             &quicksort,
+                             &quicksort_std,
                              &insertion_sort,
                              &selection_sort};
 

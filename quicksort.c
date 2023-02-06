@@ -9,6 +9,7 @@ enum
     LEFT_MOST,
     RANDOM,
     MED3,
+    MID,
 } pivot_type;
 
 #define med3(arr, a, b, c)                                                                                                              \
@@ -21,11 +22,14 @@ enum
 
 #define pivot(a, left, right, state, type)         \
     ({                                             \
-        unsigned int mid, pivot;                   \
+        unsigned int pivot, mid;                   \
         switch (type)                              \
         {                                          \
         case LEFT_MOST:                            \
             pivot = left;                          \
+            break;                                 \
+        case MID:                                  \
+            pivot = left + ((right - left) >> 1);  \
             break;                                 \
         case RANDOM:                               \
             pivot = rand_pos(*state, left, right); \
@@ -42,19 +46,26 @@ static unsigned int partition(int a[], unsigned int left, unsigned int right, un
 {
     pivot = swap(a, left, pivot);
     int pivot_value = a[pivot];
-    while (left <= right)
-    {
-        if (cmp(a + left, &pivot_value) <= 0)
-        {
-            left++;
-        }
-        else
-        {
-            swap(a, left, right--);
-        }
-    }
+    unsigned int i = left;
+    unsigned int j = right + 1;
 
-    return swap(a, right, pivot);
+    while (1)
+    {
+        do
+            i++;
+        while (cmp(a + i, &pivot_value) < 0);
+
+        do
+            j--;
+        while (cmp(a + j, &pivot_value) > 0);
+
+        if (i >= j)
+        {
+            return swap(a, j, left);
+        }
+
+        swap(a, i, j);
+    }
 }
 
 static void quicksort_it(int a[], unsigned int left, unsigned int right)
@@ -77,7 +88,7 @@ static void quicksort_it(int a[], unsigned int left, unsigned int right)
             continue;
         }
 
-        unsigned int pivot = partition(a, left, right, pivot(a, left, right, &state, MED3));
+        unsigned int pivot = partition(a, left, right, pivot(a, left, right, &state, RANDOM));
 
         if (pivot > left + 1)
         {

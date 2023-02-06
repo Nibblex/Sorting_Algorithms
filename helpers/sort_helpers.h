@@ -49,7 +49,7 @@ void quicksort(int a[], unsigned int length);
 
 void quicksort_std(int a[], unsigned int length);
 
-void quicksort_rp(int a[], unsigned int length);
+void quicksort(int a[], unsigned int length);
 
 void multi_set_sort(int a[], unsigned int length);
 

@@ -25,12 +25,12 @@ char *func_names[FUNC_NUM] = {"timsort",
                               "insertion_sort",
                               "selection_sort"};
 
-func func_array[FUNC_NUM] = {&timsort,
-                             &mergesort,
-                             &quicksort,
-                             &quicksort_std,
-                             &insertion_sort,
-                             &selection_sort};
+func func_array[FUNC_NUM] = {timsort,
+                             mergesort,
+                             quicksort,
+                             quicksort_std,
+                             insertion_sort,
+                             selection_sort};
 
 static double getMilliseconds(void)
 {
@@ -59,7 +59,7 @@ static char *parse_args(int argc, char *argv[], int *sign_type, int *order_type,
         switch (c)
         {
         case 'i':
-            filepath = strdup(optarg);
+            filepath = optarg;
             break;
         case 'o':
             if (strcmp(optarg, "asc") == 0)

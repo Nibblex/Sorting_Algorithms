@@ -1,6 +1,6 @@
 TARGET=sorter
 CC=gcc
-CFLAGS= -Wall -Werror -Wextra -Wbad-function-cast -Wstrict-prototypes\
+CFLAGS= -std=c99 -Wall -Werror -Wextra -Wbad-function-cast -Wstrict-prototypes\
 		-Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -O3 -g
 
 SOURCES=$(shell echo *.c algorithms/*.c helpers/*.c)

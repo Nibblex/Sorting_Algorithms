@@ -5,6 +5,11 @@ int cmp(const void *a, const void *b)
     return _cmp(*(int *)a, *(int *)b);
 }
 
+int cmp_desc(const void *a, const void *b)
+{
+    return _cmp(*(int *)b, *(int *)a);
+}
+
 void merge(int a[], unsigned int left, unsigned int mid, unsigned int right)
 {
     unsigned int n1 = mid - left + 1;

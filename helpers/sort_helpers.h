@@ -43,6 +43,8 @@ long unsigned int cmp_counter, swap_counter;
 
 int cmp(const void *a, const void *b);
 
+int cmp_desc(const void *a, const void *b);
+
 void merge(int a[], unsigned int left, unsigned int mid, unsigned int right);
 
 /* Sorting algorithms */

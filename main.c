@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 
     unsigned int length, min, max;
 
-    if (argc < 3)
+    if (argc < 4)
     {
         usage(argv);
         exit(EXIT_FAILURE);
@@ -142,6 +142,7 @@ int main(int argc, char *argv[])
     {
 
         length = (unsigned int)atoi(argv[1]);
+        printf("length: %d\n", length);
         min = (unsigned int)atoi(argv[2]);
         max = (unsigned int)atoi(argv[3]);
         array = array_generator(length, min, max, order_type, sign_type);

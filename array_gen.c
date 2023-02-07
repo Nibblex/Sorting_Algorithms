@@ -27,7 +27,7 @@ int *array_generator(int length, int min, int max, int order_type, int sign_type
         break;
 
     case DESC:
-        qsort(array, length, sizeof(int), cmp);
+        qsort(array, length, sizeof(int), cmp_desc);
         break;
 
     default:

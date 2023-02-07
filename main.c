@@ -76,6 +76,7 @@ static char *parse_args(int argc, char *argv[], int *sign_type, int *order_type,
             }
             else
             {
+                usage(argv);
                 exit(EXIT_FAILURE);
             }
             break;
@@ -134,8 +135,8 @@ int main(int argc, char *argv[])
     char *filepath = parse_args(argc, argv, &sign_type, &order_type, &options);
     if (filepath)
     {
-        array = array_from_file(filepath);
         length = array_length_from_file(filepath);
+        array = array_from_file(length, filepath);
     }
     else
     {

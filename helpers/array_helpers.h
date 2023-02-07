@@ -3,7 +3,7 @@
 
 #include "sort_helpers.h"
 
-int *array_from_file(const char *filepath);
+int *array_from_file(unsigned int length, const char *filepath);
 /*
     Each element is read from the file located at 'filepath'.
     The file must exist in disk and must have its contents in the following

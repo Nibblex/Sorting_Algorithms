@@ -57,10 +57,8 @@ bool array_is_permutation_of(int a[], int b[], unsigned int length)
     return result;
 }
 
-int *array_from_file(const char *filepath)
+int *array_from_file(unsigned int length, const char *filepath)
 {
-    int *array = NULL;
-
     FILE *file = NULL;
     file = fopen(filepath, "r");
     if (file == NULL)
@@ -68,19 +66,13 @@ int *array_from_file(const char *filepath)
         fprintf(stderr, "File does not exist.\n");
         exit(EXIT_FAILURE);
     }
-    unsigned int i = 0, size = 0;
-    int res = fscanf(file, " %u ", &size);
-    if (res != 1)
-    {
-        fprintf(stderr, "Invalid array.\n");
-        exit(EXIT_FAILURE);
-    }
 
-    array = malloc(size * sizeof(int));
-
-    while (i < size)
+    int res;
+    int *array = malloc(length * sizeof(int));
+    unsigned int i = 0;
+    while (i < length + 1)
     {
-        res = fscanf(file, " %d ", &(array[i]));
+        res = fscanf(file, " %u ", array + i - (i != 0));
         if (res != 1)
         {
             fprintf(stderr, "Invalid array.\n");

@@ -1,4 +1,4 @@
-#include "./helpers/sort_helpers.h"
+#include "../helpers/sort_helpers.h"
 
 static void timsort_it(int a[], unsigned int length)
 {

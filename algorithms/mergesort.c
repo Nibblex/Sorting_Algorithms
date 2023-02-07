@@ -1,4 +1,4 @@
-#include "./helpers/sort_helpers.h"
+#include "../helpers/sort_helpers.h"
 
 static void mergesort_rec(int a[], unsigned int left, unsigned int right)
 {

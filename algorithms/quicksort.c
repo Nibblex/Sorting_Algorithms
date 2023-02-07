@@ -1,8 +1,8 @@
 #include <time.h>
 
-#include "./helpers/sort_helpers.h"
+#include "../helpers/sort_helpers.h"
 
-#include "xoroshiro128plus.h"
+#include "../xoroshiro128plus.h"
 
 enum
 {

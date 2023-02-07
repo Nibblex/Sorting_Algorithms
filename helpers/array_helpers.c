@@ -15,9 +15,11 @@ static unsigned int array_value_count(int a[], unsigned int length, int value)
     return count;
 }
 
-void array_copy(int copy[], int array[], unsigned int length)
+int *array_copy(int array[], unsigned int length)
 {
+    int *copy = malloc(length * sizeof(int));
     memcpy(copy, array, length * sizeof(int));
+    return copy;
 }
 
 void array_dump(int a[], unsigned int length)
@@ -38,7 +40,7 @@ bool array_is_sorted(int a[], unsigned int length)
         i++;
     }
 
-    return i == length;
+    return !length || i == length;
 }
 
 bool array_is_permutation_of(int a[], int b[], unsigned int length)
@@ -55,8 +57,10 @@ bool array_is_permutation_of(int a[], int b[], unsigned int length)
     return result;
 }
 
-unsigned int array_from_file(int array[], unsigned int max_size, const char *filepath)
+int *array_from_file(const char *filepath)
 {
+    int *array = NULL;
+
     FILE *file = NULL;
     file = fopen(filepath, "r");
     if (file == NULL)
@@ -71,11 +75,9 @@ unsigned int array_from_file(int array[], unsigned int max_size, const char *fil
         fprintf(stderr, "Invalid array.\n");
         exit(EXIT_FAILURE);
     }
-    if (size > max_size)
-    {
-        fprintf(stderr, "Allowed size is %d.\n", max_size);
-        exit(EXIT_FAILURE);
-    }
+
+    array = malloc(size * sizeof(int));
+
     while (i < size)
     {
         res = fscanf(file, " %d ", &(array[i]));
@@ -85,6 +87,26 @@ unsigned int array_from_file(int array[], unsigned int max_size, const char *fil
             exit(EXIT_FAILURE);
         }
         i++;
+    }
+    fclose(file);
+    return array;
+}
+
+unsigned int array_length_from_file(const char *filepath)
+{
+    FILE *file = NULL;
+    file = fopen(filepath, "r");
+    if (file == NULL)
+    {
+        fprintf(stderr, "File does not exist.\n");
+        exit(EXIT_FAILURE);
+    }
+    unsigned int size = 0;
+    int res = fscanf(file, " %u ", &size);
+    if (res != 1)
+    {
+        fprintf(stderr, "Invalid array.\n");
+        exit(EXIT_FAILURE);
     }
     fclose(file);
     return size;

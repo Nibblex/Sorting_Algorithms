@@ -3,7 +3,7 @@
 
 #include "sort_helpers.h"
 
-unsigned int array_from_file(int a[], unsigned int max_size, const char *filepath);
+int *array_from_file(const char *filepath);
 /*
     Each element is read from the file located at 'filepath'.
     The file must exist in disk and must have its contents in the following
@@ -22,7 +22,9 @@ unsigned int array_from_file(int a[], unsigned int max_size, const char *filepat
     Returns the length of the array.
 */
 
-void array_copy(int dst[], int src[], unsigned int length);
+unsigned int array_length_from_file(const char *filepath);
+
+int *array_copy(int src[], unsigned int length);
 
 bool array_is_sorted(int a[], unsigned int length);
 

@@ -1,13 +1,22 @@
 #include <getopt.h>
+#include <string.h>
 #include <time.h>
 
 #include "./helpers/array_helpers.h"
 #include "./helpers/sort_helpers.h"
 
-#define MAX_SIZE 200000
+#include "array_gen.h"
+
 #define FUNC_NUM 6
 
 typedef void (*func)(int a[], unsigned int length);
+
+enum options
+{
+    DUMP_ARRAY = 1,
+    SORTED_TEST = 2,
+    PERMUTATION_TEST = 4
+};
 
 char *func_names[FUNC_NUM] = {"timsort",
                               "mergesort",
@@ -28,94 +37,139 @@ static double getMilliseconds(void)
     return 1000.0 * clock() / CLOCKS_PER_SEC;
 }
 
-static void print_help(char *program_name)
+static void usage(char *argv[])
 {
-    /* Print the usage help of this program. */
-    printf("Usage: %s <input file path> [ OPTIONS ]\n\n"
-           "Sort an array given in a file in disk.\n"
-           "\n"
-           "The input file must have the following format:\n"
-           " * The first line must contain only a positive integer,"
-           " which is the length of the array.\n"
-           " * The second line must contain the members of the array"
-           " separated by one or more spaces. Each member must be an integer."
-           "\n\n"
-           "In other words, the file format is:\n"
-           "<amount of array elements>\n"
-           "<array elem 1> <array elem 2> ... <array elem N>\n\n"
-           "OPTIONS:\n-d dump the array on screen after running the sorting algorithm\n"
-           "-s check if the array is sorted after running the algorithm\n"
-           "-p check if the array is a permutation of the original one\n\n",
-           program_name);
+    printf("Usage: %s <length> <min> <max> [options] \n", argv[0]);
+    printf("Options: \n");
+    printf("  -i <filepath>    Read array from file \n");
+    printf("  -o <order>       Order of the array: asc, desc, uns \n");
+    printf("  -s <sign>        Sign of the elements: pos, neg, both \n");
+    printf("  -d               Dump array \n");
+    printf("  -t               Test sorted array is sorted \n");
+    printf("  -p               Test permutation array is permutation of original \n");
 }
 
-static char *parse_filepath(int argc, char *argv[])
+static char *parse_args(int argc, char *argv[], int *sign_type, int *order_type, int *options)
 {
-    if (argc < 2)
-    {
-        print_help(argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    return argv[1];
-}
-
-int main(int argc, char *argv[])
-{
-    double elapsed;
-    /* create an array of MAX_SIZE elements and a copy, to do some checks later */
-    int array[MAX_SIZE], copy[MAX_SIZE];
-
-    bool dump_array = false, sorted_test = false, permutation_test = false;
-
-    /* parse the filepath given in command line arguments */
-    char *filepath = parse_filepath(argc, argv);
-
-    /* parse the file to fill the array and obtain the actual length */
-    unsigned int length = array_from_file(array, MAX_SIZE, filepath);
+    char *filepath = NULL;
 
     int c = 0;
-    while ((c = getopt(argc, argv, "dsp")) != -1)
+    while ((c = getopt(argc, argv, "i:o:s:dtp")) != -1)
     {
         switch (c)
         {
-        case 'd':
-            dump_array = true;
+        case 'i':
+            filepath = strdup(optarg);
+            break;
+        case 'o':
+            if (strcmp(optarg, "asc") == 0)
+            {
+                *order_type = ASC;
+            }
+            else if (strcmp(optarg, "desc") == 0)
+            {
+                *order_type = DESC;
+            }
+            else if (strcmp(optarg, "uns") == 0)
+            {
+                *order_type = UNSORTED;
+            }
+            else
+            {
+                exit(EXIT_FAILURE);
+            }
             break;
         case 's':
-            sorted_test = true;
+            if (strcmp(optarg, "pos") == 0)
+            {
+                *sign_type = POS;
+            }
+            else if (strcmp(optarg, "neg") == 0)
+            {
+                *sign_type = NEG;
+            }
+            else if (strcmp(optarg, "both") == 0)
+            {
+                *sign_type = BOTH;
+            }
+            else
+            {
+                usage(argv);
+                exit(EXIT_FAILURE);
+            }
+            break;
+        case 'd':
+            *options |= DUMP_ARRAY;
+            break;
+        case 't':
+            *options |= SORTED_TEST;
             break;
         case 'p':
-            permutation_test = true;
+            *options |= PERMUTATION_TEST;
             break;
-        case '?':
-            print_help(argv[0]);
-            exit(EXIT_FAILURE);
-            break;
+
         default:
+            usage(argv);
             break;
         }
     }
 
+    return filepath;
+}
+
+int main(int argc, char *argv[])
+{
+    int *array = NULL, *copy = NULL;
+
+    int sign_type = 0, order_type = 0, options = 0;
+
+    unsigned int length, min, max;
+
+    if (argc < 3)
+    {
+        usage(argv);
+        exit(EXIT_FAILURE);
+    }
+
+    char *filepath = parse_args(argc, argv, &sign_type, &order_type, &options);
+    if (filepath)
+    {
+        array = array_from_file(filepath);
+        length = array_length_from_file(filepath);
+    }
+    else
+    {
+
+        length = (unsigned int)atoi(argv[1]);
+        min = (unsigned int)atoi(argv[2]);
+        max = (unsigned int)atoi(argv[3]);
+        array = array_generator(length, min, max, order_type, sign_type);
+    }
+
+    double elapsed;
     printf("Algorithm:                Elapsed miliseconds:      Comparisons:              Swaps:\n");
     printf("-------------------------------------------------------------------------------------------\n");
     for (unsigned int i = 0; i < FUNC_NUM; i++)
     {
         reset_counters;
-        array_copy(copy, array, length);
+        copy = array_copy(array, length);
         elapsed = getMilliseconds();
         func_array[i](copy, length);
         elapsed = getMilliseconds() - elapsed;
 
-        if (dump_array)
+        if (options & DUMP_ARRAY)
         {
             array_dump(copy, length);
         }
 
         printf("%-25s %-25g %-25lu %-25lu %s %s\n", func_names[i], elapsed, cmp_counter, swap_counter,
-               sorted_test ? (array_is_sorted(copy, length) ? "sorted_test=OK" : "sorted_test=FAIL") : "",
-               permutation_test ? (array_is_permutation_of(copy, array, length) ? "permutation_test=OK" : "permutation_test=FAIL") : "");
+               (options & SORTED_TEST) ? (array_is_sorted(copy, length) ? "sorted_test=OK" : "sorted_test=FAIL") : "",
+               (options & PERMUTATION_TEST) ? (array_is_permutation_of(copy, array, length) ? "permutation_test=OK" : "permutation_test=FAIL") : "");
+
+        free(copy);
     }
+
+    free(array);
 
     return EXIT_SUCCESS;
 }

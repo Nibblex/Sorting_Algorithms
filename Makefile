@@ -1,12 +1,9 @@
 TARGET=sorter
 CC=gcc
-CFLAGS= -Wall -Werror -Wextra -std=c99 -Wbad-function-cast -Wstrict-prototypes\
+CFLAGS= -Wall -Werror -Wextra -Wbad-function-cast -Wstrict-prototypes\
 		-Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -O3 -g
 
-HELPERS=array_helpers.c sort_helpers.c
-vpath %.c helpers
-
-SOURCES=$(shell echo *.c) $(HELPERS)
+SOURCES=$(shell echo *.c algorithms/*.c helpers/*.c)
 OBJECTS=$(SOURCES:.c=.o)
 
 all: $(TARGET)
@@ -15,6 +12,6 @@ $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 clean:
-	rm -f $(TARGET) $(OBJECTS)
+	rm -f -r $(TARGET) *.o algorithms/*.o helpers/*.o
 
 .PHONY: clean all

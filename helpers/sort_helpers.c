@@ -10,6 +10,33 @@ int cmp_desc(const void *a, const void *b)
     return _cmp(*(int *)b, *(int *)a);
 }
 
+unsigned int partition(int a[], unsigned int left, unsigned int right, int pivot_type, xrshr128p_state_t *state)
+{
+    unsigned int pivot = pivot(a, left, right, state, pivot_type);
+    int pivot_value = a[pivot];
+
+    unsigned int i = left - 1;
+    unsigned int j = right + 1;
+
+    while (1)
+    {
+        do
+            i++;
+        while (cmp(a + i, &pivot_value) < 0);
+
+        do
+            j--;
+        while (cmp(a + j, &pivot_value) > 0);
+
+        if (i >= j)
+        {
+            return j;
+        }
+
+        swap(a, i, j);
+    }
+}
+
 void merge(int a[], unsigned int left, unsigned int mid, unsigned int right)
 {
     unsigned int n1 = mid - left + 1;

@@ -6,8 +6,6 @@
 #include "array_gen.h"
 #include "xoroshiro128plus.h"
 
-#define rand_pos(state, min, max) (xrshr128p_next(state) % ((max) - (min) + 1)) + (min)
-
 int *array_generator(int length, int min, int max, int options)
 {
     xrshr128p_state_t state = xrshr128p_init(time(NULL));

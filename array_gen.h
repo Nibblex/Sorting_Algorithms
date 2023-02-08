@@ -10,11 +10,11 @@ enum order_type
 
 enum sign_type
 {
-    POS = 1,
-    NEG = 2,
-    BOTH = 4
+    POS = 8,
+    NEG = 16,
+    BOTH = 32
 };
 
-int *array_generator(int length, int min, int max, int order_type, int sign_type);
+int *array_generator(int length, int min, int max, int options);
 
 #endif

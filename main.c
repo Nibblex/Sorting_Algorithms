@@ -13,9 +13,9 @@ typedef void (*func)(int a[], unsigned int length);
 
 enum options
 {
-    DUMP_ARRAY = 1,
-    SORTED_TEST = 2,
-    PERMUTATION_TEST = 4
+    DUMP_ARRAY = 64,
+    SORTED_TEST = 128,
+    PERMUTATION_TEST = 256
 };
 
 char *func_names[FUNC_NUM] = {"timsort",
@@ -49,9 +49,17 @@ static void usage(char *argv[])
     printf("  -p               Test permutation array is permutation of original \n");
 }
 
-static char *parse_args(int argc, char *argv[], int *sign_type, int *order_type, int *options)
+static char *parse_args(int argc, char *argv[], unsigned int *length, unsigned int *min, unsigned int *max, int *options)
 {
     char *filepath = NULL;
+
+    if (argc >= 4)
+    {
+        *length = (unsigned int)atoi(argv[1]);
+        *min = (unsigned int)atoi(argv[2]);
+        *max = (unsigned int)atoi(argv[3]);
+        printf("Length: %u, Min: %u, Max: %u\n", *length, *min, *max);
+    }
 
     int c = 0;
     while ((c = getopt(argc, argv, "i:o:s:dtp")) != -1)
@@ -64,15 +72,15 @@ static char *parse_args(int argc, char *argv[], int *sign_type, int *order_type,
         case 'o':
             if (strcmp(optarg, "asc") == 0)
             {
-                *order_type = ASC;
+                *options |= ASC;
             }
             else if (strcmp(optarg, "desc") == 0)
             {
-                *order_type = DESC;
+                *options |= DESC;
             }
             else if (strcmp(optarg, "uns") == 0)
             {
-                *order_type = UNSORTED;
+                *options |= UNSORTED;
             }
             else
             {
@@ -83,15 +91,15 @@ static char *parse_args(int argc, char *argv[], int *sign_type, int *order_type,
         case 's':
             if (strcmp(optarg, "pos") == 0)
             {
-                *sign_type = POS;
+                *options |= POS;
             }
             else if (strcmp(optarg, "neg") == 0)
             {
-                *sign_type = NEG;
+                *options |= NEG;
             }
             else if (strcmp(optarg, "both") == 0)
             {
-                *sign_type = BOTH;
+                *options |= BOTH;
             }
             else
             {
@@ -115,6 +123,12 @@ static char *parse_args(int argc, char *argv[], int *sign_type, int *order_type,
         }
     }
 
+    if (filepath && (*options & (ASC | DESC | UNSORTED | POS | NEG | BOTH)))
+    {
+        usage(argv);
+        exit(EXIT_FAILURE);
+    }
+
     return filepath;
 }
 
@@ -122,30 +136,20 @@ int main(int argc, char *argv[])
 {
     int *array = NULL, *copy = NULL;
 
-    int sign_type = 0, order_type = 0, options = 0;
+    int options = 0;
 
-    unsigned int length, min, max;
+    unsigned int length = 0, min = 0, max = 0;
 
-    if (argc < 4)
-    {
-        usage(argv);
-        exit(EXIT_FAILURE);
-    }
-
-    char *filepath = parse_args(argc, argv, &sign_type, &order_type, &options);
+    char *filepath = parse_args(argc, argv, &length, &min, &max, &options);
     if (filepath)
     {
+        printf("Filepath: %s\n", filepath);
         length = array_length_from_file(filepath);
         array = array_from_file(length, filepath);
     }
     else
     {
-
-        length = (unsigned int)atoi(argv[1]);
-        printf("length: %d\n", length);
-        min = (unsigned int)atoi(argv[2]);
-        max = (unsigned int)atoi(argv[3]);
-        array = array_generator(length, min, max, order_type, sign_type);
+        array = array_generator(length, min, max, options);
     }
 
     double elapsed;

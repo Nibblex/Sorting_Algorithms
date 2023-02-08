@@ -44,11 +44,10 @@ enum
 
 static unsigned int partition(int a[], unsigned int left, unsigned int right, xrshr128p_state_t *state)
 {
-    unsigned int pivot = pivot(a, left, right, state, RANDOM);
+    unsigned int pivot = pivot(a, left, right, state, MID);
     int pivot_value = a[pivot];
-    swap(a, left, pivot);
 
-    unsigned int i = left;
+    unsigned int i = left - 1;
     unsigned int j = right + 1;
 
     while (1)
@@ -63,7 +62,7 @@ static unsigned int partition(int a[], unsigned int left, unsigned int right, xr
 
         if (i >= j)
         {
-            return swap(a, j, left);
+            return j;
         }
 
         swap(a, i, j);
@@ -100,7 +99,7 @@ static void quicksort_it(int a[], unsigned int length)
         if (pivot > left + 1)
         {
             stack[++top] = left;
-            stack[++top] = pivot - 1;
+            stack[++top] = pivot;
         }
 
         if (pivot < right - 1)

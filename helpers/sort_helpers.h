@@ -6,11 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define CHUNK_SIZE 32
-
-#ifndef SIZE_MAX
-#define SIZE_MAX (unsigned int)(-1)
-#endif
+#define MAX_THRESH 8
 
 long unsigned int cmp_counter, swap_counter;
 
@@ -53,22 +49,14 @@ void merge(int a[], unsigned int left, unsigned int mid, unsigned int right);
 
 void mergesort(int a[], unsigned int length);
 
-void mergesort_iterative(int a[], unsigned int length);
-
 void timsort(int a[], unsigned int length);
 
 void quicksort(int a[], unsigned int length);
 
 void quicksort_std(int a[], unsigned int length);
 
-void quicksort(int a[], unsigned int length);
-
-void multi_set_sort(int a[], unsigned int length);
-
 void insertion_sort(int a[], unsigned int length);
 
 void selection_sort(int a[], unsigned int length);
-
-void permutation_sort(int a[], unsigned int length);
 
 #endif

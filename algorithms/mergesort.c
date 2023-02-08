@@ -3,11 +3,7 @@
 static void mergesort_rec(int a[], unsigned int left, unsigned int right)
 {
     unsigned int mid, length = right - left + 1;
-    if (length < CHUNK_SIZE)
-    {
-        insertion_sort(a + left, length);
-    }
-    else
+    if (length > 1)
     {
         mid = left + ((length - 1) >> 1);
         mergesort_rec(a, left, mid);

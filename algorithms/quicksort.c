@@ -84,7 +84,7 @@ static void quicksort_it(int a[], unsigned int left, unsigned int right)
         right = stack[top--];
         left = stack[top--];
 
-        if (right - left < CHUNK_SIZE)
+        if (right - left < MAX_THRESH)
         {
             insertion_sort(a + left, right - left + 1);
             continue;

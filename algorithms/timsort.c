@@ -2,15 +2,15 @@
 
 static void timsort_it(int a[], unsigned int length)
 {
-    unsigned int left, mid, right, chunks = length / CHUNK_SIZE;
+    unsigned int left, mid, right, chunks = length / MAX_THRESH;
     for (unsigned int i = 0; i <= chunks; i++)
     {
-        left = i * CHUNK_SIZE;
-        right = min(left + CHUNK_SIZE - 1, length - 1);
+        left = i * MAX_THRESH;
+        right = min(left + MAX_THRESH - 1, length - 1);
         insertion_sort(a + left, right - left + 1);
     }
 
-    unsigned int size = CHUNK_SIZE;
+    unsigned int size = MAX_THRESH;
     while (size < length)
     {
         left = 0;

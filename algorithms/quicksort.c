@@ -6,10 +6,10 @@
 
 enum
 {
-    LEFT_MOST,
-    RANDOM,
-    MED3,
     MID,
+    MED3,
+    MED3_2,
+    RANDOM,
 } pivot_type;
 
 #define med3(arr, a, b, c)                                                                                                              \
@@ -25,18 +25,31 @@ enum
         unsigned int pivot, mid;                   \
         switch (type)                              \
         {                                          \
-        case LEFT_MOST:                            \
-            pivot = left;                          \
-            break;                                 \
         case MID:                                  \
             pivot = left + ((right - left) >> 1);  \
-            break;                                 \
-        case RANDOM:                               \
-            pivot = rand_pos(*state, left, right); \
             break;                                 \
         case MED3:                                 \
             mid = left + ((right - left) >> 1);    \
             pivot = med3(a, left, mid, right);     \
+            break;                                 \
+        case MED3_2:                               \
+            mid = left + ((right - left) >> 1);    \
+            if (cmp(a + mid, a + left) < 0)        \
+            {                                      \
+                swap(a, left, mid);                \
+            }                                      \
+            if (cmp(a + right, a + left) < 0)      \
+            {                                      \
+                swap(a, left, right);              \
+            }                                      \
+            if (cmp(a + mid, a + right) < 0)       \
+            {                                      \
+                swap(a, mid, right);               \
+            }                                      \
+            pivot = right;                         \
+            break;                                 \
+        case RANDOM:                               \
+            pivot = rand_pos(*state, left, right); \
             break;                                 \
         }                                          \
         pivot;                                     \
@@ -44,7 +57,7 @@ enum
 
 static unsigned int partition(int a[], unsigned int left, unsigned int right, xrshr128p_state_t *state)
 {
-    unsigned int pivot = pivot(a, left, right, state, MID);
+    unsigned int pivot = pivot(a, left, right, state, MED3);
     int pivot_value = a[pivot];
 
     unsigned int i = left - 1;

@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_THRESH 8
+#define MAX_THRESH 16
 
 long unsigned int cmp_counter, swap_counter;
 

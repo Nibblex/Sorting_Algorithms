@@ -47,16 +47,16 @@ void merge(int a[], unsigned int left, unsigned int mid, unsigned int right);
 
 /* Sorting algorithms */
 
-void mergesort(int a[], unsigned int length);
+void insertion_sort(int a[], unsigned int length);
 
-void timsort(int a[], unsigned int length);
+void selection_sort(int a[], unsigned int length);
 
 void quicksort(int a[], unsigned int length);
 
 void quicksort_std(int a[], unsigned int length);
 
-void insertion_sort(int a[], unsigned int length);
+void mergesort(int a[], unsigned int length);
 
-void selection_sort(int a[], unsigned int length);
+void timsort(int a[], unsigned int length);
 
 #endif

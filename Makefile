@@ -1,5 +1,5 @@
 TARGET=sorter
-CC=gcc
+CC=@gcc
 CFLAGS= -std=c99 -Wall -Werror -Wextra -Wbad-function-cast -Wstrict-prototypes\
 		-Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -O3 -g
 

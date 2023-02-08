@@ -70,11 +70,16 @@ static unsigned int partition(int a[], unsigned int left, unsigned int right, xr
     }
 }
 
-static void quicksort_it(int a[], unsigned int left, unsigned int right)
+static void quicksort_it(int a[], unsigned int length)
 {
+    if (length < 2)
+        return;
+
     xrshr128p_state_t state = xrshr128p_init(time(NULL));
-    unsigned int stack[right - left + 1];
+
     int top = -1;
+    unsigned int stack[length];
+    unsigned int pivot, left = 0, right = length - 1;
 
     stack[++top] = left;
     stack[++top] = right;
@@ -90,7 +95,7 @@ static void quicksort_it(int a[], unsigned int left, unsigned int right)
             continue;
         }
 
-        unsigned int pivot = partition(a, left, right, &state);
+        pivot = partition(a, left, right, &state);
 
         if (pivot > left + 1)
         {
@@ -108,5 +113,5 @@ static void quicksort_it(int a[], unsigned int left, unsigned int right)
 
 void quicksort(int a[], unsigned int length)
 {
-    quicksort_it(a, 0, !length ? 0 : length - 1);
+    quicksort_it(a, length);
 }

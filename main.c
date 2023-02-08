@@ -7,7 +7,7 @@
 
 #include "array_gen.h"
 
-#define FUNC_NUM 6
+#define FUNC_NUM 7
 
 typedef void (*func)(int a[], unsigned int length);
 
@@ -22,6 +22,7 @@ char *func_names[FUNC_NUM] = {"timsort",
                               "mergesort",
                               "quicksort",
                               "quicksort_std",
+                              "heapsort",
                               "insertion_sort",
                               "selection_sort"};
 
@@ -29,6 +30,7 @@ func func_array[FUNC_NUM] = {timsort,
                              mergesort,
                              quicksort,
                              quicksort_std,
+                             heapsort,
                              insertion_sort,
                              selection_sort};
 

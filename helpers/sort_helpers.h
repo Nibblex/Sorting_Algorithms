@@ -23,9 +23,9 @@ long unsigned int cmp_counter, swap_counter;
         abs(_x)<abs(_y) ? -1 : abs(_x)> abs(_y) ? 1 : 0; \
     })
 
-#define min(a, b) (_cmp(a, b) < 0 ? (a) : (b))
+#define _min(a, b) (_cmp(a, b) < 0 ? (a) : (b))
 
-#define max(a, b) (_cmp(a, b) > 0 ? (a) : (b))
+#define _max(a, b) (_cmp(a, b) > 0 ? (a) : (b))
 
 #define swap(a, i, j)                    \
     ({                                   \
@@ -58,5 +58,7 @@ void quicksort_std(int a[], unsigned int length);
 void mergesort(int a[], unsigned int length);
 
 void timsort(int a[], unsigned int length);
+
+void heapsort(int a[], unsigned int length);
 
 #endif

@@ -33,12 +33,12 @@ void merge(int a[], unsigned int left, unsigned int mid, unsigned int right)
         }
     }
 
-    if (i)
+    if (i < n1)
     {
         memcpy(a + k, L + i, (n1 - i) * sizeof(int));
     }
 
-    if (j)
+    if (j < n2)
     {
         memcpy(a + k, R + j, (n2 - j) * sizeof(int));
     }

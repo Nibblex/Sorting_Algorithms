@@ -12,6 +12,8 @@
 #define SIZE_MAX (unsigned int)(-1)
 #endif
 
+long unsigned int cmp_counter, swap_counter;
+
 #define reset_counters    \
     ({                    \
         swap_counter = 0; \
@@ -39,7 +41,7 @@
         _i;                              \
     })
 
-long unsigned int cmp_counter, swap_counter;
+/* Common functions */
 
 int cmp(const void *a, const void *b);
 

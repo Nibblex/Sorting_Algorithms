@@ -9,7 +9,7 @@ static void mergesort_rec(int a[], unsigned int left, unsigned int right)
     }
     else
     {
-        mid = (left + right) >> 1;
+        mid = left + ((length - 1) >> 1);
         mergesort_rec(a, left, mid);
         mergesort_rec(a, mid + 1, right);
         merge(a, left, mid, right);

@@ -2,8 +2,8 @@
 
 void shellsort(int a[], unsigned int length)
 {
-    unsigned int gap = length >> 1;
-    while (gap > 0)
+    unsigned int gap = length;
+    while (gap >>= 1)
     {
         for (unsigned int i = gap; i < length; i++)
         {
@@ -16,6 +16,5 @@ void shellsort(int a[], unsigned int length)
             }
             a[j] = temp;
         }
-        gap >>= 1;
     }
 }

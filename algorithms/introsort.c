@@ -4,6 +4,8 @@
 
 static void introsort_rec(int a[], unsigned int left, unsigned int right, unsigned int depth_limit)
 {
+    recursion_counter++;
+
     unsigned int length = right - left + 1;
 
     if (length <= MAX_THRESH)

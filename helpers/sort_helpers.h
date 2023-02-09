@@ -12,7 +12,7 @@
 
 #define U32_MAX ((unsigned int)-1)
 
-long unsigned int cmp_counter, swap_counter;
+long unsigned int cmp_counter, swap_counter, recursion_counter;
 
 enum
 {
@@ -22,10 +22,11 @@ enum
     RANDOM,
 } pivot_type;
 
-#define reset_counters    \
-    ({                    \
-        swap_counter = 0; \
-        cmp_counter = 0;  \
+#define reset_counters         \
+    ({                         \
+        swap_counter = 0;      \
+        cmp_counter = 0;       \
+        recursion_counter = 0; \
     })
 
 #define _cmp(a, b)                                       \

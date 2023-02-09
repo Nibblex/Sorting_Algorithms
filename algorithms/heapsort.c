@@ -26,6 +26,7 @@ static void heapify(int a[], unsigned int length, unsigned int i)
 
 void heapsort(int a[], unsigned int length)
 {
+    heapsort_counter++;
     for (unsigned int i = (length >> 1) - 1; i < U32_MAX; i--)
     {
         heapify(a, length, i);

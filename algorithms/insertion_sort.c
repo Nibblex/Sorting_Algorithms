@@ -12,6 +12,7 @@ static void insert(int a[], unsigned int i)
 
 void insertion_sort(int a[], unsigned int length)
 {
+    insertion_sort_counter++;
     for (unsigned int i = 1; i < length; i++)
     {
         insert(a, i);

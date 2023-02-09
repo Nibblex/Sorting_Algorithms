@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     }
 
     double elapsed;
-    printf("Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Comparisons + swaps:\n");
+    printf("Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:\n");
     printf("--------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (unsigned int i = 0; i < FUNC_NUM; i++)
     {
@@ -174,7 +174,14 @@ int main(int argc, char *argv[])
             array_dump(copy, length);
         }
 
-        printf("%-20s %-20g %-20lu %-20lu %-20lu %-20lu %s %s\n", func_names[i], elapsed, cmp_counter, swap_counter, recursion_counter, cmp_counter + swap_counter,
+        printf("%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-25lu %s %s\n",
+               func_names[i],
+               elapsed,
+               cmp_counter,
+               swap_counter,
+               recursion_counter,
+               insertion_sort_counter,
+               heapsort_counter,
                (options & SORTED_TEST) ? (array_is_sorted(copy, length) ? "sorted_test=OK" : "sorted_test=FAIL") : "",
                (options & PERMUTATION_TEST) ? (array_is_permutation_of(copy, array, length) ? "permutation_test=OK" : "permutation_test=FAIL") : "");
 

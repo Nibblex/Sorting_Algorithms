@@ -1,21 +1,18 @@
 #include "../helpers/sort_helpers.h"
 
-static unsigned int max(int a[], unsigned int length, unsigned int i, unsigned int j, unsigned int k)
-{
-    unsigned int max = i;
-
-    if (j < length && cmp(a + j, a + max) > 0)
-    {
-        max = j;
-    }
-
-    if (k < length && cmp(a + k, a + max) > 0)
-    {
-        max = k;
-    }
-
-    return max;
-}
+#define largest(a, length, i, j, k)                    \
+    ({                                                 \
+        unsigned int largest = i;                      \
+        if (j < length && cmp(a + j, a + largest) > 0) \
+        {                                              \
+            largest = j;                               \
+        }                                              \
+        if (k < length && cmp(a + k, a + largest) > 0) \
+        {                                              \
+            largest = k;                               \
+        }                                              \
+        largest;                                       \
+    })
 
 static void heapify(int a[], unsigned int length, unsigned int i)
 {
@@ -23,7 +20,7 @@ static void heapify(int a[], unsigned int length, unsigned int i)
     do
     {
         j = (i << 1) + 1;
-        largest = max(a, length, i, j, j + 1);
+        largest = largest(a, length, i, j, j + 1);
     } while (largest != i && (i = swap(a, largest, i), 1));
 }
 

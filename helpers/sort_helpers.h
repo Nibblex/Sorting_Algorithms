@@ -10,6 +10,8 @@
 
 #define MAX_THRESH 16
 
+#define U32_MAX ((unsigned int)-1)
+
 long unsigned int cmp_counter, swap_counter;
 
 enum

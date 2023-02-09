@@ -27,7 +27,7 @@ static void quicksort_it(int a[], unsigned int length)
             continue;
         }
 
-        pivot = partition(a, left, right, MED3, &state);
+        pivot = partition(a, left, right, MID, &state);
 
         if (pivot > left + 1)
         {

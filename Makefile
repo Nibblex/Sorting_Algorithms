@@ -9,7 +9,7 @@ OBJECTS=$(SOURCES:.c=.o)
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 clean:
 	rm -f -r $(TARGET) *.o algorithms/*.o helpers/*.o

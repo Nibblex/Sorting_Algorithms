@@ -116,4 +116,6 @@ void timsort(int a[], unsigned int length);
 
 void heapsort(int a[], unsigned int length);
 
+void introsort(int a[], unsigned int length);
+
 #endif

@@ -7,7 +7,7 @@
 
 #include "array_gen.h"
 
-#define FUNC_NUM 7
+#define FUNC_NUM 8
 
 typedef void (*func)(int a[], unsigned int length);
 
@@ -20,6 +20,7 @@ enum options
 
 char *func_names[FUNC_NUM] = {"timsort",
                               "mergesort",
+                              "introsort",
                               "quicksort",
                               "quicksort_std",
                               "heapsort",
@@ -28,6 +29,7 @@ char *func_names[FUNC_NUM] = {"timsort",
 
 func func_array[FUNC_NUM] = {timsort,
                              mergesort,
+                             introsort,
                              quicksort,
                              quicksort_std,
                              heapsort,
@@ -60,7 +62,7 @@ static char *parse_args(int argc, char *argv[], unsigned int *length, unsigned i
         *length = (unsigned int)atoi(argv[1]);
         *min = (unsigned int)atoi(argv[2]);
         *max = (unsigned int)atoi(argv[3]);
-        printf("Length: %u, Min: %u, Max: %u\n", *length, *min, *max);
+        printf("\nLength: %u, Min: %u, Max: %u\n", *length, *min, *max);
     }
 
     int c = 0;

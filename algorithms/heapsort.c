@@ -24,7 +24,7 @@ static void heapify(int a[], unsigned int length, unsigned int i)
     } while (largest != i && (i = swap(a, largest, i), 1));
 }
 
-static void heapsort_it(int a[], unsigned int length)
+void heapsort(int a[], unsigned int length)
 {
     for (unsigned int i = (length >> 1) - 1; i < U32_MAX; i--)
     {
@@ -36,9 +36,4 @@ static void heapsort_it(int a[], unsigned int length)
         swap(a, 0, i);
         heapify(a, i, 0);
     }
-}
-
-void heapsort(int a[], unsigned int length)
-{
-    heapsort_it(a, length);
 }

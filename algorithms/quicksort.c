@@ -2,7 +2,7 @@
 
 #include "../helpers/sort_helpers.h"
 
-static void quicksort_it(int a[], unsigned int length)
+void quicksort(int a[], unsigned int length)
 {
     if (length < 2)
         return;
@@ -41,9 +41,4 @@ static void quicksort_it(int a[], unsigned int length)
             stack[++top] = right;
         }
     }
-}
-
-void quicksort(int a[], unsigned int length)
-{
-    quicksort_it(a, length);
 }

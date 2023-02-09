@@ -116,6 +116,8 @@ void mergesort(int a[], unsigned int length);
 
 void timsort(int a[], unsigned int length);
 
+void shellsort(int a[], unsigned int length);
+
 void heapsort(int a[], unsigned int length);
 
 void introsort(int a[], unsigned int length);

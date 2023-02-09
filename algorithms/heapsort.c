@@ -17,33 +17,27 @@ static unsigned int max(int a[], unsigned int length, unsigned int i, unsigned i
     return max;
 }
 
-static void downheap(int a[], unsigned int length, unsigned int i)
+static void heapify(int a[], unsigned int length, unsigned int i)
 {
-    while (1)
+    unsigned int j, largest;
+    do
     {
-        unsigned int j = (i << 1) + 1;
-        unsigned int largest = max(a, length, i, j, j + 1);
-
-        if (largest == i)
-        {
-            return;
-        }
-
-        i = swap(a, largest, i);
-    }
+        j = (i << 1) + 1;
+        largest = max(a, length, i, j, j + 1);
+    } while (largest != i && (i = swap(a, largest, i), 1));
 }
 
 static void heapsort_it(int a[], unsigned int length)
 {
     for (unsigned int i = (length >> 1) - 1; i < U32_MAX; i--)
     {
-        downheap(a, length, i);
+        heapify(a, length, i);
     }
 
     for (unsigned int i = length - 1; i < U32_MAX; i--)
     {
         swap(a, 0, i);
-        downheap(a, i, 0);
+        heapify(a, i, 0);
     }
 }
 

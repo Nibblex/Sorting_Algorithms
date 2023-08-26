@@ -58,7 +58,7 @@ enum
         (_cmp(_i, _b) > 0 ? (_cmp(_b, _c) > 0 ? j : (_cmp(_i, _c) > 0 ? k : i)) : (_cmp(_i, _c) > 0 ? i : (_cmp(_b, _c) > 0 ? k : j))); \
     })
 
-#define rand_pos(state, a, b) (xrshr128p_next(state) % ((b) - (a) + 1)) + (a)
+#define rand_pos(state, a, b) ((xrshr128p_next(state) % ((b) - (a) + 1)) + (a))
 
 #define pivot(a, left, right, state, type)         \
     ({                                             \

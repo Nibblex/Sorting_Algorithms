@@ -30,6 +30,7 @@ void array_dump(int a[], unsigned int length)
         fprintf(stdout, "%i", a[i]);
         fprintf(stdout, (i < length - 1) ? " " : "\n");
     }
+    fprintf(stdout, "\n");
 }
 
 bool array_is_sorted(int a[], unsigned int length)

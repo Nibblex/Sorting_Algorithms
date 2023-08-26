@@ -1,5 +1,5 @@
-#ifndef __ARRAY_GEN_H__
-#define __ARRAY_GEN_H__
+#ifndef __ARRAYGEN_H__
+#define __ARRAYGEN_H__
 
 enum order_type
 {
@@ -15,6 +15,6 @@ enum sign_type
     BOTH = 32
 };
 
-int *array_generator(int length, int min, int max, int options);
+int *arraygen(unsigned long int length, long int min, long int max, int options);
 
 #endif

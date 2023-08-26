@@ -3,9 +3,6 @@
 #include <time.h>
 
 #include "./helpers/array_helpers.h"
-#include "./helpers/sort_helpers.h"
-
-#include "array_gen.h"
 
 #define FUNC_NUM 9
 
@@ -13,9 +10,9 @@ typedef void (*func)(int a[], unsigned int length);
 
 enum options
 {
-    DUMP_ARRAY = 64,
-    SORTED_TEST = 128,
-    PERMUTATION_TEST = 256
+    DUMP_ARRAY = 1,
+    SORTED_TEST = 2,
+    PERMUTATION_TEST = 4
 };
 
 char *func_names[FUNC_NUM] = {"timsort",
@@ -45,94 +42,43 @@ static double getMilliseconds(void)
 
 static void usage(char *argv[])
 {
-    printf("Usage: %s <length> <min> <max> [options] \n", argv[0]);
+    printf("Usage: %s <filepath> [options]\n", argv[0]);
     printf("Options: \n");
-    printf("  -i <filepath>    Read array from file \n");
-    printf("  -o <order>       Order of the array: asc, desc, uns \n");
-    printf("  -s <sign>        Sign of the elements: pos, neg, both \n");
-    printf("  -d               Dump array \n");
-    printf("  -t               Test sorted array is sorted \n");
-    printf("  -p               Test permutation array is permutation of original \n");
+    printf("  -d               Dump the array \n");
+    printf("  -s               Test if array is sorted \n");
+    printf("  -p               Test if array is a permutation of the original array \n");
 }
 
-static char *parse_args(int argc, char *argv[], unsigned int *length, unsigned int *min, unsigned int *max, int *options)
+static char *parse_args(int argc, char *argv[], int *options)
 {
     char *filepath = NULL;
 
-    if (argc >= 4)
+    if (argc < 2)
     {
-        *length = (unsigned int)atoi(argv[1]);
-        *min = (unsigned int)atoi(argv[2]);
-        *max = (unsigned int)atoi(argv[3]);
-        printf("\nLength: %u, Min: %u, Max: %u\n", *length, *min, *max);
+        usage(argv);
+        exit(EXIT_FAILURE);
     }
 
+    filepath = argv[1];
+
     int c = 0;
-    while ((c = getopt(argc, argv, "i:o:s:dtp")) != -1)
+    while ((c = getopt(argc, argv, "dsp")) != -1)
     {
         switch (c)
         {
-        case 'i':
-            filepath = optarg;
-            break;
-        case 'o':
-            if (strcmp(optarg, "asc") == 0)
-            {
-                *options |= ASC;
-            }
-            else if (strcmp(optarg, "desc") == 0)
-            {
-                *options |= DESC;
-            }
-            else if (strcmp(optarg, "uns") == 0)
-            {
-                *options |= UNSORTED;
-            }
-            else
-            {
-                usage(argv);
-                exit(EXIT_FAILURE);
-            }
-            break;
-        case 's':
-            if (strcmp(optarg, "pos") == 0)
-            {
-                *options |= POS;
-            }
-            else if (strcmp(optarg, "neg") == 0)
-            {
-                *options |= NEG;
-            }
-            else if (strcmp(optarg, "both") == 0)
-            {
-                *options |= BOTH;
-            }
-            else
-            {
-                usage(argv);
-                exit(EXIT_FAILURE);
-            }
-            break;
         case 'd':
             *options |= DUMP_ARRAY;
             break;
-        case 't':
+        case 's':
             *options |= SORTED_TEST;
             break;
         case 'p':
             *options |= PERMUTATION_TEST;
             break;
-
         default:
             usage(argv);
             break;
         }
-    }
-
-    if (filepath && (*options & (ASC | DESC | UNSORTED | POS | NEG | BOTH)))
-    {
-        usage(argv);
-        exit(EXIT_FAILURE);
     }
 
     return filepath;
@@ -141,21 +87,17 @@ static char *parse_args(int argc, char *argv[], unsigned int *length, unsigned i
 int main(int argc, char *argv[])
 {
     int *array = NULL, *copy = NULL;
+    int length, options = 0;
 
-    int options = 0;
+    char *filepath = parse_args(argc, argv, &options);
+    printf("Filepath: %s\n", filepath);
+    length = array_length_from_file(filepath);
+    array = array_from_file(length, filepath);
 
-    unsigned int length = 0, min = 0, max = 0;
-
-    char *filepath = parse_args(argc, argv, &length, &min, &max, &options);
-    if (filepath)
+    if (options & DUMP_ARRAY)
     {
-        printf("Filepath: %s\n", filepath);
-        length = array_length_from_file(filepath);
-        array = array_from_file(length, filepath);
-    }
-    else
-    {
-        array = array_generator(length, min, max, options);
+        printf("Original array: \n\n");
+        array_dump(array, length);
     }
 
     double elapsed;

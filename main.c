@@ -5,6 +5,7 @@
 
 #include "./helpers/array_helpers.h"
 #include "./helpers/sort_helpers.h"
+#include "./helpers/table.h"
 
 #define FUNC_NUM 9
 
@@ -17,27 +18,25 @@ enum options
     PERMUTATION_TEST = 4
 };
 
-char *func_names[FUNC_NUM] = {"timsort",
-                              "mergesort",
-                              "introsort",
-                              "quicksort",
-                              "quicksort_std",
-                              "shellsort",
-                              "heapsort",
-                              "insertion_sort",
-                              "selection_sort"};
+struct algorithm
+{
+    char *name;
+    func f;
+};
 
-func func_array[FUNC_NUM] = {timsort,
-                             mergesort,
-                             introsort,
-                             quicksort,
-                             quicksort_std,
-                             shellsort,
-                             heapsort,
-                             insertion_sort,
-                             selection_sort};
+struct algorithm algorithms[FUNC_NUM] = {
+    {"timsort", timsort},
+    {"mergesort", mergesort},
+    {"introsort", introsort},
+    {"quicksort", quicksort},
+    {"quicksort_std", quicksort_std},
+    {"shellsort", shellsort},
+    {"heapsort", heapsort},
+    {"insertion_sort", insertion_sort},
+    {"selection_sort", selection_sort},
+};
 
-static double getMilliseconds(void)
+static double getms(void)
 {
     return 1000.0 * clock() / CLOCKS_PER_SEC;
 }
@@ -82,6 +81,7 @@ int main(int argc, char *argv[])
     int *array = NULL, *copy = NULL;
     int options;
     unsigned long int length;
+    struct table table;
 
     length = array_from_stdin(&array);
     printf("Array length: %lu\n", length);
@@ -94,37 +94,31 @@ int main(int argc, char *argv[])
     }
 
     double elapsed;
-    printf("Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:\n");
-    printf("--------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+    counter_init(&counters);
+    table_init(&table, FUNC_NUM);
+
     for (unsigned int i = 0; i < FUNC_NUM; i++)
     {
-        counter_init(&counters);
+        struct algorithm algorithm = algorithms[i];
+        struct tests tests;
 
         copy = array_copy(array, length);
-        elapsed = getMilliseconds();
-        func_array[i](copy, length);
-        elapsed = getMilliseconds() - elapsed;
+        elapsed = getms();
+        algorithm.f(copy, length);
+        elapsed = getms() - elapsed;
 
-        printf("%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-25lu %s %s\n",
-               func_names[i],
-               elapsed,
-               counters.cmp_counter,
-               counters.swap_counter,
-               counters.recursion_counter,
-               counters.insertion_sort_counter,
-               counters.heapsort_counter,
-               (options & SORTED_TEST) ? (array_is_sorted(copy, length) ? "sorted_test=OK" : "sorted_test=FAIL") : "",
-               (options & PERMUTATION_TEST) ? (array_is_permutation_of(copy, array, length) ? "permutation_test=OK" : "permutation_test=FAIL") : "");
-
-        if (options & DUMP_ARRAY)
-        {
-            array_dump(copy, length);
-        }
+        tests.sorted = (options & SORTED_TEST) && array_is_sorted(copy, length);
+        tests.permutated = (options & PERMUTATION_TEST) && array_is_permutation_of(copy, array, length);
+        table_add_record(&table, algorithm.name, elapsed, &counters, &tests);
 
         free(copy);
     }
 
+    table_print(&table);
+
     free(array);
+    table_free(&table);
 
     return EXIT_SUCCESS;
 }

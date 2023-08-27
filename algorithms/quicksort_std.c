@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "../helpers/sort_helpers.h"
 
 void quicksort_std(int a[], unsigned int length)

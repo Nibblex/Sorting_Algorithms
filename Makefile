@@ -18,7 +18,7 @@ ARRAYGEN_OBJECTS=$(addprefix $(BUILD_DIR)/,$(ARRAYGEN_SOURCES:.c=.o))
 all: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
 
 $(SORTER): $(SORTER_OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
 
 $(ARRAYGEN): $(ARRAYGEN_OBJECTS)
 	$(CC) $(CFLAGS) -o $@/$(ARRAYGEN) $^
@@ -29,10 +29,10 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR):
 	@mkdir -p $@
 	@mkdir -p $(BUILD_DIR)/algorithms
-	@mkdir -p $(BUILD_DIR)/helpers
 	@mkdir -p $(BUILD_DIR)/arraygen
+	@mkdir -p $(BUILD_DIR)/helpers
 
 clean:
-	rm -rf $(BUILD_DIR) $(SORTER) $(ARRAYGEN)/$(ARRAYGEN)
+	rm -rf $(BUILD_DIR) $(ARRAYGEN)/$(ARRAYGEN)
 
 .PHONY: clean all

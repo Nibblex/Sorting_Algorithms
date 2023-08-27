@@ -1,8 +1,10 @@
 #include <getopt.h>
-#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "./helpers/array_helpers.h"
+#include "./helpers/sort_helpers.h"
 
 #define FUNC_NUM 9
 
@@ -40,63 +42,54 @@ static double getMilliseconds(void)
     return 1000.0 * clock() / CLOCKS_PER_SEC;
 }
 
-static void usage(char *argv[])
+static void usage(void)
 {
-    printf("Usage: %s <filepath> [options]\n", argv[0]);
+    printf("Usage: sorter [options]\n");
     printf("Options: \n");
     printf("  -d               Dump the array \n");
     printf("  -s               Test if array is sorted \n");
     printf("  -p               Test if array is a permutation of the original array \n");
 }
 
-static char *parse_args(int argc, char *argv[], int *options)
+static int parse_args(int argc, char *argv[])
 {
-    char *filepath = NULL;
+    int opt = 0, options = 0;
 
-    if (argc < 2)
+    while ((opt = getopt(argc, argv, "dsp")) != -1)
     {
-        usage(argv);
-        exit(EXIT_FAILURE);
-    }
-
-    filepath = argv[1];
-
-    int c = 0;
-    while ((c = getopt(argc, argv, "dsp")) != -1)
-    {
-        switch (c)
+        switch (opt)
         {
         case 'd':
-            *options |= DUMP_ARRAY;
+            options |= DUMP_ARRAY;
             break;
         case 's':
-            *options |= SORTED_TEST;
+            options |= SORTED_TEST;
             break;
         case 'p':
-            *options |= PERMUTATION_TEST;
+            options |= PERMUTATION_TEST;
             break;
         default:
-            usage(argv);
-            break;
+            usage();
+            exit(EXIT_FAILURE);
         }
     }
 
-    return filepath;
+    return options;
 }
 
 int main(int argc, char *argv[])
 {
     int *array = NULL, *copy = NULL;
-    int length, options = 0;
+    int options;
+    unsigned long int length;
 
-    char *filepath = parse_args(argc, argv, &options);
-    printf("Filepath: %s\n", filepath);
-    length = array_length_from_file(filepath);
-    array = array_from_file(length, filepath);
+    length = array_from_stdin(&array);
+    printf("Array length: %lu\n", length);
 
+    options = parse_args(argc, argv);
     if (options & DUMP_ARRAY)
     {
-        printf("Original array: \n\n");
+        printf("Original array:\n");
         array_dump(array, length);
     }
 
@@ -105,27 +98,28 @@ int main(int argc, char *argv[])
     printf("--------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (unsigned int i = 0; i < FUNC_NUM; i++)
     {
-        reset_counters;
+        counter_init(&counters);
+
         copy = array_copy(array, length);
         elapsed = getMilliseconds();
         func_array[i](copy, length);
         elapsed = getMilliseconds() - elapsed;
 
+        printf("%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-25lu %s %s\n",
+               func_names[i],
+               elapsed,
+               counters.cmp_counter,
+               counters.swap_counter,
+               counters.recursion_counter,
+               counters.insertion_sort_counter,
+               counters.heapsort_counter,
+               (options & SORTED_TEST) ? (array_is_sorted(copy, length) ? "sorted_test=OK" : "sorted_test=FAIL") : "",
+               (options & PERMUTATION_TEST) ? (array_is_permutation_of(copy, array, length) ? "permutation_test=OK" : "permutation_test=FAIL") : "");
+
         if (options & DUMP_ARRAY)
         {
             array_dump(copy, length);
         }
-
-        printf("%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-25lu %s %s\n",
-               func_names[i],
-               elapsed,
-               cmp_counter,
-               swap_counter,
-               recursion_counter,
-               insertion_sort_counter,
-               heapsort_counter,
-               (options & SORTED_TEST) ? (array_is_sorted(copy, length) ? "sorted_test=OK" : "sorted_test=FAIL") : "",
-               (options & PERMUTATION_TEST) ? (array_is_permutation_of(copy, array, length) ? "permutation_test=OK" : "permutation_test=FAIL") : "");
 
         free(copy);
     }

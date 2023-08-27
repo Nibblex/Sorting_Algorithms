@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
         default:
             fprintf(stderr, "Invalid option\n");
             print_usage();
-            return 1;
+            return EXIT_FAILURE;
         }
     }
 
@@ -86,5 +86,5 @@ int main(int argc, char *argv[])
     print_array(array, length);
 
     free(array);
-    return 0;
+    return EXIT_SUCCESS;
 }

@@ -2,7 +2,7 @@
 
 static void mergesort_rec(int a[], unsigned int left, unsigned int right)
 {
-    recursion_counter++;
+    counters.recursion_counter++;
 
     unsigned int mid, length = right - left + 1;
     if (length > 1)

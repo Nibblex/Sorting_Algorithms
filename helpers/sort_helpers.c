@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "sort_helpers.h"
 
 int cmp(const void *a, const void *b)

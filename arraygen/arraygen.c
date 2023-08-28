@@ -40,14 +40,12 @@ int *arraygen(struct array_config *config)
     xrshr128p_state_t state = xrshr128p_init(time(NULL));
     sign_func sign_f = sign_func_ptr(config->sign);
     int *array;
-    int elem;
 
     array = malloc(config->length * sizeof(int));
 
     for (size_t i = 0; i < config->length; i++)
     {
-        elem = rand_pos(state, config->min, config->max) * sign_f(state);
-        array[i] = elem;
+        array[i] = sign_f(state) * rand_pos(state, config->min, config->max);
     }
 
     if (config->order != UNS)

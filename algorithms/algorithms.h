@@ -1,14 +1,12 @@
 #ifndef _ALGORITHMS_H
 #define _ALGORITHMS_H
 
-#define FUNC_NUM 9
-
-typedef void (*func)(int a[], size_t length);
+typedef void (*sorting_func)(int a[], size_t length);
 
 struct algorithm
 {
     char *name;
-    func f;
+    sorting_func f;
 };
 
 /* Sorting algorithms */

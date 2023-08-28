@@ -8,6 +8,8 @@
 #include "./helpers/sort_helpers.h"
 #include "./helpers/table.h"
 
+#define FUNC_NUM 9
+
 struct algorithm algorithms[FUNC_NUM] = {
     {"timsort", timsort},
     {"mergesort", mergesort},

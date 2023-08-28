@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
     int options;
     size_t length;
     struct table table;
+    test_result sorted, permuted;
 
     length = array_from_stdin(&array);
     printf("Array length: %lu\n", length);
@@ -91,20 +92,24 @@ int main(int argc, char *argv[])
     counter_init(&counters);
     table_init(&table, FUNC_NUM);
 
-    for (size_t i = 0; i < FUNC_NUM; i++)
+    for (size_t i = 0; i < table.max_size; i++)
     {
-        struct algorithm algorithm = algorithms[i];
-        struct tests tests;
-
+        // Copy the array
         copy = array_copy(array, length);
+
+        // Sort the copy and measure the time
         elapsed = getms();
-        algorithm.f(copy, length);
+        algorithms[i].f(copy, length);
         elapsed = getms() - elapsed;
 
-        tests.sorted = (options & SORTED_TEST) && array_is_sorted(copy, length);
-        tests.permutated = (options & PERMUTATION_TEST) && array_is_permutation_of(copy, array, length);
-        table_add_record(&table, algorithm.name, elapsed, &counters, &tests);
+        // Check if the array is sorted and if it is a permutation of the original array
+        sorted = (options & SORTED_TEST) ? (array_is_sorted(copy, length) ? OK : FAIL) : NOT_TESTED;
+        permuted = (options & PERMUTATION_TEST) ? (array_is_permutation_of(array, copy, length) ? OK : FAIL) : NOT_TESTED;
 
+        // Add the record to the table
+        table_add_record(&table, algorithms[i].name, elapsed, &counters, sorted, permuted);
+
+        // Free the copy
         free(copy);
     }
 

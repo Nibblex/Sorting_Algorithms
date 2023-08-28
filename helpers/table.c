@@ -10,7 +10,7 @@ void table_init(struct table *table, int max_size)
     table->max_size = max_size;
 }
 
-void table_add_record(struct table *table, char *algorithm_name, double elapsed_time, struct counter *counters, struct tests *tests)
+void table_add_record(struct table *table, char *algorithm_name, double elapsed_time, struct counter *counters, test_result sorted, test_result permuted)
 {
     if (table->count == table->max_size)
     {
@@ -24,7 +24,8 @@ void table_add_record(struct table *table, char *algorithm_name, double elapsed_
         .algorithm_name = algorithm_name,
         .elapsed_time = elapsed_time,
         .counters = *counters,
-        .tests = *tests,
+        .sorted = sorted,
+        .permuted = permuted,
     };
 
     table->records[table->count++] = new_record;
@@ -36,12 +37,12 @@ void table_print(struct table *table)
 {
     struct record record;
 
-    printf("Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: sorted/permutated\n");
+    printf("Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: (sorted-permuted)\n");
     printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    for (int i = 0; i < table->count; i++)
+    for (size_t i = 0; i < table->count; i++)
     {
         record = table->records[i];
-        printf("%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-20lu %s/%s\n",
+        printf("%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-20lu %s-%s\n",
                record.algorithm_name,
                record.elapsed_time,
                record.counters.cmp_counter,
@@ -49,8 +50,10 @@ void table_print(struct table *table)
                record.counters.recursion_counter,
                record.counters.insertion_sort_counter,
                record.counters.heapsort_counter,
-               record.tests.sorted ? "OK" : "",
-               record.tests.permutated ? "OK" : "");
+               record.sorted == NOT_TESTED ? "NT" : record.sorted == OK ? "\x1b[32mOK\x1b[0m"
+                                                                        : "\x1b[31mFAIL\x1b[0m",
+               record.permuted == NOT_TESTED ? "NT" : record.permuted == OK ? "\x1b[32mOK\x1b[0m"
+                                                                            : "\x1b[31mFAIL\x1b[0m");
     }
 }
 

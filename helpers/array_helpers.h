@@ -3,12 +3,6 @@
 
 #include <stdbool.h>
 
-struct tests
-{
-    bool sorted;
-    bool permutated;
-};
-
 /**
  * Each element is read from stdin and stored in the array 'a'.
  * The array is dynamically allocated, so it must be freed after use.

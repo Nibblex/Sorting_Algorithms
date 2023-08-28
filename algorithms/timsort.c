@@ -1,16 +1,17 @@
 #include "../helpers/sort_helpers.h"
+#include "algorithms.h"
 
-static void timsort_it(int a[], unsigned int length)
+static void timsort_it(int a[], size_t length)
 {
-    unsigned int left, mid, right, chunks = length / MAX_THRESH;
-    for (unsigned int i = 0; i <= chunks; i++)
+    size_t left, mid, right, chunks = length / MAX_THRESH;
+    for (size_t i = 0; i <= chunks; i++)
     {
         left = i * MAX_THRESH;
         right = _min(left + MAX_THRESH - 1, length - 1);
         insertion_sort(a + left, right - left + 1);
     }
 
-    unsigned int size = MAX_THRESH;
+    size_t size = MAX_THRESH;
     while (size < length)
     {
         left = 0;
@@ -28,7 +29,7 @@ static void timsort_it(int a[], unsigned int length)
     }
 }
 
-void timsort(int a[], unsigned int length)
+void timsort(int a[], size_t length)
 {
     timsort_it(a, length);
 }

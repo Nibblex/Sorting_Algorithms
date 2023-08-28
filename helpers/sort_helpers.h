@@ -3,13 +3,13 @@
 
 #include <stdlib.h>
 
-#include "../xoroshiro128plus.h"
+#include "../algorithms/xoroshiro128plus.h"
 
 #include "counter.h"
 
 #define MAX_THRESH 8
 
-#define U32_MAX ((unsigned int)-1)
+#define U32_MAX ((size_t)-1)
 
 struct counter counters;
 
@@ -24,14 +24,14 @@ struct counter counters;
 
 #define _max(a, b) (_cmp(a, b) > 0 ? (a) : (b))
 
-#define swap(a, i, j)                    \
-    ({                                   \
-        counters.swap_counter++;         \
-        unsigned int _i = (i), _j = (j); \
-        int tmp = a[_i];                 \
-        a[_i] = a[_j];                   \
-        a[_j] = tmp;                     \
-        _i;                              \
+#define swap(a, i, j)              \
+    ({                             \
+        counters.swap_counter++;   \
+        size_t _i = (i), _j = (j); \
+        int tmp = a[_i];           \
+        a[_i] = a[_j];             \
+        a[_j] = tmp;               \
+        _i;                        \
     })
 
 #define med3(arr, i, j, k)                                                                                                              \
@@ -52,7 +52,7 @@ enum
 
 #define pivot(a, left, right, state, type)         \
     ({                                             \
-        unsigned int mid, pivot = left;            \
+        size_t mid, pivot = left;                  \
         switch (type)                              \
         {                                          \
         case MID:                                  \
@@ -91,28 +91,8 @@ int cmp(const void *a, const void *b);
 
 int cmp_desc(const void *a, const void *b);
 
-unsigned int partition(int a[], unsigned int left, unsigned int right, int pivot_type, xrshr128p_state_t *state);
+size_t partition(int a[], size_t left, size_t right, int pivot_type, xrshr128p_state_t *state);
 
-void merge(int a[], unsigned int left, unsigned int mid, unsigned int right);
-
-/* Sorting algorithms */
-
-void insertion_sort(int a[], unsigned int length);
-
-void selection_sort(int a[], unsigned int length);
-
-void quicksort(int a[], unsigned int length);
-
-void quicksort_std(int a[], unsigned int length);
-
-void mergesort(int a[], unsigned int length);
-
-void timsort(int a[], unsigned int length);
-
-void shellsort(int a[], unsigned int length);
-
-void heapsort(int a[], unsigned int length);
-
-void introsort(int a[], unsigned int length);
+void merge(int a[], size_t left, size_t mid, size_t right);
 
 #endif

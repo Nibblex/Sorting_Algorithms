@@ -26,6 +26,7 @@ $(ARRAYGEN): $(ARRAYGEN_OBJECTS)
 $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Create the build directory
 $(BUILD_DIR):
 	@mkdir -p $@
 	@mkdir -p $(BUILD_DIR)/algorithms

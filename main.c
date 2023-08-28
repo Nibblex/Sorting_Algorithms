@@ -3,26 +3,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "./algorithms/algorithms.h"
 #include "./helpers/array_helpers.h"
 #include "./helpers/sort_helpers.h"
 #include "./helpers/table.h"
-
-#define FUNC_NUM 9
-
-typedef void (*func)(int a[], unsigned int length);
-
-enum options
-{
-    DUMP_ARRAY = 1,
-    SORTED_TEST = 2,
-    PERMUTATION_TEST = 4
-};
-
-struct algorithm
-{
-    char *name;
-    func f;
-};
 
 struct algorithm algorithms[FUNC_NUM] = {
     {"timsort", timsort},
@@ -34,6 +18,13 @@ struct algorithm algorithms[FUNC_NUM] = {
     {"heapsort", heapsort},
     {"insertion_sort", insertion_sort},
     {"selection_sort", selection_sort},
+};
+
+enum options
+{
+    DUMP_ARRAY = 1,
+    SORTED_TEST = 2,
+    PERMUTATION_TEST = 4
 };
 
 static double getms(void)
@@ -80,7 +71,7 @@ int main(int argc, char *argv[])
 {
     int *array = NULL, *copy = NULL;
     int options;
-    unsigned long int length;
+    size_t length;
     struct table table;
 
     length = array_from_stdin(&array);
@@ -98,7 +89,7 @@ int main(int argc, char *argv[])
     counter_init(&counters);
     table_init(&table, FUNC_NUM);
 
-    for (unsigned int i = 0; i < FUNC_NUM; i++)
+    for (size_t i = 0; i < FUNC_NUM; i++)
     {
         struct algorithm algorithm = algorithms[i];
         struct tests tests;

@@ -1,12 +1,13 @@
 #include "../helpers/sort_helpers.h"
+#include "algorithms.h"
 
-void shellsort(int a[], unsigned int length)
+void shellsort(int a[], size_t length)
 {
     int temp;
-    unsigned int j, gap = length;
+    size_t j, gap = length;
     while (gap >>= 1)
     {
-        for (unsigned int i = gap; i < length; i++)
+        for (size_t i = gap; i < length; i++)
         {
             temp = a[i];
             j = i;

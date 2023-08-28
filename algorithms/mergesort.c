@@ -1,10 +1,11 @@
 #include "../helpers/sort_helpers.h"
+#include "algorithms.h"
 
-static void mergesort_rec(int a[], unsigned int left, unsigned int right)
+static void mergesort_rec(int a[], size_t left, size_t right)
 {
     counters.recursion_counter++;
 
-    unsigned int mid, length = right - left + 1;
+    size_t mid, length = right - left + 1;
     if (length > 1)
     {
         mid = left + ((length - 1) >> 1);
@@ -14,7 +15,7 @@ static void mergesort_rec(int a[], unsigned int left, unsigned int right)
     }
 }
 
-void mergesort(int a[], unsigned int length)
+void mergesort(int a[], size_t length)
 {
     mergesort_rec(a, 0, !length ? 0 : length - 1);
 }

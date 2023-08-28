@@ -1,8 +1,9 @@
 #include <time.h>
 
 #include "../helpers/sort_helpers.h"
+#include "algorithms.h"
 
-void quicksort(int a[], unsigned int length)
+void quicksort(int a[], size_t length)
 {
     if (length < 2)
         return;
@@ -10,8 +11,8 @@ void quicksort(int a[], unsigned int length)
     xrshr128p_state_t state = xrshr128p_init(time(NULL));
 
     int top = -1;
-    unsigned int stack[length];
-    unsigned int pivot, left = 0, right = length - 1;
+    size_t stack[length];
+    size_t pivot, left = 0, right = length - 1;
 
     stack[++top] = left;
     stack[++top] = right;

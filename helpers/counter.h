@@ -1,16 +1,16 @@
-#ifndef COUNTER_H
-#define COUNTER_H
+#ifndef _COUNTER_H
+#define _COUNTER_H
 
 /**
  * @brief A struct that holds counters for various operations in sorting algorithms.
  */
 struct counter
 {
-    long unsigned int cmp_counter;            /**< Counter for number of comparisons */
-    long unsigned int swap_counter;           /**< Counter for number of swaps */
-    long unsigned int recursion_counter;      /**< Counter for number of recursive calls */
-    long unsigned int insertion_sort_counter; /**< Counter for number of times insertion sort is used */
-    long unsigned int heapsort_counter;       /**< Counter for number of times heapsort is used */
+    size_t cmp_counter;            /**< Counter for number of comparisons */
+    size_t swap_counter;           /**< Counter for number of swaps */
+    size_t recursion_counter;      /**< Counter for number of recursive calls */
+    size_t insertion_sort_counter; /**< Counter for number of times insertion sort is used */
+    size_t heapsort_counter;       /**< Counter for number of times heapsort is used */
 };
 
 /**

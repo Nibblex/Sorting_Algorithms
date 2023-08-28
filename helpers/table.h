@@ -1,5 +1,5 @@
-#ifndef _TABLE_H_
-#define _TABLE_H_
+#ifndef _TABLE_H
+#define _TABLE_H
 
 #include "array_helpers.h"
 #include "counter.h"

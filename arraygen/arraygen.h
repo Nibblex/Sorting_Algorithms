@@ -1,37 +1,49 @@
-#ifndef __ARRAYGEN_H__
-#define __ARRAYGEN_H__
+#ifndef _ARRAYGEN_H
+#define _ARRAYGEN_H
+
+#include "../algorithms/xoroshiro128plus.h"
 
 /**
  * @brief Enumeration for the order type of the elements in the array.
  *
  */
-enum order_type
+typedef enum order_type
 {
-    ASC = 1,     /**< Ascending order */
-    DESC = 2,    /**< Descending order */
-    UNSORTED = 4 /**< Unsorted order */
-};
+    ASC,  /**< Ascending order */
+    DESC, /**< Descending order */
+    UNS   /**< Unsorted order */
+} order_type;
 
 /**
  * @brief Enumeration for the sign type of the elements in the array.
  *
  */
-enum sign_type
+typedef enum sign_type
 {
-    POS = 8,  /**< Positive sign */
-    NEG = 16, /**< Negative sign */
-    BOTH = 32 /**< Both positive and negative signs */
+    POS, /**< Positive sign */
+    NEG, /**< Negative sign */
+    BOTH /**< Both positive and negative signs */
+} sign_type;
+
+typedef int (*sign_func)(xrshr128p_state_t state);
+
+struct array_config
+{
+    size_t length;
+    int min;
+    int max;
+    order_type order;
+    sign_type sign;
 };
 
 /**
- * @brief Generates an array of integers with specified length, minimum and maximum values, and options for order and sign of the elements.
+ * Generates an array of integers based on the given configuration.
  *
- * @param length The length of the array to be generated.
- * @param min The minimum value of the elements in the array.
- * @param max The maximum value of the elements in the array.
- * @param options The options for the order and sign of the elements in the array.
- * @return int* A pointer to the generated array.
+ * @param config The configuration for the array generation.
+ * @return A pointer to the generated array.
+ *
+ * @note The caller is responsible for freeing the memory allocated for the array.
  */
-int *arraygen(unsigned long int length, long int min, long int max, int options);
+int *arraygen(struct array_config *config);
 
 #endif

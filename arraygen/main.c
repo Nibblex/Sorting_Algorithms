@@ -15,23 +15,58 @@ static void print_usage(void)
     printf("  -s : Sign (pos, neg, both, default: pos)\n");
 }
 
-static void print_array(int *array, unsigned long int length)
+static void print_array(int *array, size_t length)
 {
     printf("%lu\n", length);
-    for (unsigned long int i = 0; i < length; i++)
+    for (size_t i = 0; i < length; i++)
     {
         printf("%d ", array[i]);
     }
     printf("\n");
 }
 
+static order_type parse_order(char *order)
+{
+    if (strcmp(order, "asc") == 0)
+    {
+        return ASC;
+    }
+    else if (strcmp(order, "desc") == 0)
+    {
+        return DESC;
+    }
+    else if (strcmp(order, "uns") == 0)
+    {
+        return UNS;
+    }
+
+    print_usage();
+    exit(EXIT_FAILURE);
+}
+
+static sign_type parse_sign(char *sign)
+{
+    if (strcmp(sign, "pos") == 0)
+    {
+        return POS;
+    }
+    else if (strcmp(sign, "neg") == 0)
+    {
+        return NEG;
+    }
+    else if (strcmp(sign, "both") == 0)
+    {
+        return BOTH;
+    }
+
+    print_usage();
+    exit(EXIT_FAILURE);
+}
+
 int main(int argc, char *argv[])
 {
-    unsigned long int length = 10;
-    long int min = 1;
-    long int max = 100;
-    int order = UNSORTED;
-    int sign = POS; // Default value is POS
+    struct array_config config;
+    config = (struct array_config){.length = 10, .min = 1, .max = 100, .order = UNS, .sign = POS};
     int opt;
 
     while ((opt = getopt(argc, argv, "l:m:M:o:s:")) != -1)
@@ -39,41 +74,19 @@ int main(int argc, char *argv[])
         switch (opt)
         {
         case 'l':
-            length = strtoul(optarg, NULL, 10);
+            config.length = strtoul(optarg, NULL, 10);
             break;
         case 'm':
-            min = strtol(optarg, NULL, 10);
+            config.min = strtol(optarg, NULL, 10);
             break;
         case 'M':
-            max = strtol(optarg, NULL, 10);
+            config.max = strtol(optarg, NULL, 10);
             break;
         case 'o':
-            if (strcmp(optarg, "asc") == 0)
-            {
-                order = ASC;
-            }
-            else if (strcmp(optarg, "desc") == 0)
-            {
-                order = DESC;
-            }
-            else if (strcmp(optarg, "uns") == 0)
-            {
-                order = UNSORTED;
-            }
+            config.order = parse_order(optarg);
             break;
         case 's':
-            if (strcmp(optarg, "pos") == 0)
-            {
-                sign = POS;
-            }
-            else if (strcmp(optarg, "neg") == 0)
-            {
-                sign = NEG;
-            }
-            else if (strcmp(optarg, "both") == 0)
-            {
-                sign = BOTH;
-            }
+            config.sign = parse_sign(optarg);
             break;
         default:
             fprintf(stderr, "Invalid option\n");
@@ -82,9 +95,10 @@ int main(int argc, char *argv[])
         }
     }
 
-    int *array = arraygen(length, min, max, order | sign);
-    print_array(array, length);
+    int *array = arraygen(&config);
+    print_array(array, config.length);
 
     free(array);
+
     return EXIT_SUCCESS;
 }

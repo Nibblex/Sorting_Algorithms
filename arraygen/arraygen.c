@@ -2,29 +2,57 @@
 #include <time.h>
 
 #include "../helpers/sort_helpers.h"
-#include "../xoroshiro128plus.h"
 
 #include "arraygen.h"
 
-int *arraygen(unsigned long int length, long int min, long int max, int options)
+static inline int pos_sign(xrshr128p_state_t state)
+{
+    return 1;
+}
+
+static inline int neg_sign(xrshr128p_state_t state)
+{
+    return -1;
+}
+
+static inline int both_sign(xrshr128p_state_t state)
+{
+    return rand_pos(state, 0, 1) ? 1 : -1;
+}
+
+static inline sign_func sign_func_ptr(sign_type sign)
+{
+    switch (sign)
+    {
+    case POS:
+        return pos_sign;
+    case NEG:
+        return neg_sign;
+    case BOTH:
+        return both_sign;
+    default:
+        return pos_sign;
+    }
+}
+
+int *arraygen(struct array_config *config)
 {
     xrshr128p_state_t state = xrshr128p_init(time(NULL));
-    int sign = (options & NEG) ? -1 : 1;
+    sign_func sign_f = sign_func_ptr(config->sign);
+    int *array;
+    int elem;
 
-    int *array = malloc(length * sizeof(long int));
-    for (unsigned long int i = 0; i < length; i++)
+    array = malloc(config->length * sizeof(int));
+
+    for (size_t i = 0; i < config->length; i++)
     {
-        sign = (options & BOTH) ? (rand_pos(state, 0, 1) ? 1 : -1) : sign;
-        array[i] = rand_pos(state, min, max) * sign;
+        elem = rand_pos(state, config->min, config->max) * sign_f(state);
+        array[i] = elem;
     }
 
-    if (options & ASC)
+    if (config->order != UNS)
     {
-        qsort(array, length, sizeof(long int), cmp);
-    }
-    else if (options & DESC)
-    {
-        qsort(array, length, sizeof(long int), cmp_desc);
+        qsort(array, config->length, sizeof(int), config->order == ASC ? cmp : cmp_desc);
     }
 
     return array;

@@ -30,7 +30,7 @@ struct tests
  * @param a The array to store the elements in.
  * @return The length of the array.
  */
-unsigned long int array_from_stdin(int *a[]);
+size_t array_from_stdin(int *a[]);
 
 /**
  * Prints the contents of an integer array to the console.
@@ -38,7 +38,7 @@ unsigned long int array_from_stdin(int *a[]);
  * @param a The integer array to be printed.
  * @param length The length of the integer array.
  */
-void array_dump(int a[], unsigned int length);
+void array_dump(int a[], size_t length);
 
 /**
  * Creates a copy of an integer array.
@@ -47,7 +47,7 @@ void array_dump(int a[], unsigned int length);
  * @param length The length of the source array.
  * @return A pointer to the newly created copy of the source array.
  */
-int *array_copy(int src[], unsigned int length);
+int *array_copy(int src[], size_t length);
 
 /**
  * Checks if an array is sorted in ascending order.
@@ -56,7 +56,7 @@ int *array_copy(int src[], unsigned int length);
  * @param length The length of the array.
  * @return true if the array is sorted in ascending order, false otherwise.
  */
-bool array_is_sorted(int a[], unsigned int length);
+bool array_is_sorted(int a[], size_t length);
 
 /**
  * Checks if an array is a permutation of another array.
@@ -66,6 +66,6 @@ bool array_is_sorted(int a[], unsigned int length);
  * @param length The length of the arrays.
  * @return true if the arrays are permutations of each other, false otherwise.
  */
-bool array_is_permutation_of(int a[], int other[], unsigned int length);
+bool array_is_permutation_of(int a[], int other[], size_t length);
 
 #endif

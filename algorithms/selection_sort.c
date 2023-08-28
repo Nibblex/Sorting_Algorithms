@@ -1,9 +1,10 @@
 #include "../helpers/sort_helpers.h"
+#include "algorithms.h"
 
-static unsigned int min_pos_from(int a[], unsigned int i, unsigned int length)
+static size_t min_pos_from(int a[], size_t i, size_t length)
 {
-    unsigned int min_pos = i;
-    for (unsigned int j = i + 1; j < length; j++)
+    size_t min_pos = i;
+    for (size_t j = i + 1; j < length; j++)
     {
         if (cmp(a + j, a + min_pos) <= 0)
         {
@@ -14,10 +15,10 @@ static unsigned int min_pos_from(int a[], unsigned int i, unsigned int length)
     return min_pos;
 }
 
-void selection_sort(int a[], unsigned int length)
+void selection_sort(int a[], size_t length)
 {
-    unsigned int min_pos;
-    for (unsigned int i = 0; i < length; i++)
+    size_t min_pos;
+    for (size_t i = 0; i < length; i++)
     {
         min_pos = min_pos_from(a, i, length);
         swap(a, i, min_pos);

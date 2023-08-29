@@ -1,6 +1,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "./algorithms/algorithms.h"
@@ -9,6 +10,8 @@
 #include "./helpers/table.h"
 
 #define FUNC_NUM 9
+
+#define GETMS() (1000.0 * clock() / CLOCKS_PER_SEC)
 
 struct algorithm algorithms[FUNC_NUM] = {
     {"timsort", timsort},
@@ -22,75 +25,92 @@ struct algorithm algorithms[FUNC_NUM] = {
     {"selection_sort", selection_sort},
 };
 
-enum options
-{
-    DUMP_ARRAY = 1,
-    SORTED_TEST = 2,
-    PERMUTATION_TEST = 4
-};
-
-static double getms(void)
-{
-    return 1000.0 * clock() / CLOCKS_PER_SEC;
-}
-
 static void usage(void)
 {
     printf("Usage: sorter [options]\n");
     printf("Options: \n");
-    printf("  -d               Dump the array \n");
-    printf("  -s               Test if array is sorted \n");
-    printf("  -p               Test if array is a permutation of the original array \n");
+    printf("  -d, --dump       Dump the original array \n");
+    printf("  -s, --sorted     Test if array is sorted \n");
+    printf("  -p, --permutation Test if array is a permutation of the original array \n");
+    printf("  -f, --format     Output format (human, csv) \n");
+    printf("  -h, --help       Print this help message \n");
 }
 
-static int parse_args(int argc, char *argv[])
+static int get_format(char *format)
 {
-    int opt = 0, options = 0;
-
-    while ((opt = getopt(argc, argv, "dsp")) != -1)
+    if (strcmp(format, "csv") == 0)
     {
-        switch (opt)
+        return CSV;
+    }
+    else if (strcmp(format, "human") == 0)
+    {
+        return HUMAN_READABLE;
+    }
+
+    return DEFAULT;
+}
+
+static void parse_args(int argc, char *argv[], struct table_flags *table_flags)
+{
+    int c, option_index = 0;
+
+    struct option long_options[] = {
+        {"dump", no_argument, 0, 'd'},
+        {"sorted", no_argument, 0, 's'},
+        {"permutation", no_argument, 0, 'p'},
+        {"format", required_argument, 0, 'f'},
+        {"help", no_argument, 0, 'h'},
+        {0, 0, 0, 0},
+    };
+
+    while ((c = getopt_long(argc, argv, "dspf:h", long_options, &option_index)) != -1)
+    {
+        switch (c)
         {
         case 'd':
-            options |= DUMP_ARRAY;
+            table_flags->dump_array = true;
             break;
         case 's':
-            options |= SORTED_TEST;
+            table_flags->sorted_test = true;
             break;
         case 'p':
-            options |= PERMUTATION_TEST;
+            table_flags->permutation_test = true;
             break;
+        case 'f':
+            table_flags->format = get_format(optarg);
+            break;
+        case 'h':
+            usage();
+            exit(EXIT_SUCCESS);
         default:
             usage();
             exit(EXIT_FAILURE);
         }
     }
-
-    return options;
 }
 
 int main(int argc, char *argv[])
 {
     int *array = NULL, *copy = NULL;
-    int options;
     size_t length;
-    struct table table;
+    double elapsed;
+    extern struct counter counters;
     test_result sorted, permuted;
+    struct table_flags table_flags = {false, false, false, DEFAULT};
+    struct table table;
 
+    parse_args(argc, argv, &table_flags);
     length = array_from_stdin(&array);
-    printf("Array length: %lu\n", length);
 
-    options = parse_args(argc, argv);
-    if (options & DUMP_ARRAY)
+    if (table_flags.dump_array)
     {
-        printf("Original array:\n");
+        printf("Input:\n");
+        printf("%lu\n", length);
         array_dump(array, length);
     }
 
-    double elapsed;
-
     counter_init(&counters);
-    table_init(&table, FUNC_NUM);
+    table_init(&table, &table_flags, FUNC_NUM);
 
     for (size_t i = 0; i < table.max_size; i++)
     {
@@ -98,13 +118,13 @@ int main(int argc, char *argv[])
         copy = array_copy(array, length);
 
         // Sort the copy and measure the time
-        elapsed = getms();
+        elapsed = GETMS();
         algorithms[i].f(copy, length);
-        elapsed = getms() - elapsed;
+        elapsed = GETMS() - elapsed;
 
         // Check if the array is sorted and if it is a permutation of the original array
-        sorted = (options & SORTED_TEST) ? (array_is_sorted(copy, length) ? OK : FAIL) : NOT_TESTED;
-        permuted = (options & PERMUTATION_TEST) ? (array_is_permutation_of(array, copy, length) ? OK : FAIL) : NOT_TESTED;
+        sorted = (table_flags.sorted_test) ? (array_is_sorted(copy, length) ? OK : FAIL) : NOT_TESTED;
+        permuted = (table_flags.permutation_test) ? (array_is_permutation_of(array, copy, length) ? OK : FAIL) : NOT_TESTED;
 
         // Add the record to the table
         table_add_record(&table, algorithms[i].name, elapsed, &counters, sorted, permuted);

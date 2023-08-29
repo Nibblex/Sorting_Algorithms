@@ -1,13 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "table.h"
 
-void table_init(struct table *table, int max_size)
+#define TEST_OK "\x1b[32mOK\x1b[0m"
+#define TEST_FAIL "\x1b[31mFAIL\x1b[0m"
+
+static void print_header(void)
+{
+    char *header = "Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: (sorted-permuted)\n";
+    PRINT_HLS(strlen(header));
+    printf("%s", header);
+    PRINT_HLS(strlen(header));
+}
+
+void table_init(struct table *table, struct table_flags *flags, int max_size)
 {
     table->records = (struct record *)malloc(max_size * sizeof(struct record));
     table->count = 0;
     table->max_size = max_size;
+    table->flags = *flags;
 }
 
 void table_add_record(struct table *table, char *algorithm_name, double elapsed_time, struct counter *counters, test_result sorted, test_result permuted)
@@ -36,13 +49,31 @@ void table_add_record(struct table *table, char *algorithm_name, double elapsed_
 void table_print(struct table *table)
 {
     struct record record;
+    char *fmt;
 
-    printf("Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: (sorted-permuted)\n");
-    printf("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    if (table->flags.format == HUMAN_READABLE)
+    {
+        print_header();
+    }
+
     for (size_t i = 0; i < table->count; i++)
     {
         record = table->records[i];
-        printf("%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-20lu %s-%s\n",
+
+        switch (table->flags.format)
+        {
+        case HUMAN_READABLE:
+            fmt = "%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-20lu %s-%s\n";
+            break;
+        case CSV:
+            fmt = "%s,%g,%lu,%lu,%lu,%lu,%lu,%s,%s\n";
+            break;
+        default:
+            fmt = "%s %g %lu %lu %lu %lu %lu %s %s\n";
+            break;
+        }
+
+        printf(fmt,
                record.algorithm_name,
                record.elapsed_time,
                record.counters.cmp_counter,
@@ -50,10 +81,8 @@ void table_print(struct table *table)
                record.counters.recursion_counter,
                record.counters.insertion_sort_counter,
                record.counters.heapsort_counter,
-               record.sorted == NOT_TESTED ? "NT" : record.sorted == OK ? "\x1b[32mOK\x1b[0m"
-                                                                        : "\x1b[31mFAIL\x1b[0m",
-               record.permuted == NOT_TESTED ? "NT" : record.permuted == OK ? "\x1b[32mOK\x1b[0m"
-                                                                            : "\x1b[31mFAIL\x1b[0m");
+               record.sorted == NOT_TESTED ? "NT" : (record.sorted == OK ? TEST_OK : TEST_FAIL),
+               record.permuted == NOT_TESTED ? "NT" : (record.permuted == OK ? TEST_OK : TEST_FAIL));
     }
 }
 

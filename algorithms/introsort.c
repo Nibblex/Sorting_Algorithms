@@ -1,13 +1,13 @@
 #include <math.h>
 
+#include "../helpers/counter.h"
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
 static void introsort_rec(int a[], size_t left, size_t right, size_t depth_limit)
 {
-    counters.recursion_counter++;
-
-    size_t length = right - left + 1;
+    extern struct counter counters;
+    size_t pivot, length = right - left + 1;
 
     if (length <= MAX_THRESH)
     {
@@ -21,9 +21,11 @@ static void introsort_rec(int a[], size_t left, size_t right, size_t depth_limit
         return;
     }
 
-    size_t pivot = partition(a, left, right, MID, NULL);
+    pivot = partition(a, left, right, MID, NULL);
     introsort_rec(a, left, pivot, depth_limit - 1);
     introsort_rec(a, pivot + 1, right, depth_limit - 1);
+
+    counters.recursion_counter++;
 }
 
 void introsort(int a[], size_t length)

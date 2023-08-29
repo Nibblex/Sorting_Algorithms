@@ -1,6 +1,8 @@
 #ifndef _COUNTER_H
 #define _COUNTER_H
 
+#include <stdlib.h>
+
 /**
  * @brief A struct that holds counters for various operations in sorting algorithms.
  */

@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "counter.h"
 #include "sort_helpers.h"
 
 #define med3(arr, i, j, k)                                                                                                              \
@@ -12,20 +13,34 @@ typedef int (*cmp_func)(const void *a, const void *b);
 
 int cmp(const void *a, const void *b)
 {
-    return _cmp(*(int *)a, *(int *)b);
+    extern struct counter counters;
+    int cmp = _cmp(*(int *)a, *(int *)b);
+
+    counters.cmp_counter++;
+
+    return cmp;
 }
 
 int cmp_desc(const void *a, const void *b)
 {
-    return _cmp(*(int *)b, *(int *)a);
+    extern struct counter counters;
+    int cmp = _cmp(*(int *)a, *(int *)b);
+
+    counters.cmp_counter++;
+
+    return cmp;
 }
 
 size_t swap(int a[], size_t i, size_t j)
 {
-    counters.swap_counter++;
+    extern struct counter counters;
+
     int tmp = a[i];
     a[i] = a[j];
     a[j] = tmp;
+
+    counters.swap_counter++;
+
     return i;
 }
 

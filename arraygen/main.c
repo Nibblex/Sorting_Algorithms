@@ -67,11 +67,11 @@ int main(int argc, char *argv[])
 {
     struct array_config config;
     config = (struct array_config){.length = 10, .min = 1, .max = 100, .order = UNS, .sign = POS};
-    int opt;
+    int c;
 
-    while ((opt = getopt(argc, argv, "l:m:M:o:s:")) != -1)
+    while ((c = getopt(argc, argv, "l:m:M:o:s:")) != -1)
     {
-        switch (opt)
+        switch (c)
         {
         case 'l':
             config.length = strtoul(optarg, NULL, 10);

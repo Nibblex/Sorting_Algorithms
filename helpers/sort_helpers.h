@@ -5,17 +5,12 @@
 
 #include "../algorithms/xoroshiro128plus.h"
 
-#include "counter.h"
-
 #define MAX_THRESH 8
 
 #define U32_MAX ((size_t)-1)
 
-struct counter counters;
-
 #define _cmp(a, b)                                       \
     ({                                                   \
-        counters.cmp_counter++;                          \
         int _a = (a), _b = (b);                          \
         abs(_a)<abs(_b) ? -1 : abs(_a)> abs(_b) ? 1 : 0; \
     })

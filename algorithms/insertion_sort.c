@@ -1,3 +1,4 @@
+#include "../helpers/counter.h"
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
@@ -13,9 +14,12 @@ static void insert(int a[], size_t i)
 
 void insertion_sort(int a[], size_t length)
 {
-    counters.insertion_sort_counter++;
+    extern struct counter counters;
+
     for (size_t i = 1; i < length; i++)
     {
         insert(a, i);
     }
+
+    counters.insertion_sort_counter++;
 }

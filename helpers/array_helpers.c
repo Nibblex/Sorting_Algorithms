@@ -55,7 +55,6 @@ void array_dump(int a[], size_t length)
         printf("%i", a[i]);
         printf((i < length - 1) ? " " : "\n");
     }
-    printf("--------------------------------------------------------------------------------------------------------------------------------------------\n");
 }
 
 int *array_copy(int array[], size_t length)

@@ -12,16 +12,16 @@ BUILD_DIR=build
 SORTER_SOURCES=$(wildcard *.c algorithms/*.c helpers/*.c)
 SORTER_OBJECTS=$(addprefix $(BUILD_DIR)/,$(SORTER_SOURCES:.c=.o))
 
-ARRAYGEN_SOURCES=$(wildcard arraygen/*.c helpers/*.c)
+ARRAYGEN_SOURCES=$(wildcard array_generator/*.c helpers/*.c)
 ARRAYGEN_OBJECTS=$(addprefix $(BUILD_DIR)/,$(ARRAYGEN_SOURCES:.c=.o))
 
 all: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
 
 $(SORTER): $(SORTER_OBJECTS)
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(ARRAYGEN): $(ARRAYGEN_OBJECTS)
-	$(CC) $(CFLAGS) -o $@/$(ARRAYGEN) $^
+	$(CC) $(CFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -30,10 +30,10 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR):
 	@mkdir -p $@
 	@mkdir -p $(BUILD_DIR)/algorithms
-	@mkdir -p $(BUILD_DIR)/arraygen
+	@mkdir -p $(BUILD_DIR)/array_generator
 	@mkdir -p $(BUILD_DIR)/helpers
 
 clean:
-	rm -rf $(BUILD_DIR) $(ARRAYGEN)/$(ARRAYGEN)
+	rm -rf $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
 
 .PHONY: clean all

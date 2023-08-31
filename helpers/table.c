@@ -4,6 +4,8 @@
 
 #include "table.h"
 
+#define DEFAULT_MAX_SIZE 10
+
 #define TEST_OK "\x1b[32mOK\x1b[0m"
 #define TEST_FAIL "\x1b[31mFAIL\x1b[0m"
 
@@ -15,11 +17,11 @@ static void print_header(void)
     PRINT_HLS(strlen(header));
 }
 
-void table_init(struct table *table, struct table_flags *flags, int max_size)
+void table_init(struct table *table, struct table_flags *flags)
 {
-    table->records = (struct record *)malloc(max_size * sizeof(struct record));
+    table->records = (struct record *)malloc(DEFAULT_MAX_SIZE * sizeof(struct record));
     table->count = 0;
-    table->max_size = max_size;
+    table->max_size = DEFAULT_MAX_SIZE;
     table->flags = *flags;
 }
 

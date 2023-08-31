@@ -9,13 +9,16 @@ LDFLAGS= -lm
 BUILD_DIR=build
 
 # List of source files
-SORTER_SOURCES=$(wildcard *.c algorithms/*.c helpers/*.c)
+SORTER_SOURCES=$(wildcard *.c algorithms/*.c helpers/*.c logger/src/*.c)
 SORTER_OBJECTS=$(addprefix $(BUILD_DIR)/,$(SORTER_SOURCES:.c=.o))
 
-ARRAYGEN_SOURCES=$(wildcard array_generator/*.c helpers/*.c)
+ARRAYGEN_SOURCES=$(wildcard array_generator/*.c helpers/*.c logger/src/*.c)
 ARRAYGEN_OBJECTS=$(addprefix $(BUILD_DIR)/,$(ARRAYGEN_SOURCES:.c=.o))
 
 all: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
+
+memtest: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(ARRAYGEN) -l 1000 | ./$(SORTER) -sp
 
 $(SORTER): $(SORTER_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
@@ -32,6 +35,7 @@ $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)/algorithms
 	@mkdir -p $(BUILD_DIR)/array_generator
 	@mkdir -p $(BUILD_DIR)/helpers
+	@mkdir -p $(BUILD_DIR)/logger/src
 
 clean:
 	rm -rf $(BUILD_DIR) $(SORTER) $(ARRAYGEN)

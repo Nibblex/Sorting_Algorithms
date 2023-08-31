@@ -53,7 +53,7 @@ struct table
     struct table_flags flags;
 };
 
-void table_init(struct table *table, struct table_flags *flags, int max_size);
+void table_init(struct table *table, struct table_flags *flags);
 
 void table_add_record(struct table *table, char *algorithm_name, double elapsed_time, struct counter *counters, test_result sorted, test_result permuted);
 

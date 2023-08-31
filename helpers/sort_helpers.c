@@ -44,7 +44,7 @@ size_t swap(int a[], size_t i, size_t j)
     return i;
 }
 
-size_t pivot(int a[], size_t left, size_t right, xrshr128p_state_t *state, int type)
+size_t pivot(int a[], size_t left, size_t right, int type, xrshr128p_state_t *state)
 {
     size_t mid;
     switch (type)
@@ -78,11 +78,13 @@ size_t pivot(int a[], size_t left, size_t right, xrshr128p_state_t *state, int t
 
 size_t partition(int a[], size_t left, size_t right, int pivot_type, xrshr128p_state_t *state)
 {
-    size_t piv = pivot(a, left, right, state, pivot_type);
+    size_t piv = pivot(a, left, right, pivot_type, state);
     int pivot_value = a[piv];
 
-    size_t i = left - 1;
+    size_t i = left;
     size_t j = right + 1;
+
+    swap(a, left, piv);
 
     while (1)
     {
@@ -96,7 +98,7 @@ size_t partition(int a[], size_t left, size_t right, int pivot_type, xrshr128p_s
 
         if (i >= j)
         {
-            return j;
+            return swap(a, j, left);
         }
 
         swap(a, i, j);

@@ -5,7 +5,7 @@
 
 #include "../algorithms/xoroshiro128plus.h"
 
-#define MAX_THRESH 8
+#define MAX_THRESH 15
 
 #define U32_MAX ((size_t)-1)
 
@@ -37,7 +37,7 @@ int cmp_desc(const void *a, const void *b);
 
 size_t swap(int a[], size_t i, size_t j);
 
-size_t pivot(int a[], size_t left, size_t right, xrshr128p_state_t *state, int type);
+size_t pivot(int a[], size_t left, size_t right, int type, xrshr128p_state_t *state);
 
 size_t partition(int a[], size_t left, size_t right, int pivot_type, xrshr128p_state_t *state);
 

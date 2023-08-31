@@ -24,39 +24,6 @@ struct algorithm algorithms[] = {
     {NULL, NULL},
 };
 
-#define PRINT_ALGORITHMS                       \
-    do                                         \
-    {                                          \
-        struct algorithm *alg = algorithms;    \
-        printf("\tAvailable algorithms:\n\t"); \
-        while (alg->name != NULL)              \
-        {                                      \
-            printf("%s", alg->name);           \
-            alg++;                             \
-            if (alg->name != NULL)             \
-            {                                  \
-                printf(", ");                  \
-            }                                  \
-        }                                      \
-        printf("\n");                          \
-    } while (0)
-
-#define SET_FIRST_ALGORITHM(algorithm_name)             \
-    do                                                  \
-    {                                                   \
-        struct algorithm *alg = algorithms;             \
-        while (alg->name != NULL)                       \
-        {                                               \
-            if (strcmp(alg->name, algorithm_name) == 0) \
-            {                                           \
-                algorithms[0] = *alg;                   \
-                algorithms[1].name = NULL;              \
-                break;                                  \
-            }                                           \
-            alg++;                                      \
-        }                                               \
-    } while (0)
-
 static void usage(void)
 {
     printf("Usage: sorter [options]\n");
@@ -103,7 +70,6 @@ static void parse_args(int argc, char *argv[], struct table_flags *table_flags)
         switch (c)
         {
         case 'a':
-            printf("%s\n", optarg);
             SET_FIRST_ALGORITHM(optarg);
             break;
         case 'd':

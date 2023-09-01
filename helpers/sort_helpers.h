@@ -5,10 +5,6 @@
 
 #include "../algorithms/xoroshiro128plus.h"
 
-#define MAX_THRESH 15
-
-#define U32_MAX ((size_t)-1)
-
 #define _cmp(a, b)                                       \
     ({                                                   \
         int _a = (a), _b = (b);                          \

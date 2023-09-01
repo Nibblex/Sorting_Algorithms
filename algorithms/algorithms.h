@@ -1,12 +1,19 @@
 #ifndef _ALGORITHMS_H
 #define _ALGORITHMS_H
 
+#define MAX_THRESH 15
+
+#define U32_MAX ((size_t)-1)
+
+#include <stdbool.h>
+
 typedef void (*sorting_func)(int a[], size_t length);
 
 struct algorithm
 {
     char *name;
     sorting_func f;
+    bool enabled;
 };
 
 #define PRINT_ALGORITHMS                       \
@@ -24,22 +31,6 @@ struct algorithm
             }                                  \
         }                                      \
         printf("\n");                          \
-    } while (0)
-
-#define SET_FIRST_ALGORITHM(algorithm_name)             \
-    do                                                  \
-    {                                                   \
-        struct algorithm *alg = algorithms;             \
-        while (alg->name != NULL)                       \
-        {                                               \
-            if (strcmp(alg->name, algorithm_name) == 0) \
-            {                                           \
-                algorithms[0] = *alg;                   \
-                algorithms[1].name = NULL;              \
-                break;                                  \
-            }                                           \
-            alg++;                                      \
-        }                                               \
     } while (0)
 
 /* Sorting algorithms */

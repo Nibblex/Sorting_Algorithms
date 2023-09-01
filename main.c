@@ -12,32 +12,38 @@
 #define GETMS() (1000.0 * clock() / CLOCKS_PER_SEC)
 
 struct algorithm algorithms[] = {
-    {"timsort", timsort},
-    {"mergesort", mergesort},
-    {"introsort", introsort},
-    {"quicksort", quicksort},
-    {"quicksort_std", quicksort_std},
-    {"shellsort", shellsort},
-    {"heapsort", heapsort},
-    {"insertion_sort", insertion_sort},
-    {"selection_sort", selection_sort},
-    {NULL, NULL},
+    {"timsort", timsort, false},
+    {"mergesort", mergesort, false},
+    {"introsort", introsort, false},
+    {"quicksort", quicksort, false},
+    {"quicksort_std", quicksort_std, false},
+    {"shellsort", shellsort, false},
+    {"heapsort", heapsort, false},
+    {"insertion_sort", insertion_sort, false},
+    {"selection_sort", selection_sort, false},
+    {NULL, NULL, false},
 };
 
-static void usage(void)
+static void enable_algorithms(struct algorithm *algorithms, char *names)
 {
-    printf("Usage: sorter [options]\n");
-    printf("Options: \n");
-    printf("  -a <algorithm>, --algorithm <algorithm>    Specify the algorithm to use, default: all \n");
-    PRINT_ALGORITHMS;
-    printf("  -d, --dump                                 Dump the original array \n");
-    printf("  -f <format>, --format <format>             Specify the output format, available formats: csv, human, default\n");
-    printf("  -h, --help                                 Print this help message \n");
-    printf("  -s, --sorted                               Test if array is sorted \n");
-    printf("  -p, --permutation                          Test if array is a permutation of the original array \n");
+    char *token = strtok(names, ",");
+    while (token != NULL)
+    {
+        struct algorithm *alg = algorithms;
+        while (alg->name != NULL)
+        {
+            if (strcmp(alg->name, token) == 0)
+            {
+                alg->enabled = true;
+                break;
+            }
+            alg++;
+        }
+        token = strtok(NULL, ",");
+    }
 }
 
-static int get_format(char *format)
+static int parse_format(char *format)
 {
     if (strcmp(format, "csv") == 0)
     {
@@ -51,12 +57,25 @@ static int get_format(char *format)
     return DEFAULT;
 }
 
+static void usage(void)
+{
+    printf("Usage: sorter [options]\n");
+    printf("Options: \n");
+    printf("  -a <algorithm1,algorithm2,...>, --algorithms <algorithm1,algorithm2,...> \n");
+    PRINT_ALGORITHMS;
+    printf("  -d, --dump                                 Dump the original array \n");
+    printf("  -f <format>, --format <format>             Specify the output format, available formats: csv, human, default\n");
+    printf("  -h, --help                                 Print this help message \n");
+    printf("  -s, --sorted                               Test if array is sorted \n");
+    printf("  -p, --permutation                          Test if array is a permutation of the original array \n");
+}
+
 static void parse_args(int argc, char *argv[], struct table_flags *table_flags)
 {
     int c, option_index = 0;
 
     struct option long_options[] = {
-        {"algorithm", required_argument, 0, 'a'},
+        {"algorithms", required_argument, 0, 'a'},
         {"dump", no_argument, 0, 'd'},
         {"format", required_argument, 0, 'f'},
         {"help", no_argument, 0, 'h'},
@@ -70,13 +89,13 @@ static void parse_args(int argc, char *argv[], struct table_flags *table_flags)
         switch (c)
         {
         case 'a':
-            SET_FIRST_ALGORITHM(optarg);
+            enable_algorithms(algorithms, optarg);
             break;
         case 'd':
             table_flags->dump_array = true;
             break;
         case 'f':
-            table_flags->format = get_format(optarg);
+            table_flags->format = parse_format(optarg);
             break;
         case 'h':
             usage();
@@ -120,6 +139,13 @@ int main(int argc, char *argv[])
     struct algorithm *alg = algorithms;
     while (alg->name != NULL)
     {
+        // Skip algorithms that are not selected
+        if (!alg->enabled)
+        {
+            alg++;
+            continue;
+        }
+
         // Copy the array
         copy = array_copy(array, length);
 

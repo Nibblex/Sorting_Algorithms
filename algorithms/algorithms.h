@@ -16,23 +16,6 @@ struct algorithm
     bool enabled;
 };
 
-#define PRINT_ALGORITHMS                       \
-    do                                         \
-    {                                          \
-        struct algorithm *alg = algorithms;    \
-        printf("\tAvailable algorithms:\n\t"); \
-        while (alg->name != NULL)              \
-        {                                      \
-            printf("%s", alg->name);           \
-            alg++;                             \
-            if (alg->name != NULL)             \
-            {                                  \
-                printf(", ");                  \
-            }                                  \
-        }                                      \
-        printf("\n");                          \
-    } while (0)
-
 /* Sorting algorithms */
 
 void insertion_sort(int a[], size_t length);

@@ -12,15 +12,15 @@
 #define GETMS() (1000.0 * clock() / CLOCKS_PER_SEC)
 
 struct algorithm algorithms[] = {
-    {"timsort", timsort, false},
-    {"mergesort", mergesort, false},
-    {"introsort", introsort, false},
-    {"quicksort", quicksort, false},
-    {"quicksort_std", quicksort_std, false},
-    {"shellsort", shellsort, false},
     {"heapsort", heapsort, false},
     {"insertion_sort", insertion_sort, false},
+    {"introsort", introsort, false},
+    {"mergesort", mergesort, false},
+    {"quicksort", quicksort, false},
+    {"quicksort_std", quicksort_std, false},
     {"selection_sort", selection_sort, false},
+    {"shellsort", shellsort, false},
+    {"timsort", timsort, false},
     {NULL, NULL, false},
 };
 

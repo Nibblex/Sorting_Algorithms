@@ -13,6 +13,7 @@ void quicksort(int a[], size_t length)
     int top = -1;
     size_t stack[length];
     size_t pivot, left = 0, right = length - 1;
+    size_t segment_length;
 
     stack[++top] = left;
     stack[++top] = right;
@@ -22,9 +23,10 @@ void quicksort(int a[], size_t length)
         right = stack[top--];
         left = stack[top--];
 
-        if (right - left < MAX_THRESH)
+        segment_length = right - left + 1;
+        if (segment_length < MAX_THRESH)
         {
-            insertion_sort(a + left, right - left + 1);
+            insertion_sort(a + left, segment_length);
             continue;
         }
 

@@ -18,22 +18,22 @@ struct algorithm
 
 /* Sorting algorithms */
 
+void heapsort(int a[], size_t length);
+
 void insertion_sort(int a[], size_t length);
 
-void selection_sort(int a[], size_t length);
+void introsort(int a[], size_t length);
+
+void mergesort(int a[], size_t length);
 
 void quicksort(int a[], size_t length);
 
 void quicksort_std(int a[], size_t length);
 
-void mergesort(int a[], size_t length);
-
-void timsort(int a[], size_t length);
+void selection_sort(int a[], size_t length);
 
 void shellsort(int a[], size_t length);
 
-void heapsort(int a[], size_t length);
-
-void introsort(int a[], size_t length);
+void timsort(int a[], size_t length);
 
 #endif

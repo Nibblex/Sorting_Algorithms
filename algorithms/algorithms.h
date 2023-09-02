@@ -13,7 +13,6 @@ struct algorithm
 {
     char *name;
     sorting_func f;
-    bool enabled;
 };
 
 /* Sorting algorithms */

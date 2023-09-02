@@ -11,17 +11,19 @@
 
 #define GETMS() (1000.0 * clock() / CLOCKS_PER_SEC)
 
+extern char *strdup(const char *);
+
 struct algorithm algorithms[] = {
-    {"heapsort", heapsort, false},
-    {"insertion_sort", insertion_sort, false},
-    {"introsort", introsort, false},
-    {"mergesort", mergesort, false},
-    {"quicksort", quicksort, false},
-    {"quicksort_std", quicksort_std, false},
-    {"selection_sort", selection_sort, false},
-    {"shellsort", shellsort, false},
-    {"timsort", timsort, false},
-    {NULL, NULL, false},
+    {"heapsort", heapsort},
+    {"insertion_sort", insertion_sort},
+    {"introsort", introsort},
+    {"mergesort", mergesort},
+    {"quicksort", quicksort},
+    {"quicksort_std", quicksort_std},
+    {"selection_sort", selection_sort},
+    {"shellsort", shellsort},
+    {"timsort", timsort},
+    {NULL, NULL},
 };
 
 static void print_algorithms(struct algorithm *algorithms)
@@ -39,37 +41,48 @@ static void print_algorithms(struct algorithm *algorithms)
     printf("\n");
 }
 
-static void enable_algorithms(struct algorithm *algorithms, char *names)
+static struct algorithm *find_algorithm(const char *name)
 {
-    char *token;
-    struct algorithm *alg;
-
-    if (strcmp(names, "all") == 0)
+    for (int i = 0; algorithms[i].name != NULL; i++)
     {
-        alg = algorithms;
-        while (alg->name)
+        if (strcmp(algorithms[i].name, name) == 0)
         {
-            alg->enabled = true;
-            alg++;
+            return &algorithms[i];
         }
-        return;
+    }
+    return NULL;
+}
+
+static struct algorithm *select_algorithms(const char *input)
+{
+    char *input_copy = strdup(input);
+    struct algorithm *selected_algorithms = malloc(sizeof(struct algorithm) * strlen(input) / 2);
+
+    if (input_copy == NULL || selected_algorithms == NULL)
+    {
+        perror("Error de memoria");
+        exit(1);
     }
 
-    token = strtok(names, ",");
-    while (token)
+    char *token = strtok(input_copy, ",");
+    int count = 0;
+
+    while (token != NULL)
     {
-        alg = algorithms;
-        while (alg->name)
+        struct algorithm *found_algorithm = find_algorithm(token);
+        if (found_algorithm != NULL)
         {
-            if (strcmp(alg->name, token) == 0)
-            {
-                alg->enabled = true;
-                break;
-            }
-            alg++;
+            selected_algorithms[count] = *found_algorithm;
+            count++;
         }
         token = strtok(NULL, ",");
     }
+
+    struct algorithm null_algorithm = {NULL, NULL};
+    selected_algorithms[count] = null_algorithm;
+
+    free(input_copy);
+    return selected_algorithms;
 }
 
 static int parse_format(char *format)
@@ -97,7 +110,7 @@ static void usage(int exit_status)
     exit(exit_status);
 }
 
-static void parse_args(int argc, char *argv[], struct table_flags *table_flags)
+static void parse_args(int argc, char *argv[], struct table_flags *table_flags, struct algorithm **selected_algorithms)
 {
     int c, option_index = 0;
     bool algorithms_flag = true;
@@ -118,7 +131,7 @@ static void parse_args(int argc, char *argv[], struct table_flags *table_flags)
         {
         case 'a':
             algorithms_flag = false;
-            enable_algorithms(algorithms, optarg);
+            *selected_algorithms = select_algorithms(optarg);
             break;
         case 'd':
             table_flags->dump_array = true;
@@ -142,7 +155,7 @@ static void parse_args(int argc, char *argv[], struct table_flags *table_flags)
 
     if (algorithms_flag)
     {
-        enable_algorithms(algorithms, "all");
+        *selected_algorithms = algorithms;
     }
 }
 
@@ -155,8 +168,9 @@ int main(int argc, char *argv[])
     test_result sorted, permuted;
     struct table_flags table_flags = {false, false, false, DEFAULT};
     struct table table;
+    struct algorithm *selected_algorithms;
 
-    parse_args(argc, argv, &table_flags);
+    parse_args(argc, argv, &table_flags, &selected_algorithms);
     length = array_from_stdin(&array);
 
     if (table_flags.dump_array)
@@ -169,16 +183,9 @@ int main(int argc, char *argv[])
     counter_init(&counters);
     table_init(&table, &table_flags);
 
-    struct algorithm *alg = algorithms;
+    struct algorithm *alg = selected_algorithms;
     while (alg->name)
     {
-        // Skip algorithms that are not selected
-        if (!alg->enabled)
-        {
-            alg++;
-            continue;
-        }
-
         // Copy the array
         copy = array_copy(array, length);
 
@@ -204,6 +211,7 @@ int main(int argc, char *argv[])
     table_print(&table);
 
     free(array);
+    free(selected_algorithms);
     table_free(&table);
 
     return EXIT_SUCCESS;

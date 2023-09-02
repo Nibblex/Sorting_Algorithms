@@ -6,7 +6,6 @@
 
 #include "./algorithms/algorithms.h"
 #include "./helpers/array_helpers.h"
-#include "./helpers/sort_helpers.h"
 #include "./helpers/table.h"
 
 #define GETMS() (1000.0 * clock() / CLOCKS_PER_SEC)
@@ -26,64 +25,61 @@ struct algorithm algorithms[] = {
     {NULL, NULL},
 };
 
-static void print_algorithms(struct algorithm *algorithms)
-{
-    struct algorithm *alg = algorithms;
-    while (alg->name)
-    {
-        printf("%s", alg->name);
-        alg++;
-        if (alg->name)
-        {
-            printf(", ");
-        }
-    }
-    printf("\n");
-}
+#define print_choices(arr)              \
+    do                                  \
+    {                                   \
+        __typeof__(arr[0]) *_ptr = arr; \
+        while (_ptr->name)              \
+        {                               \
+            printf("%s", _ptr->name);   \
+            _ptr++;                     \
+            if (_ptr->name)             \
+            {                           \
+                printf(", ");           \
+            }                           \
+        }                               \
+        printf("\n");                   \
+    } while (0)
 
-static struct algorithm *find_algorithm(const char *name)
-{
-    for (int i = 0; algorithms[i].name != NULL; i++)
-    {
-        if (strcmp(algorithms[i].name, name) == 0)
-        {
-            return &algorithms[i];
-        }
-    }
-    return NULL;
-}
+#define find_choice(arr, choice)                     \
+    ({                                               \
+        __typeof__(arr[0]) *_ptr, *_res = NULL;      \
+        for (_ptr = arr; _ptr->name != NULL; _ptr++) \
+        {                                            \
+            if (strcmp(_ptr->name, choice) == 0)     \
+            {                                        \
+                _res = _ptr;                         \
+                break;                               \
+            }                                        \
+        }                                            \
+        _res;                                        \
+    })
 
-static struct algorithm *select_algorithms(const char *input)
-{
-    char *input_copy = strdup(input);
-    struct algorithm *selected_algorithms = malloc(sizeof(struct algorithm) * strlen(input) / 2);
-
-    if (input_copy == NULL || selected_algorithms == NULL)
-    {
-        perror("Error de memoria");
-        exit(1);
-    }
-
-    char *token = strtok(input_copy, ",");
-    int count = 0;
-
-    while (token != NULL)
-    {
-        struct algorithm *found_algorithm = find_algorithm(token);
-        if (found_algorithm != NULL)
-        {
-            selected_algorithms[count] = *found_algorithm;
-            count++;
-        }
-        token = strtok(NULL, ",");
-    }
-
-    struct algorithm null_algorithm = {NULL, NULL};
-    selected_algorithms[count] = null_algorithm;
-
-    free(input_copy);
-    return selected_algorithms;
-}
+#define select_choices(arr, input)                                                                     \
+    ({                                                                                                 \
+        char *token;                                                                                   \
+        __typeof__(arr[0]) *selected_choices = malloc(sizeof(__typeof__(arr[0])) * strlen(input) / 2); \
+        if (selected_choices == NULL)                                                                  \
+        {                                                                                              \
+            perror("Error de memoria");                                                                \
+            exit(EXIT_FAILURE);                                                                        \
+        }                                                                                              \
+        __typeof__(arr[0]) *choice;                                                                    \
+        int count = 0;                                                                                 \
+        token = strtok(input, ",");                                                                    \
+        while (token != NULL)                                                                          \
+        {                                                                                              \
+            choice = find_choice(arr, token);                                                          \
+            if (choice != NULL)                                                                        \
+            {                                                                                          \
+                selected_choices[count] = *choice;                                                     \
+                count++;                                                                               \
+            }                                                                                          \
+            token = strtok(NULL, ",");                                                                 \
+        }                                                                                              \
+        selected_choices[count] = (__typeof__(*selected_choices)){NULL, NULL};                         \
+        selected_choices;                                                                              \
+    })
 
 static int parse_format(char *format)
 {
@@ -101,7 +97,7 @@ static void usage(int exit_status)
     printf("Options: \n");
     printf("  -a <algorithm1,algorithm2,...>, --algorithms <algorithm1,algorithm2,...>  Specify the algorithms to test \n");
     printf("\tAvailable algorithms:\n\t");
-    print_algorithms(algorithms);
+    print_choices(algorithms);
     printf("  -d, --dump                                                                Dump the original array \n");
     printf("  -f <format>, --format <format>                                            Specify the output format, available formats: csv, human, default \n");
     printf("  -h, --help                                                                Print this help message \n");
@@ -131,7 +127,7 @@ static void parse_args(int argc, char *argv[], struct table_flags *table_flags, 
         {
         case 'a':
             algorithms_flag = false;
-            *selected_algorithms = select_algorithms(optarg);
+            *selected_algorithms = select_choices(algorithms, optarg);
             break;
         case 'd':
             table_flags->dump_array = true;

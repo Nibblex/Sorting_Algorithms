@@ -22,11 +22,4 @@ struct counter
  */
 void counter_init(struct counter *c);
 
-/**
- * @brief Prints the values of the counters in the given counter struct.
- *
- * @param c Pointer to the counter struct to be printed.
- */
-void counter_print(struct counter *c);
-
 #endif

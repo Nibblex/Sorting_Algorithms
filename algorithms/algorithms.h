@@ -5,8 +5,6 @@
 
 #define U32_MAX ((size_t)-1)
 
-#include <stdbool.h>
-
 typedef void (*sorting_func)(int a[], size_t length);
 
 struct algorithm

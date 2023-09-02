@@ -42,10 +42,11 @@ static void print_algorithms(struct algorithm *algorithms)
 static void enable_algorithms(struct algorithm *algorithms, char *names)
 {
     char *token;
-    struct algorithm *alg = algorithms;
+    struct algorithm *alg;
 
     if (strcmp(names, "all") == 0)
     {
+        alg = algorithms;
         while (alg->name)
         {
             alg->enabled = true;
@@ -57,6 +58,7 @@ static void enable_algorithms(struct algorithm *algorithms, char *names)
     token = strtok(names, ",");
     while (token)
     {
+        alg = algorithms;
         while (alg->name)
         {
             if (strcmp(alg->name, token) == 0)
@@ -76,12 +78,8 @@ static int parse_format(char *format)
     {
         return CSV;
     }
-    else if (strcmp(format, "human") == 0)
-    {
-        return HUMAN_READABLE;
-    }
 
-    return DEFAULT;
+    return (strcmp(format, "human") == 0) ? HUMAN_READABLE : DEFAULT;
 }
 
 static void usage(int exit_status)

@@ -37,6 +37,6 @@ $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)/helpers
 
 clean:
-	rm -rf $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
+	@rm -rf $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
 
 .PHONY: clean all

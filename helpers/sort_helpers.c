@@ -1,34 +1,27 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "counter.h"
 #include "sort_helpers.h"
-
-#define med3(arr, i, j, k)                                                                                                              \
-    ({                                                                                                                                  \
-        int _i = arr[i], _b = arr[j], _c = arr[k];                                                                                      \
-        (_cmp(_i, _b) > 0 ? (_cmp(_b, _c) > 0 ? j : (_cmp(_i, _c) > 0 ? k : i)) : (_cmp(_i, _c) > 0 ? i : (_cmp(_b, _c) > 0 ? k : j))); \
-    })
 
 typedef int (*cmp_func)(const void *a, const void *b);
 
 int cmp(const void *a, const void *b)
 {
     extern struct counter counters;
-    int cmp = _cmp(*(int *)a, *(int *)b);
 
     counters.cmp_counter++;
 
-    return cmp;
+    return (*(int *)a - *(int *)b);
 }
 
 int cmp_desc(const void *a, const void *b)
 {
     extern struct counter counters;
-    int cmp = _cmp(*(int *)a, *(int *)b);
 
     counters.cmp_counter++;
 
-    return cmp;
+    return (*(int *)b - *(int *)a);
 }
 
 size_t swap(int a[], size_t i, size_t j)
@@ -44,7 +37,7 @@ size_t swap(int a[], size_t i, size_t j)
     return i;
 }
 
-size_t pivot(int a[], size_t left, size_t right, int type, xrshr128p_state_t *state)
+static size_t pivot(int a[], size_t left, size_t right, int type, xrshr128p_state_t *state)
 {
     size_t mid;
     switch (type)
@@ -52,9 +45,6 @@ size_t pivot(int a[], size_t left, size_t right, int type, xrshr128p_state_t *st
     case MID:
         return left + ((right - left) >> 1);
     case MED3:
-        mid = left + ((right - left) >> 1);
-        return med3(a, left, mid, right);
-    case MED3_2:
         mid = left + ((right - left) >> 1);
         if (cmp(a + mid, a + left) < 0)
         {
@@ -72,7 +62,8 @@ size_t pivot(int a[], size_t left, size_t right, int type, xrshr128p_state_t *st
     case RANDOM:
         return rand_pos(*state, left, right);
     default:
-        return left;
+        fprintf(stderr, "Invalid pivot type\n");
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -117,8 +108,7 @@ void merge(int a[], size_t left, size_t mid, size_t right)
     size_t i = 0, j = 0, k = left;
     while (i < n1 && j < n2)
     {
-        int _i = L[i], _j = R[j];
-        if (_cmp(_i, _j) <= 0)
+        if (cmp(L + i, R + j) <= 0)
         {
             a[k++] = L[i++];
         }

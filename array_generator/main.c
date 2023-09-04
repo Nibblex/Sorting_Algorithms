@@ -25,7 +25,7 @@ static void print_array(int *array, size_t length)
     printf("\n");
 }
 
-static order_type parse_order(char *order)
+static enum order_type parse_order(char *order)
 {
     if (strcmp(order, "asc") == 0)
     {
@@ -44,7 +44,7 @@ static order_type parse_order(char *order)
     exit(EXIT_FAILURE);
 }
 
-static sign_type parse_sign(char *sign)
+static enum sign_type parse_sign(char *sign)
 {
     if (strcmp(sign, "pos") == 0)
     {

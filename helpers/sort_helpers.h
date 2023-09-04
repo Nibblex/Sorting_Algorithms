@@ -7,7 +7,7 @@
 
 #define rand_pos(state, a, b) ((xrshr128p_next(state) % ((b) - (a) + 1)) + (a))
 
-enum
+enum pivot_type
 {
     MID,
     MED3,

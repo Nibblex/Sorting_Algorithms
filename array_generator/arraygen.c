@@ -22,7 +22,7 @@ static inline int both_sign(xrshr128p_state_t state)
     return rand_pos(state, 0, 1) ? 1 : -1;
 }
 
-static inline sign_func sign_func_ptr(sign_type sign)
+static inline sign_func sign_func_ptr(enum sign_type sign)
 {
     switch (sign)
     {

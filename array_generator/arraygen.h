@@ -7,23 +7,23 @@
  * @brief Enumeration for the order type of the elements in the array.
  *
  */
-typedef enum order_type
+enum order_type
 {
     ASC,  /**< Ascending order */
     DESC, /**< Descending order */
     UNS   /**< Unsorted order */
-} order_type;
+};
 
 /**
  * @brief Enumeration for the sign type of the elements in the array.
  *
  */
-typedef enum sign_type
+enum sign_type
 {
     POS, /**< Positive sign */
     NEG, /**< Negative sign */
     BOTH /**< Both positive and negative signs */
-} sign_type;
+};
 
 typedef int (*sign_func)(xrshr128p_state_t state);
 
@@ -32,8 +32,8 @@ struct array_config
     size_t length;
     int min;
     int max;
-    order_type order;
-    sign_type sign;
+    enum order_type order;
+    enum sign_type sign;
 };
 
 /**

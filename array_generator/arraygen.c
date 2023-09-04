@@ -7,11 +7,13 @@
 
 static inline int pos_sign(xrshr128p_state_t state)
 {
+    state = state;
     return 1;
 }
 
 static inline int neg_sign(xrshr128p_state_t state)
 {
+    state = state;
     return -1;
 }
 

@@ -5,12 +5,32 @@
 
 #define U32_MAX ((size_t)-1)
 
+/**
+ * @brief A struct that holds counters for various operations in sorting algorithms.
+ */
+struct counter
+{
+    size_t cmp_counter;       /**< Counter for number of comparisons */
+    size_t swap_counter;      /**< Counter for number of swaps */
+    size_t recursion_counter; /**< Counter for number of recursive calls */
+    size_t isort_counter;     /**< Counter for number of times insertion sort is used */
+    size_t heapsort_counter;  /**< Counter for number of times heapsort is used */
+};
+
+/**
+ * @brief Typedef for a function pointer that takes an integer array and its length as input and sorts the array.
+ *
+ */
 typedef void (*sorting_func)(int a[], size_t length);
 
+/**
+ * @brief A struct representing a sorting algorithm.
+ *
+ */
 struct algorithm
 {
-    char *name;
-    sorting_func f;
+    char *name;     /**< Name of the algorithm */
+    sorting_func f; /**< Function pointer to the algorithm */
 };
 
 /* Sorting algorithms */

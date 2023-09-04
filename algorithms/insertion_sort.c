@@ -1,4 +1,3 @@
-#include "../helpers/counter.h"
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
@@ -21,5 +20,5 @@ void insertion_sort(int a[], size_t length)
         insert(a, i);
     }
 
-    counters.insertion_sort_counter++;
+    counters.isort_counter++;
 }

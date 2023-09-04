@@ -1,9 +1,10 @@
 SORTER=sorter
 ARRAYGEN=arraygen
 CC=@gcc
-CFLAGS= -std=c99 -Wall -Werror -Wextra -Wbad-function-cast -Wstrict-prototypes\
-        -Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -O3 -g
+CFLAGS= -std=c99 -Wall -Werror -Wbad-function-cast -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes \
+        -Wunused-const-variable -Wunused-function -Wunused-macros -Wunused-parameter -Wunused-macros -O3 -g
 LDFLAGS= -lm
+VALGRIND=valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 
 # Specify the build directory
 BUILD_DIR=build
@@ -18,7 +19,7 @@ ARRAYGEN_OBJECTS=$(addprefix $(BUILD_DIR)/,$(ARRAYGEN_SOURCES:.c=.o))
 all: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
 
 memtest: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(ARRAYGEN) -l 1000 | ./$(SORTER) -sp
+	$(VALGRIND) ./$(ARRAYGEN) -l 1000 | $(VALGRIND) ./$(SORTER) -d -f human -t sorted,permuted
 
 $(SORTER): $(SORTER_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)

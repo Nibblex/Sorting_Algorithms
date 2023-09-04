@@ -1,6 +1,5 @@
 #include <math.h>
 
-#include "../helpers/counter.h"
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 

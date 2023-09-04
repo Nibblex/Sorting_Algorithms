@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "counter.h"
+#include "../helpers/workbench.h"
 #include "sort_helpers.h"
 
 typedef int (*cmp_func)(const void *a, const void *b);

@@ -32,12 +32,11 @@ static void print_header(void)
     PRINT_HLS(strlen(header));
 }
 
-static void print_record(struct workbench *wb)
+static void print_row(struct run *run, enum table_format format)
 {
-    struct run run = wb->last_run;
     char *fmt;
 
-    switch (wb->format)
+    switch (format)
     {
     case HUMAN_READABLE:
         fmt = "%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-20lu %s-%s\n";
@@ -51,18 +50,18 @@ static void print_record(struct workbench *wb)
     }
 
     printf(fmt,
-           run.algorithm_name,
-           run.elapsed,
-           run.counters.cmp_counter,
-           run.counters.swap_counter,
-           run.counters.recursion_counter,
-           run.counters.isort_counter,
-           run.counters.heapsort_counter,
-           run.sorted == NOT_TESTED ? TEST_NOT_TESTED : (run.sorted == OK ? TEST_OK : TEST_FAIL),
-           run.permuted == NOT_TESTED ? TEST_NOT_TESTED : (run.permuted == OK ? TEST_OK : TEST_FAIL));
+           run->algorithm_name,
+           run->elapsed,
+           run->counters.cmp_counter,
+           run->counters.swap_counter,
+           run->counters.recursion_counter,
+           run->counters.isort_counter,
+           run->counters.heapsort_counter,
+           run->sorted == NOT_TESTED ? TEST_NOT_TESTED : (run->sorted == OK ? TEST_OK : TEST_FAIL),
+           run->permuted == NOT_TESTED ? TEST_NOT_TESTED : (run->permuted == OK ? TEST_OK : TEST_FAIL));
 }
 
-static void run_tests(struct workbench *wb, int *copy)
+static void run_tests(struct workbench *wb, int *copy, struct run *run)
 {
     struct test *test;
 
@@ -71,11 +70,11 @@ static void run_tests(struct workbench *wb, int *copy)
     {
         if (test->type == SORTED)
         {
-            wb->last_run.sorted = array_is_sorted(copy, wb->array_length) ? OK : FAIL;
+            run->sorted = array_is_sorted(copy, wb->array_length) ? OK : FAIL;
         }
         else if (test->type == PERMUTED)
         {
-            wb->last_run.permuted = array_is_permutation_of(copy, wb->array, wb->array_length) ? OK : FAIL;
+            run->permuted = array_is_permutation_of(copy, wb->array, wb->array_length) ? OK : FAIL;
         }
         test++;
     }
@@ -83,13 +82,41 @@ static void run_tests(struct workbench *wb, int *copy)
 
 static void run_algorithm(struct workbench *wb, struct algorithm *alg, int *copy)
 {
-    wb->last_run.algorithm_name = alg->name;
+    struct run run;
 
-    wb->last_run.elapsed = GETMS();
+    run.algorithm_name = alg->name;
+
+    /* Run the algorithm and measure the elapsed time. */
+    run.elapsed = GETMS();
     alg->f(copy, wb->array_length);
-    wb->last_run.elapsed = GETMS() - wb->last_run.elapsed;
+    run.elapsed = GETMS() - run.elapsed;
 
-    wb->last_run.counters = counters;
+    run.counters = counters;
+
+    /* Add the run to the workbench. */
+    wb->runs[wb->runs_count++] = run;
+}
+
+void workbench_init(struct workbench *wb, size_t num_algorithms)
+{
+    struct run *runs;
+
+    runs = calloc(num_algorithms, sizeof(struct run));
+    if (!runs)
+    {
+        perror("calloc");
+        exit(EXIT_FAILURE);
+    }
+
+    wb->array = NULL;
+    wb->array_length = 0;
+    wb->algorithms = NULL;
+    wb->tests = NULL;
+    wb->runs = runs;
+    wb->runs_count = 0;
+    wb->num_algorithms = num_algorithms;
+    wb->format = DEFAULT;
+    wb->dump_array = false;
 }
 
 void workbench_run(struct workbench *wb)
@@ -97,6 +124,7 @@ void workbench_run(struct workbench *wb)
     int *copy;
     struct algorithm *alg;
 
+    /* Print the input array if the dump flag is set to true. */
     if (wb->dump_array)
     {
         printf("Input:\n");
@@ -104,25 +132,28 @@ void workbench_run(struct workbench *wb)
         array_dump(wb->array, wb->array_length);
     }
 
+    /* Print header containing the column names when using the human-readable format. */
     if (wb->format == HUMAN_READABLE)
     {
         print_header();
     }
 
-    alg = wb->algorithms;
-    while (alg->name)
+    /* Run each algorithm and print the results. */
+    for (size_t i = 0; i < wb->num_algorithms; ++i)
     {
+        alg = &wb->algorithms[i];
+
         copy = array_copy(wb->array, wb->array_length);
 
         memset(&counters, 0, sizeof(struct counter));
 
         run_algorithm(wb, alg, copy);
-        run_tests(wb, copy);
-        print_record(wb);
+
+        run_tests(wb, copy, &wb->runs[i]);
+
+        print_row(&wb->runs[i], wb->format);
 
         free(copy);
-
-        alg++;
     }
 }
 
@@ -131,4 +162,5 @@ void workbench_free(struct workbench *wb)
     free(wb->array);
     free(wb->algorithms);
     free(wb->tests);
+    free(wb->runs);
 }

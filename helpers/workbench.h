@@ -66,10 +66,14 @@ struct workbench
     size_t array_length;          /**< The length of the array to be sorted. */
     struct algorithm *algorithms; /**< An array of algorithms to be tested. */
     struct test *tests;           /**< An array of tests to be run. */
+    struct run *runs;             /**< An array of completed runs with the results. */
+    size_t runs_count;            /**< The number of completed runs. */
+    size_t num_algorithms;        /**< The number of algorithms to be tested. */
     enum table_format format;     /**< The format in which the results should be displayed. */
     bool dump_array;              /**< A flag indicating whether to dump the array before and after sorting. */
-    struct run last_run;          /**< The results of the last run. */
 };
+
+void workbench_init(struct workbench *wb, size_t num_algorithms);
 
 /**
  * Runs the given workbench.

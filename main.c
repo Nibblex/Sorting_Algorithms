@@ -6,9 +6,11 @@
 #include "./helpers/array_helpers.h"
 #include "./helpers/workbench.h"
 
+#define NUM_ALGORITHMS 9
+
 extern char *strdup(const char *);
 
-struct algorithm ALGORITHMS[] = {
+struct algorithm ALGORITHMS[NUM_ALGORITHMS + 1] = {
     {"heapsort", heapsort},
     {"insertion_sort", insertion_sort},
     {"introsort", introsort},
@@ -183,7 +185,9 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
 int main(int argc, char *argv[])
 {
     int *array = NULL;
-    struct workbench wb = {0};
+    struct workbench wb;
+
+    workbench_init(&wb, NUM_ALGORITHMS);
 
     parse_args(argc, argv, &wb);
 

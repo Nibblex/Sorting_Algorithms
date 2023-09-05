@@ -185,9 +185,7 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
 int main(int argc, char *argv[])
 {
     int *array = NULL;
-    struct workbench wb;
-
-    workbench_init(&wb, NUM_ALGORITHMS);
+    struct workbench wb = {0};
 
     parse_args(argc, argv, &wb);
 

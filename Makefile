@@ -6,6 +6,11 @@ CFLAGS= -std=c99 -Wall -Werror -Wbad-function-cast -Wstrict-prototypes -Wmissing
 LDFLAGS= -lm
 VALGRIND=valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 
+LENGTH ?= 1000
+ALGORITHMS ?= heapsort,introsort,mergesort,quicksort,quicksort_std,shellsort,timsort
+TESTS ?= sorted
+FORMAT ?= human
+
 # Specify the build directory
 BUILD_DIR=build
 
@@ -18,8 +23,11 @@ ARRAYGEN_OBJECTS=$(addprefix $(BUILD_DIR)/,$(ARRAYGEN_SOURCES:.c=.o))
 
 all: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
 
+test: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
+	./$(ARRAYGEN) -l $(LENGTH) | ./$(SORTER) -a $(ALGORITHMS) -t $(TESTS) -f $(FORMAT) | awk 'NR<=3; NR>3{print $0 | "sort -n -k2"}'
+
 memtest: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
-	$(VALGRIND) ./$(ARRAYGEN) -l 1000 | $(VALGRIND) ./$(SORTER) -d -f human -t sorted,permuted
+	$(VALGRIND) ./$(ARRAYGEN) -l $(LENGTH) | $(VALGRIND) ./$(SORTER) -d -t $(TESTS) -f $(FORMAT)
 
 $(SORTER): $(SORTER_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)

@@ -80,9 +80,9 @@ static void run_tests(struct workbench *wb, int *copy, struct run *run)
     }
 }
 
-static void run_algorithm(struct workbench *wb, struct algorithm *alg, int *copy)
+static struct run run_algorithm(struct workbench *wb, struct algorithm *alg, int *copy)
 {
-    struct run run;
+    struct run run = {0};
 
     run.algorithm_name = alg->name;
 
@@ -93,36 +93,14 @@ static void run_algorithm(struct workbench *wb, struct algorithm *alg, int *copy
 
     run.counters = counters;
 
-    /* Add the run to the workbench. */
-    wb->runs[wb->runs_count++] = run;
-}
-
-void workbench_init(struct workbench *wb, size_t num_algorithms)
-{
-    struct run *runs;
-
-    runs = calloc(num_algorithms, sizeof(struct run));
-    if (!runs)
-    {
-        perror("calloc");
-        exit(EXIT_FAILURE);
-    }
-
-    wb->array = NULL;
-    wb->array_length = 0;
-    wb->algorithms = NULL;
-    wb->tests = NULL;
-    wb->runs = runs;
-    wb->runs_count = 0;
-    wb->num_algorithms = num_algorithms;
-    wb->format = DEFAULT;
-    wb->dump_array = false;
+    return run;
 }
 
 void workbench_run(struct workbench *wb)
 {
     int *copy;
     struct algorithm *alg;
+    struct run run;
 
     /* Print the input array if the dump flag is set to true. */
     if (wb->dump_array)
@@ -139,21 +117,22 @@ void workbench_run(struct workbench *wb)
     }
 
     /* Run each algorithm and print the results. */
-    for (size_t i = 0; i < wb->num_algorithms; ++i)
+    alg = wb->algorithms;
+    while (alg && alg->name)
     {
-        alg = &wb->algorithms[i];
-
         copy = array_copy(wb->array, wb->array_length);
 
         memset(&counters, 0, sizeof(struct counter));
 
-        run_algorithm(wb, alg, copy);
+        run = run_algorithm(wb, alg, copy);
 
-        run_tests(wb, copy, &wb->runs[i]);
+        run_tests(wb, copy, &run);
 
-        print_row(&wb->runs[i], wb->format);
+        print_row(&run, wb->format);
 
         free(copy);
+
+        alg++;
     }
 }
 
@@ -162,5 +141,4 @@ void workbench_free(struct workbench *wb)
     free(wb->array);
     free(wb->algorithms);
     free(wb->tests);
-    free(wb->runs);
 }

@@ -7,7 +7,7 @@ LDFLAGS= -lm
 VALGRIND=valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 
 ARRAYGEN_ARGS?=-l 1000
-SORTER_ARGS?=-a heapsort,introsort,mergesort,quicksort,quicksort_std,shellsort,timsort -t sorted -f human
+SORTER_ARGS?=-a heapsort,introsort,mergesort,quicksort,quicksort_std,shellsort,timsort -t sorted,permuted -f human
 
 # Specify the build directory
 BUILD_DIR=build

@@ -41,19 +41,30 @@ struct test TESTS[] = {
         _formatted_str;                         \
     })
 
-#define find_choice(arr, choice)                     \
-    ({                                               \
-        __typeof__(arr[0]) *_ptr, *_res = NULL;      \
-        for (_ptr = arr; _ptr->name != NULL; _ptr++) \
-        {                                            \
-            if (strcmp(_ptr->name, choice) == 0)     \
-            {                                        \
-                _res = _ptr;                         \
-                break;                               \
-            }                                        \
-        }                                            \
-        _res;                                        \
+#define find_choice(arr, choice)                 \
+    ({                                           \
+        __typeof__(arr[0]) *_ptr, *_res = NULL;  \
+        for (_ptr = arr; _ptr->name; _ptr++)     \
+        {                                        \
+            if (strcmp(_ptr->name, choice) == 0) \
+            {                                    \
+                _res = _ptr;                     \
+                break;                           \
+            }                                    \
+        }                                        \
+        _res;                                    \
     })
+
+static int count_commas(const char *s)
+{
+    int count = 0;
+
+    for (int i = 0; s[i]; i++)
+        if (s[i] == ',')
+            count++;
+
+    return count;
+}
 
 #define select_choices(arr, input)                                                                                  \
     ({                                                                                                              \
@@ -112,17 +123,6 @@ static void usage(int exit_status)
     printf("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tPrint this help message \n");
 
     exit(exit_status);
-}
-
-static int count_commas(const char *s)
-{
-    int count = 0;
-
-    for (int i = 0; s[i]; i++)
-        if (s[i] == ',')
-            count++;
-
-    return count;
 }
 
 static int parse_format(char *input)

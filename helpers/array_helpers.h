@@ -56,10 +56,10 @@ bool array_is_sorted(int a[], size_t length);
  * Checks if an array is a permutation of another array.
  *
  * @param a The first array to compare.
- * @param other The second array to compare.
+ * @param b The second array to compare.
  * @param length The length of the arrays.
  * @return true if the arrays are permutations of each other, false otherwise.
  */
-bool array_is_permutation_of(int a[], int other[], size_t length);
+bool array_is_permutation_of(int a[], int b[], size_t length);
 
 #endif

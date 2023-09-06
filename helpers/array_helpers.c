@@ -75,29 +75,18 @@ bool array_is_sorted(int a[], size_t length)
     return !length || i == length;
 }
 
-static size_t array_value_count(int a[], size_t length, int value)
-{
-    size_t count = 0;
-    for (size_t i = 0; i < length; i++)
-    {
-        if (a[i] == value)
-        {
-            count++;
-        }
-    }
-    return count;
-}
-
 bool array_is_permutation_of(int a[], int b[], size_t length)
 {
-    size_t i = 0;
-    bool result = true;
-    while (i < length && result)
-    {
-        size_t a_count = array_value_count(a, length, a[i]);
-        size_t b_count = array_value_count(b, length, a[i]);
-        result = (a_count == b_count);
-        i++;
-    }
-    return result;
+    bool is_permutation;
+    int *b_copy;
+
+    b_copy = array_copy(b, length);
+
+    qsort(b_copy, length, sizeof(int), cmp);
+
+    is_permutation = memcmp(b_copy, a, length * sizeof(int)) == 0;
+
+    free(b_copy);
+
+    return is_permutation;
 }

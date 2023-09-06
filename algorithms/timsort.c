@@ -3,7 +3,7 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-static void timsort_it(int a[], size_t length)
+void timsort(int a[], size_t length)
 {
     size_t left, mid, right, chunks = length / MAX_THRESH;
     for (size_t i = 0; i <= chunks; i++)
@@ -29,9 +29,4 @@ static void timsort_it(int a[], size_t length)
             left += size;
         }
     }
-}
-
-void timsort(int a[], size_t length)
-{
-    timsort_it(a, length);
 }

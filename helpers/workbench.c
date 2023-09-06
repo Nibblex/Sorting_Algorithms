@@ -8,11 +8,13 @@
 
 #define GETMS() (1000.0 * clock() / CLOCKS_PER_SEC)
 
+#define HEADER "Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: (sorted-permuted)\n"
+
 #define TEST_NOT_TESTED "\x1b[33mNOT TESTED\x1b[0m"
 #define TEST_OK "\x1b[32mOK\x1b[0m"
 #define TEST_FAIL "\x1b[31mFAIL\x1b[0m"
 
-#define PRINT_HLS(n)                     \
+#define print_hls(n)                     \
     do                                   \
     {                                    \
         for (size_t i = 0; i < (n); ++i) \
@@ -22,15 +24,15 @@
         putchar('\n');                   \
     } while (0)
 
-struct counter counters;
+#define print_header()             \
+    do                             \
+    {                              \
+        print_hls(strlen(HEADER)); \
+        printf("%s", HEADER);      \
+        print_hls(strlen(HEADER)); \
+    } while (0)
 
-static void print_header(void)
-{
-    char *header = "Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: (sorted-permuted)\n";
-    PRINT_HLS(strlen(header));
-    printf("%s", header);
-    PRINT_HLS(strlen(header));
-}
+struct counter counters;
 
 static void print_row(struct run *run, enum table_format format)
 {
@@ -100,7 +102,7 @@ void workbench_run(struct workbench *wb)
 {
     int *copy;
     struct algorithm *alg;
-    struct run run;
+    struct run run, total = {0};
 
     /* Print the input array if the dump flag is set to true. */
     if (wb->dump_array)
@@ -126,6 +128,14 @@ void workbench_run(struct workbench *wb)
 
         run = run_algorithm(wb, alg, copy);
 
+        total.algorithm_name = "Total";
+        total.elapsed += run.elapsed;
+        total.counters.cmp_counter += run.counters.cmp_counter;
+        total.counters.swap_counter += run.counters.swap_counter;
+        total.counters.recursion_counter += run.counters.recursion_counter;
+        total.counters.isort_counter += run.counters.isort_counter;
+        total.counters.heapsort_counter += run.counters.heapsort_counter;
+
         run_tests(wb, copy, &run);
 
         print_row(&run, wb->format);
@@ -133,6 +143,13 @@ void workbench_run(struct workbench *wb)
         free(copy);
 
         alg++;
+    }
+
+    /* Print the total row when using the human-readable format. */
+    if (wb->format == HUMAN_READABLE)
+    {
+        print_hls(strlen(HEADER));
+        print_row(&total, wb->format);
     }
 }
 

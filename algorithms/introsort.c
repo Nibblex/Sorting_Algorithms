@@ -29,6 +29,6 @@ static void introsort_rec(int a[], size_t left, size_t right, size_t depth_limit
 
 void introsort(int a[], size_t length)
 {
-    size_t depth_limit = 2 * log(length);
+    size_t depth_limit = 2 * floor(log2(length));
     introsort_rec(a, 0, !length ? 0 : length - 1, depth_limit);
 }

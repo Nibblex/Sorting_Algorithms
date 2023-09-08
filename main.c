@@ -93,6 +93,16 @@ static int count_commas(const char *s)
         selected_choices;                                                                                           \
     })
 
+static int parse_format(char *input)
+{
+    if (strcmp(input, "csv") == 0)
+    {
+        return CSV;
+    }
+
+    return (strcmp(input, "human") == 0) ? HUMAN_READABLE : DEFAULT;
+}
+
 static void usage(int exit_status)
 {
     printf("Usage: sorter [options]\n");
@@ -125,20 +135,9 @@ static void usage(int exit_status)
     exit(exit_status);
 }
 
-static int parse_format(char *input)
-{
-    if (strcmp(input, "csv") == 0)
-    {
-        return CSV;
-    }
-
-    return (strcmp(input, "human") == 0) ? HUMAN_READABLE : DEFAULT;
-}
-
 static void parse_args(int argc, char *argv[], struct workbench *wb)
 {
     int c, option_index = 0;
-    bool algorithms_flag = true;
 
     struct option long_options[] = {
         {"algorithms", required_argument, 0, 'a'},
@@ -154,7 +153,6 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
         switch (c)
         {
         case 'a':
-            algorithms_flag = false;
             wb->algorithms = select_choices(ALGORITHMS, optarg);
             break;
         case 't':
@@ -174,7 +172,7 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
         }
     }
 
-    if (algorithms_flag)
+    if (!wb->algorithms)
     {
         wb->algorithms = select_choices(ALGORITHMS, get_choices(ALGORITHMS));
     }

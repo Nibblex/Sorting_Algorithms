@@ -1,6 +1,8 @@
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
+#define U32_MAX ((size_t)-1)
+
 #define largest(a, length, i, j, k)                    \
     ({                                                 \
         size_t largest = i;                            \
@@ -15,14 +17,22 @@
         largest;                                       \
     })
 
-static void heapify(int a[], size_t length, size_t i)
+static void heapify(int a[], size_t length, size_t root)
 {
     size_t j, largest;
-    do
+    while (1)
     {
-        j = (i << 1) + 1;
-        largest = largest(a, length, i, j, j + 1);
-    } while (largest != i && (i = swap(a, largest, i), 1));
+        j = (root << 1) + 1;
+
+        largest = largest(a, length, root, j, j + 1);
+        if (largest == root)
+        {
+            break;
+        }
+
+        swap(a, root, largest);
+        root = largest;
+    }
 }
 
 void heapsort(int a[], size_t length)

@@ -3,26 +3,26 @@
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
-static void introsort_rec(int a[], size_t left, size_t right, size_t depth_limit)
+static void introsort_rec(int a[], size_t lo, size_t hi, size_t depth_limit)
 {
     extern struct counter counters;
-    size_t pivot, length = right - left + 1;
+    size_t pivot, length = hi - lo + 1;
 
     if (length <= MAX_THRESH)
     {
-        insertion_sort(a + left, length);
+        insertion_sort(a + lo, length);
         return;
     }
 
     if (depth_limit == 0)
     {
-        heapsort(a + left, length);
+        heapsort(a + lo, length);
         return;
     }
 
-    pivot = partition(a, left, right, MID, NULL);
-    introsort_rec(a, left, pivot, depth_limit - 1);
-    introsort_rec(a, pivot + 1, right, depth_limit - 1);
+    pivot = partition(a, lo, hi, MID, NULL);
+    introsort_rec(a, lo, pivot, depth_limit - 1);
+    introsort_rec(a, pivot + 1, hi, depth_limit - 1);
 
     counters.recursion_counter++;
 }

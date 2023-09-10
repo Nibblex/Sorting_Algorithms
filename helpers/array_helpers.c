@@ -52,9 +52,9 @@ void array_dump(int a[], size_t length)
 {
     for (size_t i = 0; i < length; i++)
     {
-        printf("%i", a[i]);
-        printf((i < length - 1) ? " " : "\n");
+        printf("%d ", a[i]);
     }
+    printf("\n");
 }
 
 int *array_copy(int array[], size_t length)

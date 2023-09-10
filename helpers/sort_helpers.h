@@ -22,8 +22,8 @@ int cmp_desc(const void *a, const void *b);
 
 size_t swap(int a[], size_t i, size_t j);
 
-size_t partition(int a[], size_t left, size_t right, int pivot_type, xrshr128p_state_t *state);
+size_t partition(int a[], size_t lo, size_t hi, int pivot_type, xrshr128p_state_t *state);
 
-void merge(int a[], size_t left, size_t mid, size_t right);
+void merge(int a[], size_t lo, size_t mid, size_t hi);
 
 #endif

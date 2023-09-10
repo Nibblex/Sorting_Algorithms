@@ -3,8 +3,6 @@
 
 #define MAX_THRESH 15
 
-#define U32_MAX ((size_t)-1)
-
 /**
  * @brief A struct that holds counters for various operations in sorting algorithms.
  */

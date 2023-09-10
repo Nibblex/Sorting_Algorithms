@@ -37,75 +37,98 @@ size_t swap(int a[], size_t i, size_t j)
     return i;
 }
 
-static size_t pivot(int a[], size_t left, size_t right, int type, xrshr128p_state_t *state)
+static size_t pivot(int a[], size_t lo, size_t hi, int type, xrshr128p_state_t *state)
 {
     size_t mid;
     switch (type)
     {
     case MID:
-        return left + ((right - left) >> 1);
+        return lo + ((hi - lo) >> 1);
     case MED3:
-        mid = left + ((right - left) >> 1);
-        if (cmp(a + mid, a + left) < 0)
+        mid = lo + ((hi - lo) >> 1);
+        if (cmp(a + mid, a + lo) < 0)
         {
-            swap(a, left, mid);
+            swap(a, mid, lo);
         }
-        if (cmp(a + right, a + left) < 0)
+        if (cmp(a + hi, a + mid) < 0)
         {
-            swap(a, left, right);
+            swap(a, hi, mid);
         }
-        if (cmp(a + mid, a + right) < 0)
+        else
         {
-            swap(a, mid, right);
+            return mid;
         }
-        return right;
+        if (cmp(a + mid, a + lo) < 0)
+        {
+            swap(a, mid, lo);
+        }
+        return mid;
     case RANDOM:
-        return rand_pos(*state, left, right);
+        return rand_pos(*state, lo, hi);
     default:
         fprintf(stderr, "Invalid pivot type\n");
         exit(EXIT_FAILURE);
     }
 }
 
-size_t partition(int a[], size_t left, size_t right, int pivot_type, xrshr128p_state_t *state)
+size_t partition(int a[], size_t lo, size_t hi, int pivot_type, xrshr128p_state_t *state)
 {
-    size_t piv = pivot(a, left, right, pivot_type, state);
-    int pivot_value = a[piv];
+    size_t piv;
+    int *left_ptr, *right_ptr, *piv_ptr;
 
-    size_t i = left;
-    size_t j = right + 1;
+    piv = pivot(a, lo, hi, pivot_type, state);
+    left_ptr = a + lo;
+    right_ptr = a + hi;
+    piv_ptr = a + piv;
 
-    swap(a, left, piv);
-
-    while (1)
+    do
     {
-        do
-            i++;
-        while (cmp(a + i, &pivot_value) < 0);
-
-        do
-            j--;
-        while (cmp(a + j, &pivot_value) > 0);
-
-        if (i >= j)
+        while (cmp(left_ptr, piv_ptr) < 0)
         {
-            return swap(a, j, left);
+            left_ptr++;
         }
 
-        swap(a, i, j);
-    }
+        while (cmp(piv_ptr, right_ptr) < 0)
+        {
+            right_ptr--;
+        }
+
+        if (left_ptr < right_ptr)
+        {
+            swap(a, left_ptr - a, right_ptr - a);
+            if (piv_ptr == left_ptr)
+            {
+                piv_ptr = right_ptr;
+            }
+            else if (piv_ptr == right_ptr)
+            {
+                piv_ptr = left_ptr;
+            }
+            left_ptr++;
+            right_ptr--;
+        }
+        else if (left_ptr == right_ptr)
+        {
+            left_ptr++;
+            right_ptr--;
+            break;
+        }
+
+    } while (left_ptr <= right_ptr);
+
+    return right_ptr - a;
 }
 
-void merge(int a[], size_t left, size_t mid, size_t right)
+void merge(int a[], size_t lo, size_t mid, size_t hi)
 {
-    size_t n1 = mid - left + 1;
-    size_t n2 = right - mid;
+    size_t n1 = mid - lo + 1;
+    size_t n2 = hi - mid;
 
     int L[n1], R[n2];
-    memcpy(L, a + left, n1 * sizeof(int));
+    memcpy(L, a + lo, n1 * sizeof(int));
     memcpy(R, a + mid + 1, n2 * sizeof(int));
 
-    size_t i = 0, j = 0, k = left;
+    size_t i = 0, j = 0, k = lo;
     while (i < n1 && j < n2)
     {
         if (cmp(L + i, R + j) <= 0)

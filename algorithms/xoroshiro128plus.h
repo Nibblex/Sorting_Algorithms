@@ -18,13 +18,13 @@ typedef struct xrshr128p_state
     size_t s[2];
 } xrshr128p_state_t;
 
-#define xrshr128p_init(_seed)              \
-    ({                                     \
-        uint64_t __seed = (_seed);         \
-        xrshr128p_state_t __state;         \
-        __state.s[0] = (__seed);           \
-        __state.s[1] = splitmix64(__seed); \
-        __state;                           \
+#define xrshr128p_init(_seed)                \
+    ({                                       \
+        uint64_t __seed = (uint64_t)(_seed); \
+        xrshr128p_state_t __state;           \
+        __state.s[0] = (__seed);             \
+        __state.s[1] = splitmix64(__seed);   \
+        __state;                             \
     })
 
 #define xrshr128p_next(_state)                                           \

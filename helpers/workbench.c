@@ -6,7 +6,7 @@
 #include "../helpers/array_helpers.h"
 #include "workbench.h"
 
-#define GETMS() (1000.0 * clock() / CLOCKS_PER_SEC)
+#define GETMS() ((double)(clock() * 1000) / CLOCKS_PER_SEC)
 
 #define HEADER "Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: (sorted-permuted)\n"
 

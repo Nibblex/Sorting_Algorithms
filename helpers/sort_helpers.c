@@ -95,7 +95,7 @@ size_t partition(int a[], size_t lo, size_t hi, int pivot_type, xrshr128p_state_
 
         if (left_ptr < right_ptr)
         {
-            swap(a, left_ptr - a, right_ptr - a);
+            swap(a, (size_t)(left_ptr - a), (size_t)(right_ptr - a));
             if (piv_ptr == left_ptr)
             {
                 piv_ptr = right_ptr;
@@ -116,7 +116,7 @@ size_t partition(int a[], size_t lo, size_t hi, int pivot_type, xrshr128p_state_
 
     } while (left_ptr <= right_ptr);
 
-    return right_ptr - a;
+    return (size_t)(right_ptr - a);
 }
 
 void merge(int a[], size_t lo, size_t mid, size_t hi)

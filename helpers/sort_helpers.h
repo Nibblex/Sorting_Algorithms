@@ -12,7 +12,7 @@ enum pivot_type
     MID,
     MED3,
     RANDOM,
-} pivot_type;
+};
 
 /* Common functions */
 

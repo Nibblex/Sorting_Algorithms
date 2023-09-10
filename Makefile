@@ -1,8 +1,8 @@
 SORTER=sorter
 ARRAYGEN=arraygen
 CC=@gcc
-CFLAGS= -std=c99 -Wall -Werror -Wbad-function-cast -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes \
-        -Wunused-const-variable -Wunused-function -Wunused-macros -Wunused-parameter -Wunused-macros -O3 -g
+CFLAGS= -std=c99 -Wall -Werror -Wshadow -Wbad-function-cast -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations\
+        -Wunreachable-code -Wunused-const-variable -Wunused-function -Wbad-function-cast -Wunused-macros -Wunused-parameter -Wunused-macros -O3 -g
 LDFLAGS= -lm
 VALGRIND=valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 

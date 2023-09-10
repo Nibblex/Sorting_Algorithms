@@ -55,11 +55,11 @@ struct test TESTS[] = {
         _res;                                    \
     })
 
-static int count_commas(const char *s)
+static size_t count_commas(const char *s)
 {
-    int count = 0;
+    size_t i, count = 0;
 
-    for (int i = 0; s[i]; i++)
+    for (i = 0; s[i]; i++)
         if (s[i] == ',')
             count++;
 

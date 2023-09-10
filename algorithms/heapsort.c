@@ -3,18 +3,18 @@
 
 #define U32_MAX ((size_t)-1)
 
-#define largest(a, length, i, j, k)                    \
-    ({                                                 \
-        size_t largest = i;                            \
-        if (j < length && cmp(a + j, a + largest) > 0) \
-        {                                              \
-            largest = j;                               \
-        }                                              \
-        if (k < length && cmp(a + k, a + largest) > 0) \
-        {                                              \
-            largest = k;                               \
-        }                                              \
-        largest;                                       \
+#define largest(a, length, i, j, k)                     \
+    ({                                                  \
+        size_t _largest = i;                            \
+        if (j < length && cmp(a + j, a + _largest) > 0) \
+        {                                               \
+            _largest = j;                               \
+        }                                               \
+        if (k < length && cmp(a + k, a + _largest) > 0) \
+        {                                               \
+            _largest = k;                               \
+        }                                               \
+        _largest;                                       \
     })
 
 static void heapify(int a[], size_t length, size_t root)

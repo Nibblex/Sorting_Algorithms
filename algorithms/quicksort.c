@@ -5,7 +5,7 @@
 
 void quicksort(int a[], size_t length)
 {
-    if (length < 2)
+    if (length == 0)
         return;
 
     xrshr128p_state_t state = xrshr128p_init(time(NULL));

@@ -22,7 +22,7 @@ static inline int both_sign(xrshr128p_state_t state)
     return rand_pos(state, 0, 1) ? 1 : -1;
 }
 
-static inline sign_func sign_func_ptr(enum sign_type sign)
+static sign_func sign_func_ptr(enum sign_type sign)
 {
     switch (sign)
     {
@@ -39,15 +39,17 @@ static inline sign_func sign_func_ptr(enum sign_type sign)
 
 int *arraygen(struct array_config *config)
 {
-    xrshr128p_state_t state = xrshr128p_init(time(NULL));
-    sign_func sign_f = sign_func_ptr(config->sign);
     int *array;
+    sign_func sign;
+    xrshr128p_state_t state;
 
     array = malloc(config->length * sizeof(int));
+    sign = sign_func_ptr(config->sign);
+    state = xrshr128p_init(time(NULL));
 
     for (size_t i = 0; i < config->length; i++)
     {
-        array[i] = sign_f(state) * rand_pos(state, config->min, config->max);
+        array[i] = sign(state) * rand_pos(state, config->min, config->max);
     }
 
     if (config->order != UNS)

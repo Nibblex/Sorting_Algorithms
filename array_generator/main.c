@@ -5,14 +5,16 @@
 
 #include "arraygen.h"
 
-static void print_usage(void)
+static void usage(int exit_status)
 {
     printf("Usage: arraygen [-l length] [-m min] [-M max] [-o order] [-s sign]\n");
     printf("  -l : Length of the array (default: 10)\n");
     printf("  -m : Minimum value (default: 1)\n");
     printf("  -M : Maximum value (default: 100)\n");
-    printf("  -o : Order (asc, desc, uns, default: uns)\n");
-    printf("  -s : Sign (pos, neg, both, default: pos)\n");
+    printf("  -o : Order (asc, desc, default: uns)\n");
+    printf("  -s : Sign (pos, neg, default: both (pos and neg))\n");
+    printf("  -h : Print this help message\n");
+    exit(exit_status);
 }
 
 static void print_array(int *array, size_t length)
@@ -35,13 +37,8 @@ static enum order_type parse_order(char *order)
     {
         return DESC;
     }
-    else if (strcmp(order, "uns") == 0)
-    {
-        return UNS;
-    }
 
-    print_usage();
-    exit(EXIT_FAILURE);
+    return UNS;
 }
 
 static enum sign_type parse_sign(char *sign)
@@ -54,48 +51,52 @@ static enum sign_type parse_sign(char *sign)
     {
         return NEG;
     }
-    else if (strcmp(sign, "both") == 0)
-    {
-        return BOTH;
-    }
 
-    print_usage();
-    exit(EXIT_FAILURE);
+    return BOTH;
 }
 
-int main(int argc, char *argv[])
+static void parse_args(int argc, char *argv[], struct array_config *config)
 {
-    struct array_config config;
-    config = (struct array_config){.length = 10, .min = 1, .max = 100, .order = UNS, .sign = POS};
     int c;
 
-    while ((c = getopt(argc, argv, "l:m:M:o:s:")) != -1)
+    *config = (struct array_config){.length = 10, .min = 1, .max = 100, .order = UNS, .sign = BOTH};
+
+    while ((c = getopt(argc, argv, "l:m:M:o:s:h")) != -1)
     {
         switch (c)
         {
         case 'l':
-            config.length = strtoul(optarg, NULL, 10);
+            config->length = strtoul(optarg, NULL, 10);
             break;
         case 'm':
-            config.min = strtol(optarg, NULL, 10);
+            config->min = strtol(optarg, NULL, 10);
             break;
         case 'M':
-            config.max = strtol(optarg, NULL, 10);
+            config->max = strtol(optarg, NULL, 10);
             break;
         case 'o':
-            config.order = parse_order(optarg);
+            config->order = parse_order(optarg);
             break;
         case 's':
-            config.sign = parse_sign(optarg);
+            config->sign = parse_sign(optarg);
             break;
+        case 'h':
+            usage(EXIT_SUCCESS);
         default:
-            fprintf(stderr, "Invalid option\n");
-            print_usage();
-            return EXIT_FAILURE;
+            usage(EXIT_FAILURE);
         }
     }
+}
 
-    int *array = arraygen(&config);
+int main(int argc, char *argv[])
+{
+    int *array;
+    struct array_config config;
+
+    parse_args(argc, argv, &config);
+
+    array = arraygen(&config);
+
     print_array(array, config.length);
 
     free(array);

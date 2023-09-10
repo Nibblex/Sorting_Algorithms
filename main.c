@@ -117,7 +117,8 @@ static void usage(int exit_status)
     /* Test options */
     printf("  -t <test1,test2,...>, --tests <test1,test2,...>");
     printf("\t\t\t\t\t\t\t\t\t\t\tSpecify the tests to run \n");
-    printf("\tAvailable tests: sorted, permuted \n");
+    printf("\tAvailable tests: ");
+    printf("%s\n", get_choices(TESTS));
 
     /* Format options */
     printf("  -f <format>, --format <format>");
@@ -166,7 +167,6 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
             break;
         case 'h':
             usage(EXIT_SUCCESS);
-            break;
         default:
             usage(EXIT_FAILURE);
         }

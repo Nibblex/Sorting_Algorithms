@@ -5,7 +5,7 @@
 
 #include "../algorithms/xoroshiro128plus.h"
 
-#define rand_pos(state, a, b) ((xrshr128p_next(state) % ((b) - (a) + 1)) + (a))
+#define rand_pos(state, a, b) ((__typeof__(a))(xrshr128p_next(state) % (size_t)((b) - (a) + 1)) + (a))
 
 enum pivot_type
 {

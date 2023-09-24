@@ -69,10 +69,10 @@ static void parse_args(int argc, char *argv[], struct array_config *config)
             config->length = strtoul(optarg, NULL, 10);
             break;
         case 'm':
-            config->min = strtol(optarg, NULL, 10);
+            config->min = atoi(optarg);
             break;
         case 'M':
-            config->max = strtol(optarg, NULL, 10);
+            config->max = atoi(optarg);
             break;
         case 'o':
             config->order = parse_order(optarg);

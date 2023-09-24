@@ -27,6 +27,7 @@ typedef struct xrshr128p_state
         __state;                             \
     })
 
+/* size_t in range [0, 2^64-1] */
 #define xrshr128p_next(_state)                                           \
     ({                                                                   \
         const size_t __s0 = (_state).s[0];                               \

@@ -167,6 +167,7 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
             break;
         case 'h':
             usage(EXIT_SUCCESS);
+            break;
         default:
             usage(EXIT_FAILURE);
         }

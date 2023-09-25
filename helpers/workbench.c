@@ -59,8 +59,8 @@ static void print_row(struct run *run, enum table_format format)
            run->counters.recursion_counter,
            run->counters.isort_counter,
            run->counters.heapsort_counter,
-           run->sorted == NOT_TESTED ? TEST_NOT_TESTED : (run->sorted == OK ? TEST_OK : TEST_FAIL),
-           run->permuted == NOT_TESTED ? TEST_NOT_TESTED : (run->permuted == OK ? TEST_OK : TEST_FAIL));
+           run->sorted == NULL ? TEST_NOT_TESTED : run->sorted,
+           run->permuted == NULL ? TEST_NOT_TESTED : run->permuted);
 }
 
 static void run_tests(struct workbench *wb, int *copy, struct run *run)
@@ -72,11 +72,11 @@ static void run_tests(struct workbench *wb, int *copy, struct run *run)
     {
         if (test->type == SORTED)
         {
-            run->sorted = array_is_sorted(copy, wb->array_length) ? OK : FAIL;
+            run->sorted = array_is_sorted(copy, wb->array_length) ? TEST_OK : TEST_FAIL;
         }
         else if (test->type == PERMUTED)
         {
-            run->permuted = array_is_permutation_of(copy, wb->array, wb->array_length) ? OK : FAIL;
+            run->permuted = array_is_permutation_of(copy, wb->array, wb->array_length) ? TEST_OK : TEST_FAIL;
         }
         test++;
     }

@@ -6,17 +6,6 @@
 #include "../algorithms/algorithms.h"
 
 /**
- * @brief Enum representing the possible results of a test.
- *
- */
-enum test_result
-{
-    NOT_TESTED, /**< Test has not been executed yet. */
-    OK,         /**< Test has passed successfully. */
-    FAIL        /**< Test has failed. */
-};
-
-/**
  * @brief A struct representing a test case for sorting algorithms.
  *
  */
@@ -49,11 +38,11 @@ enum table_format
  */
 struct run
 {
-    char *algorithm_name;      /**< The name of the sorting algorithm used. */
-    double elapsed;            /**< The elapsed time of the sorting algorithm run. */
-    struct counter counters;   /**< The counters used during the sorting algorithm run. */
-    enum test_result sorted;   /**< The result of testing if the array is sorted. */
-    enum test_result permuted; /**< The result of testing if the array is a permutation of the original array. */
+    char *algorithm_name;    /**< The name of the sorting algorithm used. */
+    double elapsed;          /**< The elapsed time of the sorting algorithm run. */
+    struct counter counters; /**< The counters used during the sorting algorithm run. */
+    char *sorted;            /**< The result of testing if the array is sorted. */
+    char *permuted;          /**< The result of testing if the array is a permutation of the original array. */
 };
 
 /**

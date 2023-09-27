@@ -21,76 +21,56 @@ struct algorithm ALGORITHMS[] = {
     {NULL, NULL},
 };
 
+const size_t NUM_ALGORITHMS = sizeof(ALGORITHMS) / sizeof(ALGORITHMS[0]) - 1;
+const char *ALGORITHM_NAMES = "heapsort,insertion_sort,introsort,mergesort,quicksort,quicksort_std,selection_sort,shellsort,timsort";
+
 struct test TESTS[] = {
     {"sorted", SORTED},
     {"permuted", PERMUTED},
     {NULL, 0},
 };
 
-#define get_choices(arr)                        \
+const char *TEST_NAMES = "sorted,permuted";
+
+#define find_choice(arr, token)                 \
     ({                                          \
-        __typeof__(arr[0]) *_ptr = arr;         \
-        char _formatted_str[512] = "";          \
-        while (_ptr->name)                      \
+        __typeof__(arr[0]) *_ptr, *_res = NULL; \
+        for (_ptr = arr; _ptr->name; _ptr++)    \
         {                                       \
-            strcat(_formatted_str, _ptr->name); \
-            _ptr++;                             \
-            if (_ptr->name)                     \
-                strcat(_formatted_str, ",");    \
+            if (strcmp(_ptr->name, token) == 0) \
+            {                                   \
+                _res = _ptr;                    \
+                break;                          \
+            }                                   \
         }                                       \
-        _formatted_str;                         \
+        _res;                                   \
     })
 
-#define find_choice(arr, choice)                 \
-    ({                                           \
-        __typeof__(arr[0]) *_ptr, *_res = NULL;  \
-        for (_ptr = arr; _ptr->name; _ptr++)     \
-        {                                        \
-            if (strcmp(_ptr->name, choice) == 0) \
-            {                                    \
-                _res = _ptr;                     \
-                break;                           \
-            }                                    \
-        }                                        \
-        _res;                                    \
-    })
-
-static size_t count_commas(const char *s)
-{
-    size_t i, count = 0;
-
-    for (i = 0; s[i]; i++)
-        if (s[i] == ',')
-            count++;
-
-    return count;
-}
-
-#define select_choices(arr, input)                                                                                  \
-    ({                                                                                                              \
-        char *token, *input_copy = strdup(input);                                                                   \
-        __typeof__(arr[0]) *selected_choices = malloc(sizeof(__typeof__(arr[0])) * (count_commas(input_copy) + 2)); \
-        if (selected_choices == NULL)                                                                               \
-        {                                                                                                           \
-            perror("Error de memoria");                                                                             \
-            exit(EXIT_FAILURE);                                                                                     \
-        }                                                                                                           \
-        __typeof__(arr[0]) *choice;                                                                                 \
-        int count = 0;                                                                                              \
-        token = strtok(input_copy, ",");                                                                            \
-        while (token != NULL)                                                                                       \
-        {                                                                                                           \
-            choice = find_choice(arr, token);                                                                       \
-            if (choice != NULL)                                                                                     \
-            {                                                                                                       \
-                selected_choices[count] = *choice;                                                                  \
-                count++;                                                                                            \
-            }                                                                                                       \
-            token = strtok(NULL, ",");                                                                              \
-        }                                                                                                           \
-        selected_choices[count] = (__typeof__(*selected_choices)){0};                                               \
-        free(input_copy);                                                                                           \
-        selected_choices;                                                                                           \
+#define select_choices(arr, input)                                                                        \
+    ({                                                                                                    \
+        char *token, *input_copy = strdup(input);                                                         \
+        __typeof__(arr[0]) *selected_choices = malloc(sizeof(__typeof__(arr[0])) * (NUM_ALGORITHMS + 1)); \
+        if (selected_choices == NULL)                                                                     \
+        {                                                                                                 \
+            perror("Error de memoria");                                                                   \
+            exit(EXIT_FAILURE);                                                                           \
+        }                                                                                                 \
+        __typeof__(arr[0]) *choice = NULL;                                                                \
+        int count = 0;                                                                                    \
+        token = strtok(input_copy, ",");                                                                  \
+        while (token != NULL)                                                                             \
+        {                                                                                                 \
+            choice = find_choice(arr, token);                                                             \
+            if (choice != NULL)                                                                           \
+            {                                                                                             \
+                selected_choices[count] = *choice;                                                        \
+                count++;                                                                                  \
+            }                                                                                             \
+            token = strtok(NULL, ",");                                                                    \
+        }                                                                                                 \
+        selected_choices[count] = (__typeof__(*selected_choices)){0};                                     \
+        free(input_copy);                                                                                 \
+        selected_choices;                                                                                 \
     })
 
 static int parse_format(char *input)
@@ -112,13 +92,13 @@ static void usage(int exit_status)
     printf("  -a <algorithm1,algorithm2,...>, --algorithms <algorithm1,algorithm2,...>");
     printf("\t\t\t\t\t\t\t\tSpecify the algorithms to run \n");
     printf("\tAvailable algorithms: ");
-    printf("%s\n", get_choices(ALGORITHMS));
+    printf("%s\n", ALGORITHM_NAMES);
 
     /* Test options */
     printf("  -t <test1,test2,...>, --tests <test1,test2,...>");
     printf("\t\t\t\t\t\t\t\t\t\t\tSpecify the tests to run \n");
     printf("\tAvailable tests: ");
-    printf("%s\n", get_choices(TESTS));
+    printf("%s\n", TEST_NAMES);
 
     /* Format options */
     printf("  -f <format>, --format <format>");
@@ -175,7 +155,7 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
 
     if (!wb->algorithms)
     {
-        wb->algorithms = select_choices(ALGORITHMS, get_choices(ALGORITHMS));
+        wb->algorithms = select_choices(ALGORITHMS, ALGORITHM_NAMES);
     }
 }
 

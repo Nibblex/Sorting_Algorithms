@@ -3,6 +3,8 @@
 
 #define MAX_THRESH 15
 
+#include <stdbool.h>
+
 /**
  * @brief A struct that holds counters for various operations in sorting algorithms.
  */
@@ -29,6 +31,7 @@ struct algorithm
 {
     char *name;     /**< Name of the algorithm */
     sorting_func f; /**< Function pointer to the algorithm */
+    bool enabled;   /**< Flag to indicate if the algorithm is enabled */
 };
 
 /* Sorting algorithms */

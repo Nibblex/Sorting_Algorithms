@@ -72,7 +72,7 @@ bool array_is_sorted(int a[], size_t length)
         i++;
     }
 
-    return !length || i == length;
+    return length == 0 || length == i;
 }
 
 bool array_is_permutation_of(int a[], int b[], size_t length)

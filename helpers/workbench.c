@@ -10,7 +10,7 @@
 
 #define HEADER "Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: (sorted-permuted)\n"
 
-#define TEST_NOT_TESTED "\x1b[33mNOT TESTED\x1b[0m"
+#define TEST_UNTESTED "\x1b[33mUNTESTED\x1b[0m"
 #define TEST_OK "\x1b[32mOK\x1b[0m"
 #define TEST_FAIL "\x1b[31mFAIL\x1b[0m"
 
@@ -34,21 +34,25 @@
 
 struct counter counters;
 
-static void print_row(struct run *run, enum table_format format)
+extern int qsort_r(void *base, size_t nmemb, size_t size,
+                   int (*compar)(const void *, const void *, void *),
+                   void *arg);
+
+static void print_row(struct run *run, char *format)
 {
     char *fmt;
 
-    switch (format)
+    if (strcmp(format, "human") == 0)
     {
-    case HUMAN_READABLE:
         fmt = "%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-20lu %s-%s\n";
-        break;
-    case CSV:
+    }
+    else if (strcmp(format, "csv") == 0)
+    {
         fmt = "%s,%g,%lu,%lu,%lu,%lu,%lu,%s,%s\n";
-        break;
-    default:
+    }
+    else
+    {
         fmt = "%s %g %lu %lu %lu %lu %lu %s %s\n";
-        break;
     }
 
     printf(fmt,
@@ -59,26 +63,26 @@ static void print_row(struct run *run, enum table_format format)
            run->counters.recursion_counter,
            run->counters.isort_counter,
            run->counters.heapsort_counter,
-           run->sorted == NULL ? TEST_NOT_TESTED : run->sorted,
-           run->permuted == NULL ? TEST_NOT_TESTED : run->permuted);
+           run->sorted == NULL ? TEST_UNTESTED : run->sorted,
+           run->permuted == NULL ? TEST_UNTESTED : run->permuted);
 }
 
 static void run_tests(struct workbench *wb, int *copy, struct run *run)
 {
     struct test *test;
 
-    test = wb->tests;
-    while (test && test->name)
+    for (size_t i = 0; i < NUM_TESTS; ++i)
     {
-        if (test->type == SORTED)
+        test = &wb->tests[i];
+
+        if (test->type == SORTED && test->enabled)
         {
             run->sorted = array_is_sorted(copy, wb->array_length) ? TEST_OK : TEST_FAIL;
         }
-        else if (test->type == PERMUTED)
+        else if (test->type == PERMUTED && test->enabled)
         {
             run->permuted = array_is_permutation_of(copy, wb->array, wb->array_length) ? TEST_OK : TEST_FAIL;
         }
-        test++;
     }
 }
 
@@ -98,9 +102,38 @@ static struct run run_algorithm(struct workbench *wb, struct algorithm *alg, int
     return run;
 }
 
+static int run_cmp(const void *a, const void *b, void *sort_by)
+{
+    struct run *run_a = (struct run *)a;
+    struct run *run_b = (struct run *)b;
+
+    int _sort_by = *(int *)sort_by;
+
+    switch (_sort_by)
+    {
+    case 2:
+        return run_a->elapsed < run_b->elapsed ? -1 : run_a->elapsed > run_b->elapsed;
+    case 3:
+        return run_a->counters.cmp_counter < run_b->counters.cmp_counter ? -1 : run_a->counters.cmp_counter > run_b->counters.cmp_counter;
+    case 4:
+        return run_a->counters.swap_counter < run_b->counters.swap_counter ? -1 : run_a->counters.swap_counter > run_b->counters.swap_counter;
+    case 5:
+        return run_a->counters.recursion_counter < run_b->counters.recursion_counter ? -1 : run_a->counters.recursion_counter > run_b->counters.recursion_counter;
+    case 6:
+        return run_a->counters.isort_counter < run_b->counters.isort_counter ? -1 : run_a->counters.isort_counter > run_b->counters.isort_counter;
+    case 7:
+        return run_a->counters.heapsort_counter < run_b->counters.heapsort_counter ? -1 : run_a->counters.heapsort_counter > run_b->counters.heapsort_counter;
+    default:
+        return memcmp(run_a->algorithm_name, run_b->algorithm_name, strlen(run_a->algorithm_name));
+    }
+
+    return 0;
+}
+
 void workbench_run(struct workbench *wb)
 {
     int *copy;
+    size_t run_count = 0;
     struct algorithm *alg;
     struct run run, total = {0};
 
@@ -113,15 +146,21 @@ void workbench_run(struct workbench *wb)
     }
 
     /* Print header containing the column names when using the human-readable format. */
-    if (wb->format == HUMAN_READABLE)
+    if (strcmp(wb->format, "human") == 0)
     {
         print_header();
     }
 
     /* Run each algorithm and print the results. */
-    alg = wb->algorithms;
-    while (alg && alg->name)
+    for (size_t i = 0; i < NUM_ALGORITHMS; ++i)
     {
+        alg = &wb->algorithms[i];
+
+        if (!alg->enabled)
+        {
+            continue;
+        }
+
         copy = array_copy(wb->array, wb->array_length);
 
         memset(&counters, 0, sizeof(struct counter));
@@ -138,15 +177,29 @@ void workbench_run(struct workbench *wb)
 
         run_tests(wb, copy, &run);
 
-        print_row(&run, wb->format);
+        if (wb->sort_by == 0)
+        {
+            print_row(&run, wb->format);
+        }
+
+        wb->runs[run_count++] = run;
 
         free(copy);
+    }
 
-        alg++;
+    /* Sort the runs by the given column. */
+    if (wb->sort_by != 0)
+    {
+        qsort_r(wb->runs, run_count, sizeof(struct run), run_cmp, &wb->sort_by);
+
+        for (size_t i = 0; i < run_count; ++i)
+        {
+            print_row(&wb->runs[i], wb->format);
+        }
     }
 
     /* Print the total row when using the human-readable format. */
-    if (wb->format == HUMAN_READABLE)
+    if (strcmp(wb->format, "human") == 0)
     {
         print_hls(strlen(HEADER));
         print_row(&total, wb->format);
@@ -156,6 +209,4 @@ void workbench_run(struct workbench *wb)
 void workbench_free(struct workbench *wb)
 {
     free(wb->array);
-    free(wb->algorithms);
-    free(wb->tests);
 }

@@ -36,11 +36,13 @@ struct algorithm
 
 /* Sorting algorithms */
 
+void binsort(int a[], size_t length);
+
 void heapsort(int a[], size_t length);
 
-void insertion_sort(int a[], size_t length);
-
 void introsort(int a[], size_t length);
+
+void isort(int a[], size_t length);
 
 void mergesort(int a[], size_t length);
 

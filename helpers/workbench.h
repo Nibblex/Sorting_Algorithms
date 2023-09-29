@@ -5,7 +5,7 @@
 
 #include "../algorithms/algorithms.h"
 
-#define NUM_ALGORITHMS 9
+#define NUM_ALGORITHMS 10
 #define NUM_TESTS 2
 
 /**

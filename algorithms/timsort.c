@@ -10,7 +10,7 @@ void timsort(int a[], size_t length)
     {
         lo = i * MAX_THRESH;
         hi = MIN(lo + MAX_THRESH - 1, length - 1);
-        insertion_sort(a + lo, hi - lo + 1);
+        isort(a + lo, hi - lo + 1);
     }
 
     size_t size = MAX_THRESH;

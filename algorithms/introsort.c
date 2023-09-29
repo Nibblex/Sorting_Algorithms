@@ -10,7 +10,7 @@ static void introsort_rec(int a[], size_t lo, size_t hi, size_t depth_limit)
 
     if (length <= MAX_THRESH)
     {
-        insertion_sort(a + lo, length);
+        isort(a + lo, length);
         return;
     }
 

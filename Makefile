@@ -2,10 +2,11 @@ SORTER=sorter
 ARRAYGEN=arraygen
 CC=@gcc
 CFLAGS= -std=c99 -Wall -Werror -Wextra -Wshadow -Wconversion -Wuninitialized -Wbad-function-cast -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations\
-        -Wunreachable-code -Wunused-const-variable -Wunused-function -Wbad-function-cast -Wunused-macros -Wunused-parameter -Wunused-macros -O3 -g
+        -Wunreachable-code -Wunused-const-variable -Wunused-function -Wbad-function-cast -Wunused-macros -Wunused-parameter -Wunused-macros -g
 LDFLAGS= -lm
 VALGRIND=valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 
+OPTIMIZATION?=-O0
 ARRAYGEN_ARGS?=-l 1000
 SORTER_ARGS?=-a heapsort,introsort,mergesort,quicksort,quicksort_std,shellsort,timsort -t sorted,permuted -f human
 
@@ -28,13 +29,13 @@ memtest: $(BUILD_DIR) $(SORTER) $(ARRAYGEN)
 	$(VALGRIND) ./$(ARRAYGEN) $(ARRAYGEN_ARGS) | $(VALGRIND) ./$(SORTER) $(SORTER_ARGS)
 
 $(SORTER): $(SORTER_OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(OPTIMIZATION) -o $@ $^ $(LDFLAGS)
 
 $(ARRAYGEN): $(ARRAYGEN_OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(OPTIMIZATION) -o $@ $^
 
 $(BUILD_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(OPTIMIZATION) -c $< -o $@
 
 # Create the build directory
 $(BUILD_DIR):

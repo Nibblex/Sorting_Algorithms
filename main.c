@@ -8,13 +8,14 @@
 
 extern char *strdup(const char *);
 
-const char *ALG_CHOICES = "heapsort,insertion_sort,introsort,mergesort,quicksort,quicksort_std,selection_sort,shellsort,timsort";
+const char *ALG_CHOICES = "binsort,heapsort,introsort,isort,mergesort,quicksort,quicksort_std,selection_sort,shellsort,timsort";
 const char *TEST_CHOICES = "sorted,permuted";
 
 const struct algorithm ALGORITHMS[] = {
+    {"binsort", binsort, false},
     {"heapsort", heapsort, false},
-    {"insertion_sort", insertion_sort, false},
     {"introsort", introsort, false},
+    {"isort", isort, false},
     {"mergesort", mergesort, false},
     {"quicksort", quicksort, false},
     {"quicksort_std", quicksort_std, false},

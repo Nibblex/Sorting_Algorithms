@@ -26,7 +26,7 @@ void quicksort(int a[], size_t length)
         segment_length = hi - lo + 1;
         if (segment_length < MAX_THRESH)
         {
-            insertion_sort(a + lo, segment_length);
+            isort(a + lo, segment_length);
             continue;
         }
 

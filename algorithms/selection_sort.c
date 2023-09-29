@@ -1,28 +1,27 @@
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
-static size_t min_pos_from(int a[], size_t i, size_t length)
-{
-    size_t j, min_pos = i;
-
-    for (j = i + 1; j < length; j++)
-    {
-        if (cmp(a + j, a + min_pos) < 0)
-        {
-            min_pos = j;
-        }
-    }
-
-    return min_pos;
-}
-
 void selection_sort(int a[], size_t length)
 {
-    size_t i, min_pos;
+    int *key, *min_ptr;
 
-    for (i = 0; i < length; i++)
+    for (size_t i = 0; i < length - 1; ++i)
     {
-        min_pos = min_pos_from(a, i, length);
-        swap(a, i, min_pos);
+        min_ptr = a + i;
+
+        // Find the minimum element in the unsorted array
+        for (key = a + i + 1; key < a + length; ++key)
+        {
+            if (cmp(key, min_ptr) < 0)
+            {
+                min_ptr = key;
+            }
+        }
+
+        if (min_ptr != a + i)
+        {
+            // Swap the minimum element with the first element of the unsorted array
+            ptr_swap(min_ptr, a + i);
+        }
     }
 }

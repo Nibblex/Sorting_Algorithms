@@ -20,7 +20,7 @@ static void usage(int exit_status)
 static void print_array(int *array, size_t length)
 {
     printf("%lu\n", length);
-    for (size_t i = 0; i < length; i++)
+    for (size_t i = 0; i < length; ++i)
     {
         printf("%d ", array[i]);
     }

@@ -47,7 +47,7 @@ int *arraygen(struct array_config *config)
     sign = sign_func_ptr(config->sign);
     state = xrshr128p_init(time(NULL));
 
-    for (size_t i = 0; i < config->length; i++)
+    for (size_t i = 0; i < config->length; ++i)
     {
         array[i] = sign(state) * rand_pos(state, config->min, config->max);
     }

@@ -8,7 +8,7 @@ void shellsort(int a[], size_t length)
 
     for (gap = length; gap >>= 1;)
     {
-        for (i = a + gap; i < a + length; i++)
+        for (i = a + gap; i < a + length; ++i)
         {
             key = *i;
 

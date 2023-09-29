@@ -37,6 +37,17 @@ size_t swap(int a[], size_t i, size_t j)
     return i;
 }
 
+void ptr_swap(int *a, int *b)
+{
+    extern struct counter counters;
+
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+
+    counters.swap_counter++;
+}
+
 static size_t pivot(int a[], size_t lo, size_t hi, int type, xrshr128p_state_t *state)
 {
     size_t mid;
@@ -95,7 +106,7 @@ size_t partition(int a[], size_t lo, size_t hi, int pivot_type, xrshr128p_state_
 
         if (left_ptr < right_ptr)
         {
-            swap(a, (size_t)(left_ptr - a), (size_t)(right_ptr - a));
+            ptr_swap(left_ptr, right_ptr);
             if (piv_ptr == left_ptr)
             {
                 piv_ptr = right_ptr;

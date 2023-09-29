@@ -6,7 +6,7 @@
 void timsort(int a[], size_t length)
 {
     size_t lo, mid, hi, chunks = length / MAX_THRESH;
-    for (size_t i = 0; i <= chunks; i++)
+    for (size_t i = 0; i <= chunks; ++i)
     {
         lo = i * MAX_THRESH;
         hi = MIN(lo + MAX_THRESH - 1, length - 1);

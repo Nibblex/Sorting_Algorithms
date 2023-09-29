@@ -35,7 +35,7 @@ size_t array_from_stdin(int *a[])
     }
 
     // Read array elements
-    for (size_t i = 0; i < size; i++)
+    for (size_t i = 0; i < size; ++i)
     {
         if (scanf("%d", &(*a)[i]) != 1)
         {
@@ -50,7 +50,7 @@ size_t array_from_stdin(int *a[])
 
 void array_dump(int a[], size_t length)
 {
-    for (size_t i = 0; i < length; i++)
+    for (size_t i = 0; i < length; ++i)
     {
         printf("%d ", a[i]);
     }
@@ -69,7 +69,7 @@ bool array_is_sorted(int a[], size_t length)
     size_t i = 1;
     while (i < length && cmp(a + i - 1, a + i) <= 0)
     {
-        i++;
+        ++i;
     }
 
     return length == 0 || length == i;

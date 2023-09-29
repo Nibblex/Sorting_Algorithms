@@ -3,19 +3,21 @@
 
 void shellsort(int a[], size_t length)
 {
-    size_t i, j, gap;
-    int temp;
+    int key, *i, *j;
+    size_t gap;
 
     for (gap = length; gap >>= 1;)
     {
-        for (i = gap; i < length; i++)
+        for (i = a + gap; i < a + length; i++)
         {
-            temp = a[i];
-            for (j = i; j >= gap && cmp(&temp, a + j - gap) < 0; j -= gap)
+            key = *i;
+
+            for (j = i; j >= a + gap && cmp(&key, j - gap) < 0; j -= gap)
             {
-                a[j] = a[j - gap];
+                *j = *(j - gap);
             }
-            a[j] = temp;
+
+            *j = key;
         }
     }
 }

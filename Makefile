@@ -1,9 +1,9 @@
 SORTER=sorter
 ARRAYGEN=arraygen
 CC=@gcc
-CFLAGS= -std=c99 -Wall -Werror -Wextra -Wshadow -Wconversion -Wuninitialized -Wbad-function-cast -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations\
+CFLAGS= -std=c99 -Wall -Werror -Wextra -Wshadow -Wconversion -Wuninitialized -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations\
         -Wunreachable-code -Wunused-const-variable -Wunused-function -Wbad-function-cast -Wunused-macros -Wunused-parameter -Wunused-macros -g
-LDFLAGS= -lm
+LDFLAGS=
 VALGRIND=valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 
 OPTIMIZATION?=-O0

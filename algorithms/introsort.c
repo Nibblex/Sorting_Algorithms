@@ -1,5 +1,3 @@
-#include <math.h>
-
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
@@ -29,6 +27,6 @@ static void introsort_rec(int a[], size_t lo, size_t hi, size_t depth_limit)
 
 void introsort(int a[], size_t length)
 {
-    size_t depth_limit = (size_t)(2 * floor(log2((double)length)));
+    size_t depth_limit = log2(length) * 2;
     introsort_rec(a, 0, length == 0 ? 0 : length - 1, depth_limit);
 }

@@ -7,6 +7,16 @@
 
 #define rand_pos(state, a, b) ((__typeof__(a))(xrshr128p_next(state) % (size_t)((b) - (a) + 1)) + (a))
 
+#define log2(x)                \
+    ({                         \
+        size_t _i = 0, _x = x; \
+        while (_x >>= 1)       \
+        {                      \
+            _i++;              \
+        }                      \
+        _i;                    \
+    })
+
 enum pivot_type
 {
     MID,

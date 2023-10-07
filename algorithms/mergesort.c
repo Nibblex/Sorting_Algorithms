@@ -4,8 +4,10 @@
 static void mergesort_rec(int a[], size_t lo, size_t hi)
 {
     extern struct counter counters;
-    size_t mid, length = hi - lo + 1;
 
+    size_t mid, length;
+
+    length = hi - lo + 1;
     if (length > 1)
     {
         mid = lo + ((length - 1) >> 1);

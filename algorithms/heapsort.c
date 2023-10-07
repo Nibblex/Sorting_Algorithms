@@ -1,37 +1,33 @@
 #include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
-#define U32_MAX ((size_t)-1)
-
-#define largest(a, length, i, j, k)                     \
-    ({                                                  \
-        size_t _largest = i;                            \
-        if (j < length && cmp(a + j, a + _largest) > 0) \
-        {                                               \
-            _largest = j;                               \
-        }                                               \
-        if (k < length && cmp(a + k, a + _largest) > 0) \
-        {                                               \
-            _largest = k;                               \
-        }                                               \
-        _largest;                                       \
-    })
-
-static void heapify(int a[], size_t length, size_t root)
+static void heapify(int a[], size_t length, int *root)
 {
-    size_t j, largest;
+    int *leaf, *largest;
+
     while (1)
     {
-        j = (root << 1) + 1;
+        leaf = a + ((root - a) << 1) + 1;
+        if (leaf + 1 >= a + length)
+        {
+            break;
+        }
 
-        largest = largest(a, length, root, j, j + 1);
+        largest = root;
+        if (cmp(leaf, largest) > 0)
+        {
+            largest = leaf;
+        }
+        if (cmp(leaf + 1, largest) > 0)
+        {
+            largest = leaf + 1;
+        }
         if (largest == root)
         {
             break;
         }
 
-        swap(a, root, largest);
-        root = largest;
+        root = ptr_swap(root, largest);
     }
 }
 
@@ -39,15 +35,17 @@ void heapsort(int a[], size_t length)
 {
     extern struct counter counters;
 
-    for (size_t i = (length >> 1) - 1; i < U32_MAX; i--)
+    int *lo, *hi;
+
+    for (lo = a + (length >> 1) - 1; lo >= a; --lo)
     {
-        heapify(a, length, i);
+        heapify(a, length, lo);
     }
 
-    for (size_t i = length - 1; i < U32_MAX; i--)
+    for (hi = a + length - 1; hi > a; --hi)
     {
-        swap(a, 0, i);
-        heapify(a, i, 0);
+        ptr_swap(a, hi);
+        heapify(a, (size_t)(hi - a), a);
     }
 
     counters.heapsort_counter++;

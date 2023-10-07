@@ -5,9 +5,9 @@
 
 void isort(int a[], size_t length)
 {
-    int key, *i, *j;
-
     extern struct counter counters;
+
+    int key, *i, *j;
 
     for (i = a + 1; i < a + length; ++i)
     {

@@ -5,15 +5,17 @@
 
 void timsort(int a[], size_t length)
 {
-    size_t lo, mid, hi, chunks = length / MAX_THRESH;
-    for (size_t i = 0; i <= chunks; ++i)
+    size_t size, lo, mid, hi, chunks, i;
+
+    chunks = length / MAX_THRESH;
+    for (i = 0; i <= chunks; ++i)
     {
         lo = i * MAX_THRESH;
         hi = MIN(lo + MAX_THRESH - 1, length - 1);
         isort(a + lo, hi - lo + 1);
     }
 
-    size_t size = MAX_THRESH;
+    size = MAX_THRESH;
     while (size < length)
     {
         lo = 0;

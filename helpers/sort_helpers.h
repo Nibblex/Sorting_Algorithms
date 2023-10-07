@@ -1,11 +1,12 @@
 #ifndef _SORT_HELPERS_H
 #define _SORT_HELPERS_H
 
-#include <stdlib.h>
+#include <stddef.h>
 
 #include "../algorithms/xoroshiro128plus.h"
 
 #define rand_pos(state, a, b) ((__typeof__(a))(xrshr128p_next(state) % (size_t)((b) - (a) + 1)) + (a))
+#define ptr_rand_pos(state, a, b) ((a) + rand_pos(state, 0, (b) - (a)))
 
 #define log2(x)                \
     ({                         \
@@ -28,13 +29,9 @@ enum pivot_type
 
 int cmp(const void *a, const void *b);
 
-int cmp_desc(const void *a, const void *b);
+int *ptr_swap(int *a, int *b);
 
-size_t swap(int a[], size_t i, size_t j);
-
-void ptr_swap(int *a, int *b);
-
-size_t partition(int a[], size_t lo, size_t hi, int pivot_type, xrshr128p_state_t *state);
+int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state);
 
 void merge(int a[], size_t lo, size_t mid, size_t hi);
 

@@ -37,6 +37,11 @@ static sign_func sign_func_ptr(enum sign_type sign)
     }
 }
 
+static inline int cmp_desc(const void *a, const void *b)
+{
+    return cmp(b, a);
+}
+
 int *arraygen(struct array_config *config)
 {
     int *array;

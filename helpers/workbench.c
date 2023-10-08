@@ -156,17 +156,21 @@ void workbench_run(struct workbench *wb)
     {
         alg = &wb->algorithms[i];
 
-        if (!alg->enabled)
+        if (!alg->enabled) // Skip disabled algorithms.
         {
             continue;
         }
 
+        /* Make a copy of the array to be sorted. */
         copy = array_copy(wb->array, wb->array_length);
 
+        /* Reset the counters. */
         memset(&counters, 0, sizeof(struct counter));
 
+        /* Run the algorithm. */
         run = run_algorithm(wb, alg, copy);
 
+        /* Update the total row. */
         total.algorithm_name = "Total";
         total.elapsed += run.elapsed;
         total.counters.cmp_counter += run.counters.cmp_counter;
@@ -175,15 +179,18 @@ void workbench_run(struct workbench *wb)
         total.counters.isort_counter += run.counters.isort_counter;
         total.counters.heapsort_counter += run.counters.heapsort_counter;
 
+        /* Run the tests. */
         run_tests(wb, copy, &run);
 
-        if (wb->sort_by == 0)
+        if (wb->sort_by == 0) // Print the row if not sorting.
         {
             print_row(&run, wb->format);
         }
 
+        /* Add the run to the runs array. */
         wb->runs[run_count++] = run;
 
+        /* Free the copy. */
         free(copy);
     }
 

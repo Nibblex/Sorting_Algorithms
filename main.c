@@ -44,16 +44,15 @@ const struct test TESTS[] = {
         }                                               \
     } while (0)
 
-#define enable_choices(arr, choices)   \
-    do                                 \
-    {                                  \
-        char *token;                   \
-        token = strtok(choices, ",");  \
-        while (token != NULL)          \
-        {                              \
-            enable_choice(arr, token); \
-            token = strtok(NULL, ","); \
-        }                              \
+#define enable_choices(arr, choices)        \
+    do                                      \
+    {                                       \
+        char *token = strtok(choices, ","); \
+        while (token != NULL)               \
+        {                                   \
+            enable_choice(arr, token);      \
+            token = strtok(NULL, ",");      \
+        }                                   \
     } while (0)
 
 static void usage(int exit_status)

@@ -31,29 +31,31 @@ const struct test TESTS[] = {
     {NULL, 0, false},
 };
 
-#define enable_choice(arr, choice)                      \
-    do                                                  \
-    {                                                   \
-        size_t arr_size = sizeof(arr) / sizeof(arr[0]); \
-        for (size_t i = 0; i < arr_size; ++i)           \
-        {                                               \
-            if (strcmp(arr[i].name, choice) == 0)       \
-            {                                           \
-                arr[i].enabled = true;                  \
-            }                                           \
-        }                                               \
-    } while (0)
+#define enable_choice(arr, arr_size, choice)      \
+    ({                                            \
+        size_t found = 0;                         \
+        for (size_t i = 0; i < arr_size; ++i)     \
+        {                                         \
+            if (strcmp(arr[i].name, choice) == 0) \
+            {                                     \
+                arr[i].enabled = (found = 1);     \
+            }                                     \
+        }                                         \
+        found;                                    \
+    })
 
-#define enable_choices(arr, choices)        \
-    do                                      \
-    {                                       \
-        char *token = strtok(choices, ","); \
-        while (token != NULL)               \
-        {                                   \
-            enable_choice(arr, token);      \
-            token = strtok(NULL, ",");      \
-        }                                   \
-    } while (0)
+#define enable_choices(arr, choices)                       \
+    ({                                                     \
+        size_t nfound = 0;                                 \
+        size_t arr_size = sizeof(arr) / sizeof(arr[0]);    \
+        char *token = strtok(choices, ",");                \
+        while (token != NULL)                              \
+        {                                                  \
+            nfound += enable_choice(arr, arr_size, token); \
+            token = strtok(NULL, ",");                     \
+        }                                                  \
+        nfound;                                            \
+    })
 
 static void usage(int exit_status)
 {
@@ -94,7 +96,8 @@ static void usage(int exit_status)
 static void parse_args(int argc, char *argv[], struct workbench *wb)
 {
     int c, option_index = 0;
-    char *alg_choices = NULL, *test_choices = NULL;
+    char *alg_choices = NULL;
+    char *test_choices = NULL;
 
     struct option long_options[] = {
         {"algorithms", required_argument, 0, 'a'},
@@ -105,6 +108,9 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
         {"help", no_argument, 0, 'h'},
         {0, 0, 0, 0},
     };
+
+    /* Default values */
+    wb->format = "default";
 
     while ((c = getopt_long(argc, argv, "a:t:f:s:dh", long_options, &option_index)) != -1)
     {
@@ -134,7 +140,7 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
     }
 
     memcpy(wb->algorithms, ALGORITHMS, sizeof(ALGORITHMS));
-    enable_choices(wb->algorithms, alg_choices == NULL ? strdup(ALG_CHOICES) : alg_choices);
+    wb->nruns = enable_choices(wb->algorithms, alg_choices == NULL ? strdup(ALG_CHOICES) : alg_choices);
     free(alg_choices);
 
     memcpy(wb->tests, TESTS, sizeof(TESTS));
@@ -150,8 +156,8 @@ int main(int argc, char *argv[])
 
     wb.array_length = array_from_stdin(&wb.array);
 
-    workbench_run(&wb);
-    workbench_free(&wb);
+    wb_run(&wb);
+    wb_free(&wb);
 
     return EXIT_SUCCESS;
 }

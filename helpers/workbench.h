@@ -49,6 +49,7 @@ struct workbench
     struct algorithm algorithms[NUM_ALGORITHMS]; /**< An array of algorithms to be tested. */
     struct test tests[NUM_TESTS];                /**< An array of tests to be run. */
     struct run runs[NUM_ALGORITHMS];             /**< An array of runs for each algorithm. */
+    size_t nruns;                                /**< The number of runs. */
     char *format;                                /**< The format in which the results should be displayed. */
     int sort_by;                                 /**< The column to sort the results by. */
     bool dump_array;                             /**< A flag indicating whether to dump the array before and after sorting. */
@@ -59,13 +60,13 @@ struct workbench
  *
  * @param wb The workbench to run.
  */
-void workbench_run(struct workbench *wb);
+void wb_run(struct workbench *wb);
 
 /**
  * @brief Frees the memory allocated for a workbench.
  *
  * @param wb Pointer to the workbench to be freed.
  */
-void workbench_free(struct workbench *wb);
+void wb_free(struct workbench *wb);
 
 #endif

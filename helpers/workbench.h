@@ -52,10 +52,9 @@ struct workbench
     struct test tests[NUM_TESTS]; /**< An array of tests to be run. */
     size_t ntests;                /**< The number of tests to be run. */
 
-    struct run runs[NUM_ALGORITHMS]; /**< An array of runs for each algorithm. */
-    char *format;                    /**< The format in which the results should be displayed. */
-    int sort_by;                     /**< The column to sort the results by. */
-    bool dump_array;                 /**< A flag indicating whether to dump the array before and after sorting. */
+    char *format;    /**< The format in which the results should be displayed. */
+    int sort_by;     /**< The column to sort the results by. */
+    bool dump_array; /**< A flag indicating whether to dump the array before and after sorting. */
 };
 
 /**

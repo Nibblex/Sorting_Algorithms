@@ -99,13 +99,13 @@ static void run_tests(struct workbench *wb, int *copy, struct run *run)
 {
     struct test *test;
 
-    for (test = wb->tests; test < wb->tests + NUM_TESTS; ++test)
+    for (test = wb->tests; test < wb->tests + wb->ntests; ++test)
     {
-        if (test->type == SORTED && test->enabled)
+        if (test->type == SORTED)
         {
             run->sorted = array_is_sorted(copy, wb->array_length) ? TEST_OK : TEST_FAIL;
         }
-        else if (test->type == PERMUTED && test->enabled)
+        else if (test->type == PERMUTED)
         {
             run->permuted = array_is_permutation_of(copy, wb->array, wb->array_length) ? TEST_OK : TEST_FAIL;
         }
@@ -131,20 +131,13 @@ static struct run run_algorithm(struct workbench *wb, struct algorithm *alg, int
 static void run_algorithms(struct workbench *wb, struct run *total)
 {
     int *copy;
-    struct algorithm *alg;
     struct run run;
-    size_t nruns = 0;
 
     *total = (struct run){0};
 
     /* Run each algorithm and print the results. */
-    for (alg = wb->algorithms; alg < wb->algorithms + NUM_ALGORITHMS; ++alg)
+    for (size_t i = 0; i < wb->nalgorithms; ++i)
     {
-        if (!alg->enabled) // Skip disabled algorithms.
-        {
-            continue;
-        }
-
         /* Make a copy of the array to be sorted. */
         copy = array_copy(wb->array, wb->array_length);
 
@@ -152,7 +145,7 @@ static void run_algorithms(struct workbench *wb, struct run *total)
         memset(&counters, 0, sizeof(struct counter));
 
         /* Run the algorithm. */
-        run = run_algorithm(wb, alg, copy);
+        run = run_algorithm(wb, wb->algorithms + i, copy);
 
         /* Update the total row. */
         total->algorithm_name = "Total";
@@ -173,7 +166,7 @@ static void run_algorithms(struct workbench *wb, struct run *total)
         }
 
         /* Add the run to the runs array. */
-        wb->runs[nruns++] = run;
+        wb->runs[i] = run;
 
         /* Free the copy. */
         free(copy);
@@ -204,9 +197,9 @@ void wb_run(struct workbench *wb)
     /* Print the sorted runs if the sort-by flag is set to a valid column. */
     if (wb->sort_by != 0)
     {
-        qsort_r(wb->runs, wb->nruns, sizeof(struct run), run_cmp, &wb->sort_by);
+        qsort_r(wb->runs, wb->nalgorithms, sizeof(struct run), run_cmp, &wb->sort_by);
 
-        for (size_t i = 0; i < wb->nruns; ++i)
+        for (size_t i = 0; i < wb->nalgorithms; ++i)
         {
             print_row(wb->runs + i, wb->format);
         }

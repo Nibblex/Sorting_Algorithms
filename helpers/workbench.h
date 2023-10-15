@@ -20,7 +20,6 @@ struct test
         SORTED,  /**< The test case is sorted. */
         PERMUTED /**< The test case is a permutation of the original array. */
     } type;
-    bool enabled; /**< A flag indicating whether the test case is enabled. */
 };
 
 /**
@@ -44,15 +43,19 @@ struct run
  */
 struct workbench
 {
-    int *array;                                  /**< A pointer to the array to be sorted. */
-    size_t array_length;                         /**< The length of the array to be sorted. */
+    int *array;          /**< A pointer to the array to be sorted. */
+    size_t array_length; /**< The length of the array to be sorted. */
+
     struct algorithm algorithms[NUM_ALGORITHMS]; /**< An array of algorithms to be tested. */
-    struct test tests[NUM_TESTS];                /**< An array of tests to be run. */
-    struct run runs[NUM_ALGORITHMS];             /**< An array of runs for each algorithm. */
-    size_t nruns;                                /**< The number of runs. */
-    char *format;                                /**< The format in which the results should be displayed. */
-    int sort_by;                                 /**< The column to sort the results by. */
-    bool dump_array;                             /**< A flag indicating whether to dump the array before and after sorting. */
+    size_t nalgorithms;                          /**< The number of algorithms to be tested. */
+
+    struct test tests[NUM_TESTS]; /**< An array of tests to be run. */
+    size_t ntests;                /**< The number of tests to be run. */
+
+    struct run runs[NUM_ALGORITHMS]; /**< An array of runs for each algorithm. */
+    char *format;                    /**< The format in which the results should be displayed. */
+    int sort_by;                     /**< The column to sort the results by. */
+    bool dump_array;                 /**< A flag indicating whether to dump the array before and after sorting. */
 };
 
 /**

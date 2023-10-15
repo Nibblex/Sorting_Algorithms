@@ -31,7 +31,6 @@ struct algorithm
 {
     char *name;     /**< Name of the algorithm */
     sorting_func f; /**< Function pointer to the algorithm */
-    bool enabled;   /**< Flag to indicate if the algorithm is enabled */
 };
 
 /* Sorting algorithms */

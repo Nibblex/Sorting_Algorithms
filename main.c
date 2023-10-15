@@ -12,49 +12,55 @@ const char *ALG_CHOICES = "binsort,heapsort,introsort,isort,mergesort,quicksort,
 const char *TEST_CHOICES = "sorted,permuted";
 
 const struct algorithm ALGORITHMS[] = {
-    {"binsort", binsort, false},
-    {"heapsort", heapsort, false},
-    {"introsort", introsort, false},
-    {"isort", isort, false},
-    {"mergesort", mergesort, false},
-    {"quicksort", quicksort, false},
-    {"quicksort_std", quicksort_std, false},
-    {"selection_sort", selection_sort, false},
-    {"shellsort", shellsort, false},
-    {"timsort", timsort, false},
-    {NULL, NULL, false},
+    {"binsort", binsort},
+    {"heapsort", heapsort},
+    {"introsort", introsort},
+    {"isort", isort},
+    {"mergesort", mergesort},
+    {"quicksort", quicksort},
+    {"quicksort_std", quicksort_std},
+    {"selection_sort", selection_sort},
+    {"shellsort", shellsort},
+    {"timsort", timsort},
+    {NULL, NULL},
 };
 
 const struct test TESTS[] = {
-    {"sorted", SORTED, false},
-    {"permuted", PERMUTED, false},
-    {NULL, 0, false},
+    {"sorted", SORTED},
+    {"permuted", PERMUTED},
+    {NULL, 0},
 };
 
-#define enable_choice(arr, arr_size, choice)      \
+#define find_choice(arr, arr_size, choice)        \
     ({                                            \
-        size_t found = 0;                         \
+        int _pos = -1;                            \
         for (size_t i = 0; i < arr_size; ++i)     \
         {                                         \
             if (strcmp(arr[i].name, choice) == 0) \
             {                                     \
-                arr[i].enabled = (found = 1);     \
+                _pos = (int)i;                    \
+                break;                            \
             }                                     \
         }                                         \
-        found;                                    \
+        _pos;                                     \
     })
 
-#define enable_choices(arr, choices)                       \
-    ({                                                     \
-        size_t nfound = 0;                                 \
-        size_t arr_size = sizeof(arr) / sizeof(arr[0]);    \
-        char *token = strtok(choices, ",");                \
-        while (token != NULL)                              \
-        {                                                  \
-            nfound += enable_choice(arr, arr_size, token); \
-            token = strtok(NULL, ",");                     \
-        }                                                  \
-        nfound;                                            \
+#define enable_choices(arr, src, choices)               \
+    ({                                                  \
+        size_t nfound = 0;                              \
+        size_t arr_size = sizeof(src) / sizeof(src[0]); \
+        char *token = strtok(choices, ",");             \
+        int pos;                                        \
+        while (token != NULL)                           \
+        {                                               \
+            pos = find_choice(src, arr_size, token);    \
+            if (pos != -1)                              \
+            {                                           \
+                arr[nfound++] = src[pos];               \
+            }                                           \
+            token = strtok(NULL, ",");                  \
+        }                                               \
+        nfound;                                         \
     })
 
 static void usage(int exit_status)
@@ -139,12 +145,12 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
         }
     }
 
-    memcpy(wb->algorithms, ALGORITHMS, sizeof(ALGORITHMS));
-    wb->nruns = enable_choices(wb->algorithms, alg_choices == NULL ? strdup(ALG_CHOICES) : alg_choices);
+    alg_choices = alg_choices == NULL ? strdup(ALG_CHOICES) : alg_choices;
+    wb->nalgorithms = enable_choices(wb->algorithms, ALGORITHMS, alg_choices);
     free(alg_choices);
 
-    memcpy(wb->tests, TESTS, sizeof(TESTS));
-    enable_choices(wb->tests, test_choices == NULL ? "" : test_choices);
+    test_choices = test_choices == NULL ? strdup("") : test_choices;
+    wb->ntests = enable_choices(wb->tests, TESTS, test_choices);
     free(test_choices);
 }
 

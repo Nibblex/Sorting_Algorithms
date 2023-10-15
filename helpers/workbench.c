@@ -128,12 +128,12 @@ static struct run run_algorithm(struct workbench *wb, struct algorithm *alg, int
     return run;
 }
 
-static void run_algorithms(struct workbench *wb, struct run *total, struct run *runs)
+static void run_algorithms(struct workbench *wb, struct run *runs)
 {
     int *copy;
-    struct run run;
+    struct run run, *total;
 
-    *total = (struct run){0};
+    total = runs + wb->nalgorithms;
 
     /* Run each algorithm and print the results. */
     for (size_t i = 0; i < wb->nalgorithms; ++i)
@@ -175,8 +175,7 @@ static void run_algorithms(struct workbench *wb, struct run *total, struct run *
 
 void wb_run(struct workbench *wb)
 {
-    struct run total;
-    struct run runs[wb->nalgorithms];
+    struct run runs[wb->nalgorithms + 1]; /* +1 for the total row. */
 
     /* Print the input array if the dump flag is set to true. */
     if (wb->dump_array)
@@ -192,8 +191,11 @@ void wb_run(struct workbench *wb)
         print_header();
     }
 
+    /* Initialize the runs array. */
+    memset(runs, 0, sizeof(runs));
+
     /* Run the algorithms and print the results. */
-    run_algorithms(wb, &total, runs);
+    run_algorithms(wb, runs);
 
     /* Print the sorted runs if the sort-by flag is set to a valid column. */
     if (wb->sort_by != 0)
@@ -212,7 +214,7 @@ void wb_run(struct workbench *wb)
     }
 
     /* Print the total row. */
-    print_row(&total, wb->format);
+    print_row(runs + wb->nalgorithms, wb->format);
 }
 
 void wb_free(struct workbench *wb)

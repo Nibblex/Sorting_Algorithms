@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../helpers/workbench.h"
+#include "../algorithms/algorithms.h" // struct counter
 #include "sort_helpers.h"
 
 typedef int (*cmp_func)(const void *a, const void *b);

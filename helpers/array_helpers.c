@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "array_helpers.h"
-#include "sort_helpers.h"
+#include "sort_helpers.h" // cmp
 
 size_t array_from_stdin(int *a[])
 {

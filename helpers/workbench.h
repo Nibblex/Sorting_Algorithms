@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "../algorithms/algorithms.h"
+#include "../algorithms/algorithms.h" // struct counter, struct algorithm
 
 #define NUM_ALGORITHMS 10
 #define NUM_TESTS 2

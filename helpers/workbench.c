@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "../helpers/array_helpers.h"
+#include "array_helpers.h"
 #include "workbench.h"
 
 #define GETMS() ((double)(clock() * 1000) / CLOCKS_PER_SEC)

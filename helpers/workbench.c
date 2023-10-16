@@ -9,7 +9,7 @@
 
 #define GETMS() ((double)(clock() * 1000) / CLOCKS_PER_SEC)
 
-#define HEADER "Algorithm:           Elapsed (ms):        Comparisons:         Swaps:               Recursions:          Insertion sort:           Heapsort:            Tests: (sorted-permuted)\n"
+#define HEADER "Algorithm        Elapsed (ms)     Comparisons      Swaps            Recursions       Isorts           Heapsort         Tests (sorted-permuted)\n"
 
 #define TEST_UNTESTED "\x1b[33mUNTESTED\x1b[0m"
 #define TEST_OK "\x1b[32mOK\x1b[0m"
@@ -46,13 +46,17 @@ extern int qsort_r(void *base, size_t nmemb, size_t size,
 
 static int run_cmp(const void *a, const void *b, void *sort_by)
 {
-    struct run *run_a = (struct run *)a;
-    struct run *run_b = (struct run *)b;
+    int _sort_by;
+    struct run *run_a, *run_b;
+    struct counter counters_a, counters_b;
 
-    int _sort_by = *(int *)sort_by;
+    run_a = (struct run *)a;
+    run_b = (struct run *)b;
 
-    struct counter counters_a = run_a->counters;
-    struct counter counters_b = run_b->counters;
+    counters_a = run_a->counters;
+    counters_b = run_b->counters;
+
+    _sort_by = *(int *)sort_by;
 
     switch (_sort_by)
     {
@@ -75,23 +79,13 @@ static int run_cmp(const void *a, const void *b, void *sort_by)
     return 0;
 }
 
-static void sum_counters(struct counter *a, struct counter *b)
-{
-    a->elapsed += b->elapsed;
-    a->cmp_counter += b->cmp_counter;
-    a->swap_counter += b->swap_counter;
-    a->recursion_counter += b->recursion_counter;
-    a->isort_counter += b->isort_counter;
-    a->heapsort_counter += b->heapsort_counter;
-}
-
 static void print_row(struct run *run, char *format)
 {
     char *fmt;
 
     if (strcmp(format, "human") == 0)
     {
-        fmt = "%-20s %-20g %-20lu %-20lu %-20lu %-25lu %-20lu %s-%s\n";
+        fmt = "%-16s %-16g %-16lu %-16lu %-16lu %-16lu %-16lu %s-%s\n";
     }
     else if (strcmp(format, "csv") == 0)
     {
@@ -129,6 +123,16 @@ static void run_tests(struct workbench *wb, int *copy, struct run *run)
             run->permuted = array_is_permutation_of(copy, wb->array, wb->array_length) ? TEST_OK : TEST_FAIL;
         }
     }
+}
+
+static void sum_counters(struct counter *a, struct counter *b)
+{
+    a->elapsed += b->elapsed;
+    a->cmp_counter += b->cmp_counter;
+    a->swap_counter += b->swap_counter;
+    a->recursion_counter += b->recursion_counter;
+    a->isort_counter += b->isort_counter;
+    a->heapsort_counter += b->heapsort_counter;
 }
 
 static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)

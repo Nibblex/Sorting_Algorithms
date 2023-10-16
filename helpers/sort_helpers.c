@@ -76,22 +76,22 @@ int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *
     do
     {
         while (cmp(lo, piv, counters) < 0)
-            lo++;
+            ++lo;
 
         while (cmp(piv, hi, counters) < 0)
-            hi--;
+            --hi;
 
         if (lo < hi)
         {
             ptr_swap(lo, hi, counters);
             piv = (piv == lo) ? hi : ((piv == hi) ? lo : piv);
-            lo++;
-            hi--;
+            ++lo;
+            --hi;
         }
         else if (lo == hi)
         {
-            lo++;
-            hi--;
+            ++lo;
+            --hi;
             break;
         }
 

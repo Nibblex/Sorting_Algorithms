@@ -66,6 +66,15 @@ static int run_cmp(const void *a, const void *b, void *sort_by)
     return 0;
 }
 
+static void sum_counters(struct counter *a, struct counter *b)
+{
+    a->cmp_counter += b->cmp_counter;
+    a->swap_counter += b->swap_counter;
+    a->recursion_counter += b->recursion_counter;
+    a->isort_counter += b->isort_counter;
+    a->heapsort_counter += b->heapsort_counter;
+}
+
 static void print_row(struct run *run, char *format)
 {
     char *fmt;
@@ -112,65 +121,50 @@ static void run_tests(struct workbench *wb, int *copy, struct run *run)
     }
 }
 
-static struct run run_algorithm(struct workbench *wb, struct algorithm *alg, int *copy)
+static struct run run_algorithm(struct workbench *wb, size_t i, struct run *runs)
 {
+    int *copy;
+    struct algorithm *alg = wb->algorithms + i;
     struct run run = {0};
+    struct run *total = runs + wb->nalgorithms;
 
     run.algorithm_name = alg->name;
+
+    /* Make a copy of the array to be sorted. */
+    copy = array_copy(wb->array, wb->array_length);
+
+    /* Reset the counters. */
+    memset(&counters, 0, sizeof(struct counter));
 
     /* Run the algorithm and measure the elapsed time. */
     run.elapsed = GETMS();
     alg->f(copy, wb->array_length);
     run.elapsed = GETMS() - run.elapsed;
 
+    /* Add the counters to the run. */
     run.counters = counters;
 
-    return run;
-}
+    /* Sum the counters to the total row. */
+    total->algorithm_name = "Total";
+    total->elapsed += run.elapsed;
+    sum_counters(&total->counters, &run.counters);
 
-static void run_algorithms(struct workbench *wb, struct run *runs)
-{
-    int *copy;
-    struct run run, *total;
+    /* Run the tests. */
+    run_tests(wb, copy, &run);
 
-    total = runs + wb->nalgorithms;
-
-    /* Run each algorithm and print the results. */
-    for (size_t i = 0; i < wb->nalgorithms; ++i)
+    /* Print the row if the sort-by flag is set to 0. */
+    if (wb->sort_by == 0)
     {
-        /* Make a copy of the array to be sorted. */
-        copy = array_copy(wb->array, wb->array_length);
-
-        /* Reset the counters. */
-        memset(&counters, 0, sizeof(struct counter));
-
-        /* Run the algorithm. */
-        run = run_algorithm(wb, wb->algorithms + i, copy);
-
-        /* Update the total row. */
-        total->algorithm_name = "Total";
-        total->elapsed += run.elapsed;
-        total->counters.cmp_counter += run.counters.cmp_counter;
-        total->counters.swap_counter += run.counters.swap_counter;
-        total->counters.recursion_counter += run.counters.recursion_counter;
-        total->counters.isort_counter += run.counters.isort_counter;
-        total->counters.heapsort_counter += run.counters.heapsort_counter;
-
-        /* Run the tests. */
-        run_tests(wb, copy, &run);
-
-        /* Print the row if the sort-by flag is set to 0. */
-        if (wb->sort_by == 0)
-        {
-            print_row(&run, wb->format);
-        }
-
-        /* Add the run to the runs array. */
-        runs[i] = run;
-
-        /* Free the copy. */
-        free(copy);
+        print_row(&run, wb->format);
     }
+
+    /* Add the run to the runs array. */
+    runs[i] = run;
+
+    /* Free the copy. */
+    free(copy);
+
+    return run;
 }
 
 void wb_run(struct workbench *wb)
@@ -195,7 +189,10 @@ void wb_run(struct workbench *wb)
     memset(runs, 0, sizeof(runs));
 
     /* Run the algorithms and print the results. */
-    run_algorithms(wb, runs);
+    for (size_t i = 0; i < wb->nalgorithms; ++i)
+    {
+        run_algorithm(wb, i, runs);
+    }
 
     /* Print the sorted runs if the sort-by flag is set to a valid column. */
     if (wb->sort_by != 0)

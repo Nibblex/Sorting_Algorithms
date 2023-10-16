@@ -174,6 +174,7 @@ void wb_run(struct workbench *wb)
     struct run runs[wb->nalgorithms + 1]; /* +1 for the total row. */
     pthread_t threads[wb->nalgorithms];
     struct thread_data thread_data[wb->nalgorithms];
+    int pthread_result;
 
     /* Print the input array if the dump flag is set to true. */
     if (wb->dump_array)
@@ -199,10 +200,10 @@ void wb_run(struct workbench *wb)
         thread_data[i].index = i;
         thread_data[i].runs = runs;
 
-        int result = pthread_create(&threads[i], NULL, run_algorithm_thread, (void *)&thread_data[i]);
-        if (result != 0)
+        pthread_result = pthread_create(&threads[i], NULL, run_algorithm_thread, (void *)&thread_data[i]);
+        if (pthread_result != 0)
         {
-            fprintf(stderr, "Error creating thread %zu: %d\n", i, result);
+            fprintf(stderr, "Error creating thread %zu: %d\n", i, pthread_result);
             exit(EXIT_FAILURE);
         }
     }
@@ -210,7 +211,12 @@ void wb_run(struct workbench *wb)
     /* Wait for threads to finish. */
     for (size_t i = 0; i < wb->nalgorithms; ++i)
     {
-        pthread_join(threads[i], NULL);
+        pthread_result = pthread_join(threads[i], NULL);
+        if (pthread_result != 0)
+        {
+            fprintf(stderr, "Error joining thread %zu: %d\n", i, pthread_result);
+            exit(EXIT_FAILURE);
+        }
     }
 
     /* Print the sorted runs if the sort-by flag is set to a valid column. */

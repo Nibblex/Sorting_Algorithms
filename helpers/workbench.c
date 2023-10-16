@@ -51,20 +51,23 @@ static int run_cmp(const void *a, const void *b, void *sort_by)
 
     int _sort_by = *(int *)sort_by;
 
+    struct counter counters_a = run_a->counters;
+    struct counter counters_b = run_b->counters;
+
     switch (_sort_by)
     {
     case 2:
-        return run_a->elapsed < run_b->elapsed ? -1 : run_a->elapsed > run_b->elapsed;
+        return counters_a.elapsed < counters_b.elapsed ? -1 : counters_a.elapsed > counters_b.elapsed;
     case 3:
-        return run_a->counters.cmp_counter < run_b->counters.cmp_counter ? -1 : run_a->counters.cmp_counter > run_b->counters.cmp_counter;
+        return counters_a.cmp_counter < counters_b.cmp_counter ? -1 : counters_a.cmp_counter > counters_b.cmp_counter;
     case 4:
-        return run_a->counters.swap_counter < run_b->counters.swap_counter ? -1 : run_a->counters.swap_counter > run_b->counters.swap_counter;
+        return counters_a.swap_counter < counters_b.swap_counter ? -1 : counters_a.swap_counter > counters_b.swap_counter;
     case 5:
-        return run_a->counters.recursion_counter < run_b->counters.recursion_counter ? -1 : run_a->counters.recursion_counter > run_b->counters.recursion_counter;
+        return counters_a.recursion_counter < counters_b.recursion_counter ? -1 : counters_a.recursion_counter > counters_b.recursion_counter;
     case 6:
-        return run_a->counters.isort_counter < run_b->counters.isort_counter ? -1 : run_a->counters.isort_counter > run_b->counters.isort_counter;
+        return counters_a.isort_counter < counters_b.isort_counter ? -1 : counters_a.isort_counter > counters_b.isort_counter;
     case 7:
-        return run_a->counters.heapsort_counter < run_b->counters.heapsort_counter ? -1 : run_a->counters.heapsort_counter > run_b->counters.heapsort_counter;
+        return counters_a.heapsort_counter < counters_b.heapsort_counter ? -1 : counters_a.heapsort_counter > counters_b.heapsort_counter;
     default:
         return memcmp(run_a->algorithm_name, run_b->algorithm_name, strlen(run_a->algorithm_name));
     }
@@ -74,6 +77,7 @@ static int run_cmp(const void *a, const void *b, void *sort_by)
 
 static void sum_counters(struct counter *a, struct counter *b)
 {
+    a->elapsed += b->elapsed;
     a->cmp_counter += b->cmp_counter;
     a->swap_counter += b->swap_counter;
     a->recursion_counter += b->recursion_counter;
@@ -100,7 +104,7 @@ static void print_row(struct run *run, char *format)
 
     printf(fmt,
            run->algorithm_name,
-           run->elapsed,
+           run->counters.elapsed,
            run->counters.cmp_counter,
            run->counters.swap_counter,
            run->counters.recursion_counter,
@@ -140,13 +144,12 @@ static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)
     copy = array_copy(wb->array, wb->array_length);
 
     /* Run the algorithm and measure the elapsed time. */
-    run->elapsed = GETMS();
+    run->counters.elapsed = GETMS();
     alg->f(copy, wb->array_length, &run->counters);
-    run->elapsed = GETMS() - run->elapsed;
+    run->counters.elapsed = GETMS() - run->counters.elapsed;
 
     /* Sum the counters to the total row. */
     total->algorithm_name = "Total";
-    total->elapsed += run->elapsed;
     sum_counters(&total->counters, &run->counters);
 
     /* Run the tests. */

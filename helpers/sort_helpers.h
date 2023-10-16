@@ -23,6 +23,7 @@
  */
 struct counter
 {
+    double elapsed;           /**< The elapsed time of the sorting algorithm run. */
     size_t cmp_counter;       /**< Counter for number of comparisons */
     size_t swap_counter;      /**< Counter for number of swaps */
     size_t recursion_counter; /**< Counter for number of recursive calls */

@@ -31,7 +31,6 @@ struct test
 struct run
 {
     char *algorithm_name;    /**< The name of the sorting algorithm used. */
-    double elapsed;          /**< The elapsed time of the sorting algorithm run. */
     struct counter counters; /**< The counters used during the sorting algorithm run. */
     char *sorted;            /**< The result of testing if the array is sorted. */
     char *permuted;          /**< The result of testing if the array is a permutation of the original array. */

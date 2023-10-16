@@ -1,6 +1,6 @@
 #include "algorithms.h"
 
-static void heapify(int a[], size_t length, int *root)
+static void heapify(int a[], size_t length, int *root, struct counter *counters)
 {
     int *leaf, *largest;
 
@@ -13,11 +13,11 @@ static void heapify(int a[], size_t length, int *root)
         }
 
         largest = root;
-        if (cmp(leaf, largest) > 0)
+        if (cmp(leaf, largest, counters) > 0)
         {
             largest = leaf;
         }
-        if (cmp(leaf + 1, largest) > 0)
+        if (cmp(leaf + 1, largest, counters) > 0)
         {
             largest = leaf + 1;
         }
@@ -26,26 +26,24 @@ static void heapify(int a[], size_t length, int *root)
             break;
         }
 
-        root = ptr_swap(root, largest);
+        root = ptr_swap(root, largest, counters);
     }
 }
 
-void heapsort(int a[], size_t length)
+void heapsort(int a[], size_t length, struct counter *counters)
 {
-    extern struct counter counters;
-
     int *lo, *hi;
 
     for (lo = a + (length >> 1) - 1; lo >= a; --lo)
     {
-        heapify(a, length, lo);
+        heapify(a, length, lo, counters);
     }
 
     for (hi = a + length - 1; hi > a; --hi)
     {
-        ptr_swap(a, hi);
-        heapify(a, (size_t)(hi - a), a);
+        ptr_swap(a, hi, counters);
+        heapify(a, (size_t)(hi - a), a, counters);
     }
 
-    counters.heapsort_counter++;
+    counters->heapsort_counter++;
 }

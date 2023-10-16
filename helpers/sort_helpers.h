@@ -39,12 +39,12 @@ enum pivot_type
 
 /* Common functions */
 
-int cmp(const void *a, const void *b);
+int cmp(const void *a, const void *b, void *arg);
 
-int *ptr_swap(int *a, int *b);
+int *ptr_swap(int *a, int *b, struct counter *counters);
 
-int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state);
+int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state, struct counter *counters);
 
-void merge(int a[], size_t lo, size_t mid, size_t hi);
+void merge(int a[], size_t lo, size_t mid, size_t hi, struct counter *counters);
 
 #endif

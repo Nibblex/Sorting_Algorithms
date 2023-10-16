@@ -2,10 +2,8 @@
 
 #include "algorithms.h"
 
-void isort(int a[], size_t length)
+void isort(int a[], size_t length, struct counter *counters)
 {
-    extern struct counter counters;
-
     int key, *i, *j;
 
     for (i = a + 1; i < a + length; ++i)
@@ -14,7 +12,7 @@ void isort(int a[], size_t length)
         j = i + 1;
 
         // Linear search for the insertion point
-        while (--j > a && cmp(j - 1, &key) > 0)
+        while (--j > a && cmp(j - 1, &key, counters) > 0)
             ;
 
         // Shift elements to the right
@@ -24,5 +22,5 @@ void isort(int a[], size_t length)
         *j = key;
     }
 
-    counters.isort_counter++;
+    counters->isort_counter++;
 }

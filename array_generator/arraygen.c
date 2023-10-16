@@ -5,6 +5,10 @@
 
 #include "arraygen.h"
 
+extern int qsort_r(void *base, size_t nmemb, size_t size,
+                   int (*compar)(const void *, const void *, void *),
+                   void *arg);
+
 static inline int pos_sign(xrshr128p_state_t state)
 {
     state = state;
@@ -37,9 +41,9 @@ static sign_func sign_func_ptr(enum sign_type sign)
     }
 }
 
-static inline int cmp_desc(const void *a, const void *b)
+static inline int cmp_desc(const void *a, const void *b, void *arg)
 {
-    return cmp(b, a);
+    return cmp(b, a, arg);
 }
 
 int *arraygen(struct array_config *config)
@@ -59,7 +63,7 @@ int *arraygen(struct array_config *config)
 
     if (config->order != UNS)
     {
-        qsort(array, config->length, sizeof(int), config->order == ASC ? cmp : cmp_desc);
+        qsort_r(array, config->length, sizeof(int), config->order == ASC ? cmp : cmp_desc, NULL);
     }
 
     return array;

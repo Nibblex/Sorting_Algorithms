@@ -32,8 +32,6 @@
         print_hls(strlen(HEADER)); \
     } while (0)
 
-struct counter counters;
-
 extern int qsort_r(void *base, size_t nmemb, size_t size,
                    int (*compar)(const void *, const void *, void *),
                    void *arg);
@@ -133,16 +131,10 @@ static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)
     /* Make a copy of the array to be sorted. */
     copy = array_copy(wb->array, wb->array_length);
 
-    /* Reset the counters. */
-    memset(&counters, 0, sizeof(struct counter));
-
     /* Run the algorithm and measure the elapsed time. */
     run->elapsed = GETMS();
-    alg->f(copy, wb->array_length);
+    alg->f(copy, wb->array_length, &run->counters);
     run->elapsed = GETMS() - run->elapsed;
-
-    /* Add the counters to the run. */
-    run->counters = counters;
 
     /* Sum the counters to the total row. */
     total->algorithm_name = "Total";

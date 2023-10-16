@@ -5,6 +5,10 @@
 #include "array_helpers.h"
 #include "sort_helpers.h" // cmp
 
+extern int qsort_r(void *base, size_t nmemb, size_t size,
+                   int (*compar)(const void *, const void *, void *),
+                   void *arg);
+
 size_t array_from_stdin(int *a[])
 {
     int tmp_size;
@@ -67,7 +71,7 @@ int *array_copy(int array[], size_t length)
 bool array_is_sorted(int a[], size_t length)
 {
     size_t i = 1;
-    while (i < length && cmp(a + i - 1, a + i) <= 0)
+    while (i < length && cmp(a + i - 1, a + i, NULL) <= 0)
     {
         ++i;
     }
@@ -82,7 +86,7 @@ bool array_is_permutation_of(int a[], int b[], size_t length)
 
     b_copy = array_copy(b, length);
 
-    qsort(b_copy, length, sizeof(int), cmp);
+    qsort_r(b_copy, length, sizeof(int), cmp, NULL);
 
     is_permutation = memcmp(b_copy, a, length * sizeof(int)) == 0;
 

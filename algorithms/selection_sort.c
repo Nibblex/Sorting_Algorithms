@@ -1,6 +1,6 @@
 #include "algorithms.h"
 
-void selection_sort(int a[], size_t length)
+void selection_sort(int a[], size_t length, struct counter *counters)
 {
     int *key, *min_ptr;
 
@@ -11,7 +11,7 @@ void selection_sort(int a[], size_t length)
         // Find the minimum element in the unsorted array
         for (key = a + i + 1; key < a + length; ++key)
         {
-            if (cmp(key, min_ptr) < 0)
+            if (cmp(key, min_ptr, counters) < 0)
             {
                 min_ptr = key;
             }
@@ -20,7 +20,7 @@ void selection_sort(int a[], size_t length)
         if (min_ptr != a + i)
         {
             // Swap the minimum element with the first element of the unsorted array
-            ptr_swap(min_ptr, a + i);
+            ptr_swap(min_ptr, a + i, counters);
         }
     }
 }

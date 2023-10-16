@@ -1,6 +1,6 @@
 #include "algorithms.h"
 
-void shellsort(int a[], size_t length)
+void shellsort(int a[], size_t length, struct counter *counters)
 {
     int key, *i, *j;
     size_t gap;
@@ -11,7 +11,7 @@ void shellsort(int a[], size_t length)
         {
             key = *i;
 
-            for (j = i; j >= a + gap && cmp(&key, j - gap) < 0; j -= gap)
+            for (j = i; j >= a + gap && cmp(&key, j - gap, counters) < 0; j -= gap)
             {
                 *j = *(j - gap);
             }

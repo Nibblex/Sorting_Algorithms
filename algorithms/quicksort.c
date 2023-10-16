@@ -12,7 +12,7 @@ typedef struct
 #define POP(low, high) (--top, (low = top->lo), (high = top->hi))
 #define STACK_NOT_EMPTY (stack < top)
 
-void quicksort(int a[], size_t length)
+void quicksort(int a[], size_t length, struct counter *counters)
 {
     xrshr128p_state_t state = xrshr128p_init(time(NULL));
 
@@ -31,11 +31,11 @@ void quicksort(int a[], size_t length)
         segment_length = (size_t)(hi - lo + 1);
         if (segment_length < MAX_THRESH)
         {
-            isort(lo, segment_length);
+            isort(lo, segment_length, counters);
             continue;
         }
 
-        pivot = partition(lo, hi, MID, &state);
+        pivot = partition(lo, hi, MID, &state, counters);
 
         if (pivot > lo + 1)
         {

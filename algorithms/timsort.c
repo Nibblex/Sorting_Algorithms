@@ -2,7 +2,7 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-void timsort(int a[], size_t length)
+void timsort(int a[], size_t length, struct counter *counters)
 {
     size_t size, lo, mid, hi, chunks, i;
 
@@ -11,7 +11,7 @@ void timsort(int a[], size_t length)
     {
         lo = i * MAX_THRESH;
         hi = MIN(lo + MAX_THRESH - 1, length - 1);
-        isort(a + lo, hi - lo + 1);
+        isort(a + lo, hi - lo + 1, counters);
     }
 
     size = MAX_THRESH;
@@ -25,7 +25,7 @@ void timsort(int a[], size_t length)
             hi = MIN(lo + size - 1, length - 1);
             if (mid < hi)
             {
-                merge(a, lo, mid, hi);
+                merge(a, lo, mid, hi, counters);
             }
             lo += size;
         }

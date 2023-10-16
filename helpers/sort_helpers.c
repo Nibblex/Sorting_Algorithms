@@ -2,34 +2,37 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../algorithms/algorithms.h" // struct counter
 #include "sort_helpers.h"
 
 typedef int (*cmp_func)(const void *a, const void *b);
 
-int cmp(const void *a, const void *b)
+int cmp(const void *a, const void *b, void *arg)
 {
-    extern struct counter counters;
+    struct counter *counters = (struct counter *)arg;
 
-    counters.cmp_counter++;
+    if (counters != NULL)
+    {
+        counters->cmp_counter++;
+    }
 
     return (*(int *)a - *(int *)b);
 }
 
-int *ptr_swap(int *a, int *b)
+int *ptr_swap(int *a, int *b, struct counter *counters)
 {
-    extern struct counter counters;
-
     int temp = *a;
     *a = *b;
     *b = temp;
 
-    counters.swap_counter++;
+    if (counters != NULL)
+    {
+        counters->swap_counter++;
+    }
 
     return b;
 }
 
-static int *pivot(int *lo, int *hi, enum pivot_type type, xrshr128p_state_t *state)
+static int *pivot(int *lo, int *hi, enum pivot_type type, xrshr128p_state_t *state, struct counter *counters)
 {
     int *mid;
 
@@ -39,21 +42,21 @@ static int *pivot(int *lo, int *hi, enum pivot_type type, xrshr128p_state_t *sta
         return lo + ((hi - lo) >> 1);
     case MED3:
         mid = lo + ((hi - lo) >> 1);
-        if (cmp(mid, lo) < 0)
+        if (cmp(mid, lo, counters) < 0)
         {
-            ptr_swap(mid, lo);
+            ptr_swap(mid, lo, counters);
         }
-        if (cmp(hi, mid) < 0)
+        if (cmp(hi, mid, counters) < 0)
         {
-            ptr_swap(hi, mid);
+            ptr_swap(hi, mid, counters);
         }
         else
         {
             return mid;
         }
-        if (cmp(mid, lo) < 0)
+        if (cmp(mid, lo, counters) < 0)
         {
-            ptr_swap(mid, lo);
+            ptr_swap(mid, lo, counters);
         }
         return mid;
     case RANDOM:
@@ -64,23 +67,23 @@ static int *pivot(int *lo, int *hi, enum pivot_type type, xrshr128p_state_t *sta
     }
 }
 
-int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state)
+int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state, struct counter *counters)
 {
     int *piv;
 
-    piv = pivot(lo, hi, pivot_type, state);
+    piv = pivot(lo, hi, pivot_type, state, counters);
 
     do
     {
-        while (cmp(lo, piv) < 0)
+        while (cmp(lo, piv, counters) < 0)
             lo++;
 
-        while (cmp(piv, hi) < 0)
+        while (cmp(piv, hi, counters) < 0)
             hi--;
 
         if (lo < hi)
         {
-            ptr_swap(lo, hi);
+            ptr_swap(lo, hi, counters);
             piv = (piv == lo) ? hi : ((piv == hi) ? lo : piv);
             lo++;
             hi--;
@@ -97,7 +100,7 @@ int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *
     return hi;
 }
 
-void merge(int a[], size_t lo, size_t mid, size_t hi)
+void merge(int a[], size_t lo, size_t mid, size_t hi, struct counter *counters)
 {
     size_t n1 = mid - lo + 1;
     size_t n2 = hi - mid;
@@ -109,7 +112,7 @@ void merge(int a[], size_t lo, size_t mid, size_t hi)
     size_t i = 0, j = 0, k = lo;
     while (i < n1 && j < n2)
     {
-        if (cmp(L + i, R + j) <= 0)
+        if (cmp(L + i, R + j, counters) <= 0)
         {
             a[k++] = L[i++];
         }

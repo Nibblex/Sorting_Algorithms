@@ -3,7 +3,7 @@ ARRAYGEN=arraygen
 CC=@gcc
 CFLAGS= -std=c99 -Wall -Werror -Wextra -Wshadow -Wconversion -Wuninitialized -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations\
         -Wunreachable-code -Wunused-const-variable -Wunused-function -Wbad-function-cast -Wunused-macros -Wunused-parameter -Wunused-macros -g
-LDFLAGS=
+LDFLAGS=-pthread
 VALGRIND=valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 
 OPTIMIZATION?=-O0
@@ -32,7 +32,7 @@ $(SORTER): $(SORTER_OBJECTS)
 	$(CC) $(CFLAGS) $(OPTIMIZATION) -o $@ $^ $(LDFLAGS)
 
 $(ARRAYGEN): $(ARRAYGEN_OBJECTS)
-	$(CC) $(CFLAGS) $(OPTIMIZATION) -o $@ $^
+	$(CC) $(CFLAGS) $(OPTIMIZATION) -o $@ $^ $(LDFLAGS)
 
 $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) $(OPTIMIZATION) -c $< -o $@

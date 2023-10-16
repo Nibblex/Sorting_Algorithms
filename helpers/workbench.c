@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,6 +32,13 @@
         printf("%s", HEADER);      \
         print_hls(strlen(HEADER)); \
     } while (0)
+
+struct thread_data
+{
+    struct workbench *wb;
+    size_t index;
+    struct run *runs;
+};
 
 extern int qsort_r(void *base, size_t nmemb, size_t size,
                    int (*compar)(const void *, const void *, void *),
@@ -154,9 +162,18 @@ static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)
     free(copy);
 }
 
+static void *run_algorithm_thread(void *arg)
+{
+    struct thread_data *data = (struct thread_data *)arg;
+    run_algorithm(data->wb, data->index, data->runs);
+    pthread_exit(NULL);
+}
+
 void wb_run(struct workbench *wb)
 {
     struct run runs[wb->nalgorithms + 1]; /* +1 for the total row. */
+    pthread_t threads[wb->nalgorithms];
+    struct thread_data thread_data[wb->nalgorithms];
 
     /* Print the input array if the dump flag is set to true. */
     if (wb->dump_array)
@@ -175,10 +192,25 @@ void wb_run(struct workbench *wb)
     /* Initialize the runs array. */
     memset(runs, 0, sizeof(runs));
 
-    /* Run the algorithms and print the results. */
+    /* Run the algorithms and print the results using threads. */
     for (size_t i = 0; i < wb->nalgorithms; ++i)
     {
-        run_algorithm(wb, i, runs);
+        thread_data[i].wb = wb;
+        thread_data[i].index = i;
+        thread_data[i].runs = runs;
+
+        int result = pthread_create(&threads[i], NULL, run_algorithm_thread, (void *)&thread_data[i]);
+        if (result != 0)
+        {
+            fprintf(stderr, "Error creating thread %zu: %d\n", i, result);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    /* Wait for threads to finish. */
+    for (size_t i = 0; i < wb->nalgorithms; ++i)
+    {
+        pthread_join(threads[i], NULL);
     }
 
     /* Print the sorted runs if the sort-by flag is set to a valid column. */

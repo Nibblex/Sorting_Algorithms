@@ -1,4 +1,3 @@
-#include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
 static void heapify(int a[], size_t length, int *root)

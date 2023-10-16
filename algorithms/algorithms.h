@@ -5,17 +5,7 @@
 
 #include <stdbool.h>
 
-/**
- * @brief A struct that holds counters for various operations in sorting algorithms.
- */
-struct counter
-{
-    size_t cmp_counter;       /**< Counter for number of comparisons */
-    size_t swap_counter;      /**< Counter for number of swaps */
-    size_t recursion_counter; /**< Counter for number of recursive calls */
-    size_t isort_counter;     /**< Counter for number of times insertion sort is used */
-    size_t heapsort_counter;  /**< Counter for number of times heapsort is used */
-};
+#include "../helpers/sort_helpers.h"
 
 /**
  * @brief Typedef for a function pointer that takes an integer array and its length as input and sorts the array.

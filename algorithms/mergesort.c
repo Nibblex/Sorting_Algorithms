@@ -1,4 +1,3 @@
-#include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
 static void mergesort_rec(int a[], size_t lo, size_t hi)

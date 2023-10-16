@@ -1,4 +1,3 @@
-#include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
 void selection_sort(int a[], size_t length)

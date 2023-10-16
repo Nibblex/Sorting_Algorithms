@@ -1,4 +1,3 @@
-#include "../helpers/sort_helpers.h"
 #include "algorithms.h"
 
 static void introsort_rec(int *lo, int *hi, size_t depth_limit)

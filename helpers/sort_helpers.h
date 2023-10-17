@@ -18,17 +18,14 @@
         _i;                    \
     })
 
-/**
- * @brief A struct that holds counters for various operations in sorting algorithms.
- */
-struct counter
+enum counter
 {
-    double elapsed;           /**< The elapsed time of the sorting algorithm run. */
-    size_t cmp_counter;       /**< Counter for number of comparisons */
-    size_t swap_counter;      /**< Counter for number of swaps */
-    size_t recursion_counter; /**< Counter for number of recursive calls */
-    size_t isort_counter;     /**< Counter for number of times insertion sort is used */
-    size_t heapsort_counter;  /**< Counter for number of times heapsort is used */
+    ELAPSED,
+    COMPARISONS,
+    SWAPS,
+    RECURSIONS,
+    ISORTS,
+    HEAPSORTS,
 };
 
 enum pivot_type
@@ -42,10 +39,10 @@ enum pivot_type
 
 int cmp(const void *a, const void *b, void *arg);
 
-int *ptr_swap(int *a, int *b, struct counter *counters);
+int *ptr_swap(int *a, int *b, double *counters);
 
-int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state, struct counter *counters);
+int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state, double *counters);
 
-void merge(int a[], size_t lo, size_t mid, size_t hi, struct counter *counters);
+void merge(int a[], size_t lo, size_t mid, size_t hi, double *counters);
 
 #endif

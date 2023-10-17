@@ -3,10 +3,11 @@
 
 #include <stdbool.h>
 
-#include "../algorithms/algorithms.h" // struct counter, struct algorithm
+#include "../algorithms/algorithms.h" // struct algorithm
 
 #define NUM_ALGORITHMS 10
 #define NUM_TESTS 2
+#define NUM_COUNTERS 6
 
 /**
  * @brief A struct representing a test case for sorting algorithms.
@@ -30,10 +31,10 @@ struct test
  */
 struct run
 {
-    char *algorithm_name;    /**< The name of the sorting algorithm used. */
-    struct counter counters; /**< The counters used during the sorting algorithm run. */
-    char *sorted;            /**< The result of testing if the array is sorted. */
-    char *permuted;          /**< The result of testing if the array is a permutation of the original array. */
+    char *algorithm_name;          /**< The name of the sorting algorithm used. */
+    double counters[NUM_COUNTERS]; /**< The counters used during the run. */
+    char *sorted;                  /**< The result of testing if the array is sorted. */
+    char *permuted;                /**< The result of testing if the array is a permutation of the original array. */
 };
 
 /**

@@ -1,6 +1,6 @@
 #include "algorithms.h"
 
-static void heapify(int a[], size_t length, int *root, struct counter *counters)
+static void heapify(int a[], size_t length, int *root, double *counters)
 {
     int *leaf, *largest;
 
@@ -30,7 +30,7 @@ static void heapify(int a[], size_t length, int *root, struct counter *counters)
     }
 }
 
-void heapsort(int a[], size_t length, struct counter *counters)
+void heapsort(int a[], size_t length, double *counters)
 {
     int *lo, *hi;
 
@@ -45,5 +45,5 @@ void heapsort(int a[], size_t length, struct counter *counters)
         heapify(a, (size_t)(hi - a), a, counters);
     }
 
-    counters->heapsort_counter++;
+    ++counters[HEAPSORTS];
 }

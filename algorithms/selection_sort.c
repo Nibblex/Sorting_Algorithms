@@ -1,6 +1,6 @@
 #include "algorithms.h"
 
-void selection_sort(int a[], size_t length, struct counter *counters)
+void selection_sort(int a[], size_t length, double *counters)
 {
     int *key, *min_ptr;
 

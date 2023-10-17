@@ -2,7 +2,7 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-void timsort(int a[], size_t length, struct counter *counters)
+void timsort(int a[], size_t length, double *counters)
 {
     size_t size, lo, mid, hi, chunks, i;
 

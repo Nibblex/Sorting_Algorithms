@@ -12,7 +12,7 @@ typedef struct
 #define POP(low, high) (--top, (low = top->lo), (high = top->hi))
 #define STACK_NOT_EMPTY (stack < top)
 
-void quicksort(int a[], size_t length, struct counter *counters)
+void quicksort(int a[], size_t length, double *counters)
 {
     xrshr128p_state_t state = xrshr128p_init(time(NULL));
 

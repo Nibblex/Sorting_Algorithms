@@ -2,7 +2,7 @@
 
 #include "algorithms.h"
 
-void isort(int a[], size_t length, struct counter *counters)
+void isort(int a[], size_t length, double *counters)
 {
     int key, *i, *j;
 
@@ -22,5 +22,5 @@ void isort(int a[], size_t length, struct counter *counters)
         *j = key;
     }
 
-    counters->isort_counter++;
+    ++counters[ISORTS];
 }

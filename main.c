@@ -117,6 +117,7 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
 
     /* Default values */
     wb->format = "default";
+    wb->sort_by = -1;
 
     while ((c = getopt_long(argc, argv, "a:t:f:s:dh", long_options, &option_index)) != -1)
     {
@@ -132,7 +133,7 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
             wb->format = optarg;
             break;
         case 's':
-            wb->sort_by = atoi(optarg);
+            wb->sort_by = atoi(optarg) - 2;
             break;
         case 'd':
             wb->dump_array = true;

@@ -1,6 +1,6 @@
 #include "algorithms.h"
 
-void shellsort(int a[], size_t length, struct counter *counters)
+void shellsort(int a[], size_t length, double *counters)
 {
     int key, *i, *j;
     size_t gap;

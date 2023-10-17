@@ -1,6 +1,6 @@
 #include "algorithms.h"
 
-static void introsort_rec(int *lo, int *hi, size_t depth_limit, struct counter *counters)
+static void introsort_rec(int *lo, int *hi, size_t depth_limit, double *counters)
 {
     int *pivot;
     size_t length;
@@ -22,10 +22,10 @@ static void introsort_rec(int *lo, int *hi, size_t depth_limit, struct counter *
     introsort_rec(lo, pivot, depth_limit - 1, counters);
     introsort_rec(pivot + 1, hi, depth_limit - 1, counters);
 
-    counters->recursion_counter++;
+    ++counters[RECURSIONS];
 }
 
-void introsort(int a[], size_t length, struct counter *counters)
+void introsort(int a[], size_t length, double *counters)
 
 {
     size_t depth_limit = log2(length) << 1;

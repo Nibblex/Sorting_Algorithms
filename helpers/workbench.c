@@ -7,7 +7,9 @@
 #include "array_helpers.h"
 #include "workbench.h"
 
-#define GETMS() ((double)(clock() * 1000) / CLOCKS_PER_SEC)
+#define getms() ((double)(clock() * 1000) / CLOCKS_PER_SEC)
+
+#define sorting(_sort_by) (_sort_by > -2 && _sort_by < NUM_COUNTERS)
 
 #define HEADER "Algorithm        Elapsed (ms)     Comparisons      Swaps            Recursions       Isorts           Heapsort         Tests (sorted-permuted)\n"
 
@@ -33,6 +35,15 @@
         print_hls(strlen(HEADER)); \
     } while (0)
 
+#define sum_counters(a, b)                        \
+    do                                            \
+    {                                             \
+        for (size_t c = 0; c < NUM_COUNTERS; ++c) \
+        {                                         \
+            a[c] += b[c];                         \
+        }                                         \
+    } while (0)
+
 struct thread_data
 {
     struct workbench *wb;
@@ -48,7 +59,7 @@ static int run_cmp(const void *a, const void *b, void *sort_by)
 {
     int _sort_by;
     struct run *run_a, *run_b;
-    struct counter counters_a, counters_b;
+    double *counters_a, *counters_b;
 
     run_a = (struct run *)a;
     run_b = (struct run *)b;
@@ -58,25 +69,12 @@ static int run_cmp(const void *a, const void *b, void *sort_by)
 
     _sort_by = *(int *)sort_by;
 
-    switch (_sort_by)
+    if (sorting(_sort_by))
     {
-    case 2:
-        return counters_a.elapsed < counters_b.elapsed ? -1 : counters_a.elapsed > counters_b.elapsed;
-    case 3:
-        return counters_a.cmp_counter < counters_b.cmp_counter ? -1 : counters_a.cmp_counter > counters_b.cmp_counter;
-    case 4:
-        return counters_a.swap_counter < counters_b.swap_counter ? -1 : counters_a.swap_counter > counters_b.swap_counter;
-    case 5:
-        return counters_a.recursion_counter < counters_b.recursion_counter ? -1 : counters_a.recursion_counter > counters_b.recursion_counter;
-    case 6:
-        return counters_a.isort_counter < counters_b.isort_counter ? -1 : counters_a.isort_counter > counters_b.isort_counter;
-    case 7:
-        return counters_a.heapsort_counter < counters_b.heapsort_counter ? -1 : counters_a.heapsort_counter > counters_b.heapsort_counter;
-    default:
-        return memcmp(run_a->algorithm_name, run_b->algorithm_name, strlen(run_a->algorithm_name));
+        return counters_a[_sort_by] < counters_b[_sort_by] ? -1 : counters_a[_sort_by] > counters_b[_sort_by];
     }
 
-    return 0;
+    return memcmp(run_a->algorithm_name, run_b->algorithm_name, strlen(run_a->algorithm_name));
 }
 
 static void print_row(struct run *run, char *format)
@@ -98,12 +96,12 @@ static void print_row(struct run *run, char *format)
 
     printf(fmt,
            run->algorithm_name,
-           run->counters.elapsed,
-           run->counters.cmp_counter,
-           run->counters.swap_counter,
-           run->counters.recursion_counter,
-           run->counters.isort_counter,
-           run->counters.heapsort_counter,
+           run->counters[ELAPSED],
+           (size_t)run->counters[COMPARISONS],
+           (size_t)run->counters[SWAPS],
+           (size_t)run->counters[RECURSIONS],
+           (size_t)run->counters[ISORTS],
+           (size_t)run->counters[HEAPSORTS],
            run->sorted == NULL ? TEST_UNTESTED : run->sorted,
            run->permuted == NULL ? TEST_UNTESTED : run->permuted);
 }
@@ -125,16 +123,6 @@ static void run_tests(struct workbench *wb, int *copy, struct run *run)
     }
 }
 
-static void sum_counters(struct counter *a, struct counter *b)
-{
-    a->elapsed += b->elapsed;
-    a->cmp_counter += b->cmp_counter;
-    a->swap_counter += b->swap_counter;
-    a->recursion_counter += b->recursion_counter;
-    a->isort_counter += b->isort_counter;
-    a->heapsort_counter += b->heapsort_counter;
-}
-
 static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)
 {
     int *copy;
@@ -148,19 +136,19 @@ static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)
     copy = array_copy(wb->array, wb->array_length);
 
     /* Run the algorithm and measure the elapsed time. */
-    run->counters.elapsed = GETMS();
-    alg->f(copy, wb->array_length, &run->counters);
-    run->counters.elapsed = GETMS() - run->counters.elapsed;
+    run->counters[ELAPSED] = getms();
+    alg->f(copy, wb->array_length, run->counters);
+    run->counters[ELAPSED] = getms() - run->counters[ELAPSED];
 
     /* Sum the counters to the total row. */
     total->algorithm_name = "Total";
-    sum_counters(&total->counters, &run->counters);
+    sum_counters(total->counters, run->counters);
 
     /* Run the tests. */
     run_tests(wb, copy, run);
 
     /* Print the row if the sort-by flag is set to 0. */
-    if (wb->sort_by == 0)
+    if (!sorting(wb->sort_by))
     {
         print_row(run, wb->format);
     }
@@ -227,7 +215,7 @@ void wb_run(struct workbench *wb)
     }
 
     /* Print the sorted runs if the sort-by flag is set to a valid column. */
-    if (wb->sort_by != 0)
+    if (sorting(wb->sort_by))
     {
         qsort_r(runs, wb->nalgorithms, sizeof(struct run), run_cmp, &wb->sort_by);
 

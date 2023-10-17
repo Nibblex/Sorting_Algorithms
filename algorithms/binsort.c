@@ -2,7 +2,7 @@
 
 #include "algorithms.h"
 
-void binsort(int a[], size_t length, struct counter *counters)
+void binsort(int a[], size_t length, double *counters)
 {
     int key, *lo, *hi, *mid, *i;
 

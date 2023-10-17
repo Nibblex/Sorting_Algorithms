@@ -1,6 +1,6 @@
 #include "algorithms.h"
 
-static void mergesort_rec(int a[], size_t lo, size_t hi, struct counter *counters)
+static void mergesort_rec(int a[], size_t lo, size_t hi, double *counters)
 {
     size_t mid, length;
 
@@ -13,10 +13,10 @@ static void mergesort_rec(int a[], size_t lo, size_t hi, struct counter *counter
         merge(a, lo, mid, hi, counters);
     }
 
-    counters->recursion_counter++;
+    ++counters[RECURSIONS];
 }
 
-void mergesort(int a[], size_t length, struct counter *counters)
+void mergesort(int a[], size_t length, double *counters)
 {
     mergesort_rec(a, 0, !length ? 0 : length - 1, counters);
 }

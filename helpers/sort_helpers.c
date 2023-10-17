@@ -8,17 +8,17 @@ typedef int (*cmp_func)(const void *a, const void *b);
 
 int cmp(const void *a, const void *b, void *arg)
 {
-    struct counter *counters = (struct counter *)arg;
+    double *counters = (double *)arg;
 
     if (counters != NULL)
     {
-        counters->cmp_counter++;
+        ++counters[COMPARISONS];
     }
 
     return (*(int *)a - *(int *)b);
 }
 
-int *ptr_swap(int *a, int *b, struct counter *counters)
+int *ptr_swap(int *a, int *b, double *counters)
 {
     int temp = *a;
     *a = *b;
@@ -26,13 +26,13 @@ int *ptr_swap(int *a, int *b, struct counter *counters)
 
     if (counters != NULL)
     {
-        counters->swap_counter++;
+        ++counters[SWAPS];
     }
 
     return b;
 }
 
-static int *pivot(int *lo, int *hi, enum pivot_type type, xrshr128p_state_t *state, struct counter *counters)
+static int *pivot(int *lo, int *hi, enum pivot_type type, xrshr128p_state_t *state, double *counters)
 {
     int *mid;
 
@@ -67,7 +67,7 @@ static int *pivot(int *lo, int *hi, enum pivot_type type, xrshr128p_state_t *sta
     }
 }
 
-int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state, struct counter *counters)
+int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *state, double *counters)
 {
     int *piv;
 
@@ -100,7 +100,7 @@ int *partition(int *lo, int *hi, enum pivot_type pivot_type, xrshr128p_state_t *
     return hi;
 }
 
-void merge(int a[], size_t lo, size_t mid, size_t hi, struct counter *counters)
+void merge(int a[], size_t lo, size_t mid, size_t hi, double *counters)
 {
     size_t n1 = mid - lo + 1;
     size_t n2 = hi - mid;

@@ -9,7 +9,7 @@
 
 #define getms() ((double)(clock() * 1000) / CLOCKS_PER_SEC)
 
-#define sorting(_sort_by) (_sort_by > -2 && _sort_by < NUM_COUNTERS)
+#define sorting(_sort_by) (_sort_by >= 0 && _sort_by < NUM_COUNTERS)
 
 #define HEADER "Algorithm        Elapsed (ms)     Comparisons      Swaps            Recursions       Isorts           Heapsort         Tests (sorted-permuted)\n"
 
@@ -48,7 +48,7 @@ struct thread_data
 {
     struct workbench *wb;
     size_t index;
-    struct run *runs;
+    struct run *total;
 };
 
 extern int qsort_r(void *base, size_t nmemb, size_t size,
@@ -58,26 +58,26 @@ extern int qsort_r(void *base, size_t nmemb, size_t size,
 static int run_cmp(const void *a, const void *b, void *sort_by)
 {
     int _sort_by;
-    struct run *run_a, *run_b;
-    double *counters_a, *counters_b;
+    struct algorithm *alg_a, *alg_b;
+    double counter_a, counter_b;
 
-    run_a = (struct run *)a;
-    run_b = (struct run *)b;
-
-    counters_a = run_a->counters;
-    counters_b = run_b->counters;
+    alg_a = (struct algorithm *)a;
+    alg_b = (struct algorithm *)b;
 
     _sort_by = *(int *)sort_by;
 
-    if (sorting(_sort_by))
+    if (!sorting(_sort_by))
     {
-        return counters_a[_sort_by] < counters_b[_sort_by] ? -1 : counters_a[_sort_by] > counters_b[_sort_by];
+        return strcmp(alg_a->name, alg_b->name);
     }
 
-    return memcmp(run_a->algorithm_name, run_b->algorithm_name, strlen(run_a->algorithm_name));
+    counter_a = alg_a->run.counters[_sort_by];
+    counter_b = alg_b->run.counters[_sort_by];
+
+    return counter_a < counter_b ? -1 : counter_a > counter_b;
 }
 
-static void print_row(struct run *run, char *format)
+static void print_row(char *name, struct run *run, char *format)
 {
     char *fmt;
 
@@ -95,7 +95,7 @@ static void print_row(struct run *run, char *format)
     }
 
     printf(fmt,
-           run->algorithm_name,
+           name,
            run->counters[ELAPSED],
            (size_t)run->counters[COMPARISONS],
            (size_t)run->counters[SWAPS],
@@ -114,23 +114,20 @@ static void run_tests(struct workbench *wb, int *copy, struct run *run)
     {
         if (test->type == SORTED)
         {
-            run->sorted = array_is_sorted(copy, wb->array_length) ? TEST_OK : TEST_FAIL;
+            run->sorted = array_is_sorted(copy, wb->array_length, cmp) ? TEST_OK : TEST_FAIL;
         }
         else if (test->type == PERMUTED)
         {
-            run->permuted = array_is_permutation_of(copy, wb->array, wb->array_length) ? TEST_OK : TEST_FAIL;
+            run->permuted = array_is_permutation_of(copy, wb->array, wb->array_length, cmp) ? TEST_OK : TEST_FAIL;
         }
     }
 }
 
-static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)
+static void run_algorithm(struct workbench *wb, size_t i, struct run *total)
 {
     int *copy;
     struct algorithm *alg = wb->algorithms + i;
-    struct run *run = runs + i;
-    struct run *total = runs + wb->nalgorithms;
-
-    run->algorithm_name = alg->name;
+    struct run *run = &alg->run;
 
     /* Make a copy of the array to be sorted. */
     copy = array_copy(wb->array, wb->array_length);
@@ -141,16 +138,15 @@ static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)
     run->counters[ELAPSED] = getms() - run->counters[ELAPSED];
 
     /* Sum the counters to the total row. */
-    total->algorithm_name = "Total";
     sum_counters(total->counters, run->counters);
 
     /* Run the tests. */
     run_tests(wb, copy, run);
 
-    /* Print the row if the sort-by flag is set to 0. */
+    /* Print row containing the run results. */
     if (!sorting(wb->sort_by))
     {
-        print_row(run, wb->format);
+        print_row(alg->name, run, wb->format);
     }
 
     /* Free the copy. */
@@ -160,13 +156,13 @@ static void run_algorithm(struct workbench *wb, size_t i, struct run *runs)
 static void *run_algorithm_thread(void *arg)
 {
     struct thread_data *data = (struct thread_data *)arg;
-    run_algorithm(data->wb, data->index, data->runs);
+    run_algorithm(data->wb, data->index, data->total);
     pthread_exit(NULL);
 }
 
 void wb_run(struct workbench *wb)
 {
-    struct run runs[wb->nalgorithms + 1]; /* +1 for the total row. */
+    struct run total = {0};
     pthread_t threads[wb->nalgorithms];
     struct thread_data thread_data[wb->nalgorithms];
     int pthread_result;
@@ -185,15 +181,12 @@ void wb_run(struct workbench *wb)
         print_header();
     }
 
-    /* Initialize the runs array. */
-    memset(runs, 0, sizeof(runs));
-
     /* Run the algorithms and print the results using threads. */
     for (size_t i = 0; i < wb->nalgorithms; ++i)
     {
         thread_data[i].wb = wb;
         thread_data[i].index = i;
-        thread_data[i].runs = runs;
+        thread_data[i].total = &total;
 
         pthread_result = pthread_create(&threads[i], NULL, run_algorithm_thread, (void *)&thread_data[i]);
         if (pthread_result != 0)
@@ -217,11 +210,11 @@ void wb_run(struct workbench *wb)
     /* Print the sorted runs if the sort-by flag is set to a valid column. */
     if (sorting(wb->sort_by))
     {
-        qsort_r(runs, wb->nalgorithms, sizeof(struct run), run_cmp, &wb->sort_by);
+        qsort_r(wb->algorithms, wb->nalgorithms, sizeof(struct algorithm), run_cmp, &wb->sort_by);
 
         for (size_t i = 0; i < wb->nalgorithms; ++i)
         {
-            print_row(runs + i, wb->format);
+            print_row(wb->algorithms[i].name, &wb->algorithms[i].run, wb->format);
         }
     }
 
@@ -231,7 +224,7 @@ void wb_run(struct workbench *wb)
     }
 
     /* Print the total row. */
-    print_row(runs + wb->nalgorithms, wb->format);
+    print_row("Total", &total, wb->format);
 }
 
 void wb_free(struct workbench *wb)

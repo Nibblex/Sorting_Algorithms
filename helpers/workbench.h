@@ -7,7 +7,6 @@
 
 #define NUM_ALGORITHMS 10
 #define NUM_TESTS 2
-#define NUM_COUNTERS 6
 
 /**
  * @brief A struct representing a test case for sorting algorithms.
@@ -21,20 +20,6 @@ struct test
         SORTED,  /**< The test case is sorted. */
         PERMUTED /**< The test case is a permutation of the original array. */
     } type;
-};
-
-/**
- * @brief A struct that holds the results of a sorting algorithm run.
- *
- * This struct contains the name of the algorithm, the elapsed time, the counters used during the run,
- * and the results of the tests.
- */
-struct run
-{
-    char *algorithm_name;          /**< The name of the sorting algorithm used. */
-    double counters[NUM_COUNTERS]; /**< The counters used during the run. */
-    char *sorted;                  /**< The result of testing if the array is sorted. */
-    char *permuted;                /**< The result of testing if the array is a permutation of the original array. */
 };
 
 /**

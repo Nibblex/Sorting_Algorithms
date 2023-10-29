@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+typedef int (*compare_func)(const void *, const void *, void *);
+
 /**
  * Each element is read from stdin and stored in the array 'a'.
  * The array is dynamically allocated, so it must be freed after use.
@@ -50,7 +52,7 @@ int *array_copy(int src[], size_t length);
  * @param length The length of the array.
  * @return true if the array is sorted in ascending order, false otherwise.
  */
-bool array_is_sorted(int a[], size_t length);
+bool array_is_sorted(int a[], size_t length, compare_func cmp);
 
 /**
  * Checks if an array is a permutation of another array.
@@ -60,6 +62,6 @@ bool array_is_sorted(int a[], size_t length);
  * @param length The length of the arrays.
  * @return true if the arrays are permutations of each other, false otherwise.
  */
-bool array_is_permutation_of(int a[], int b[], size_t length);
+bool array_is_permutation_of(int a[], int b[], size_t length, compare_func cmp);
 
 #endif

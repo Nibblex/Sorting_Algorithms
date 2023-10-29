@@ -12,17 +12,17 @@ const char *ALG_CHOICES = "binsort,heapsort,introsort,isort,mergesort,quicksort,
 const char *TEST_CHOICES = "sorted,permuted";
 
 const struct algorithm ALGORITHMS[] = {
-    {"binsort", binsort},
-    {"heapsort", heapsort},
-    {"introsort", introsort},
-    {"isort", isort},
-    {"mergesort", mergesort},
-    {"quicksort", quicksort},
-    {"quicksort_std", quicksort_std},
-    {"selection_sort", selection_sort},
-    {"shellsort", shellsort},
-    {"timsort", timsort},
-    {NULL, NULL},
+    {"binsort", binsort, {}},
+    {"heapsort", heapsort, {}},
+    {"introsort", introsort, {}},
+    {"isort", isort, {}},
+    {"mergesort", mergesort, {}},
+    {"quicksort", quicksort, {}},
+    {"quicksort_std", quicksort_std, {}},
+    {"selection_sort", selection_sort, {}},
+    {"shellsort", shellsort, {}},
+    {"timsort", timsort, {}},
+    {NULL, NULL, {}},
 };
 
 const struct test TESTS[] = {
@@ -117,7 +117,7 @@ static void parse_args(int argc, char *argv[], struct workbench *wb)
 
     /* Default values */
     wb->format = "default";
-    wb->sort_by = -1;
+    wb->sort_by = -2;
 
     while ((c = getopt_long(argc, argv, "a:t:f:s:dh", long_options, &option_index)) != -1)
     {

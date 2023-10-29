@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "array_helpers.h"
-#include "sort_helpers.h" // cmp
 
 extern int qsort_r(void *base, size_t nmemb, size_t size,
                    int (*compar)(const void *, const void *, void *),
@@ -68,7 +67,7 @@ int *array_copy(int array[], size_t length)
     return copy;
 }
 
-bool array_is_sorted(int a[], size_t length)
+bool array_is_sorted(int a[], size_t length, compare_func cmp)
 {
     size_t i = 1;
     while (i < length && cmp(a + i - 1, a + i, NULL) <= 0)
@@ -79,7 +78,7 @@ bool array_is_sorted(int a[], size_t length)
     return length == 0 || length == i;
 }
 
-bool array_is_permutation_of(int a[], int b[], size_t length)
+bool array_is_permutation_of(int a[], int b[], size_t length, compare_func cmp)
 {
     bool is_permutation;
     int *b_copy;

@@ -66,6 +66,10 @@ parse_args(int argc, char* argv[], struct array_config* config)
   while ((c = getopt(argc, argv, "l:m:M:o:s:h")) != -1) {
     switch (c) {
       case 'l':
+        if (optarg[0] == '-') {
+          fprintf(stderr, "Invalid length: %s, expected a positive integer\n", optarg);
+          usage(EXIT_FAILURE);
+        }
         config->length = strtoul(optarg, NULL, 10);
         break;
       case 'm':

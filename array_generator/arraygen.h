@@ -26,8 +26,6 @@ enum sign_type
   NONE /**< Keep original sign */
 };
 
-typedef int (*sign_func)(xrshr128p_state_t state);
-
 struct array_config
 {
   size_t length;
@@ -47,6 +45,6 @@ struct array_config
  * array.
  */
 int*
-arraygen(struct array_config* config);
+arraygen(const struct array_config* config);
 
 #endif

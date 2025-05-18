@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 #include "../helpers/sort_helpers.h"
 
 #include "arraygen.h"
+
+extern int
+getrandom(void* buf, size_t buflen, unsigned int flags);
 
 extern int
 qsort_r(void* base,
@@ -20,9 +22,9 @@ cmp_desc(const void* a, const void* b, void* arg)
 }
 
 int*
-arraygen(struct array_config* config)
+arraygen(const struct array_config* config)
 {
-  int *array, sign;
+  int *array, seed;
   xrshr128p_state_t state;
 
   if (config->max < config->min) {
@@ -36,7 +38,14 @@ arraygen(struct array_config* config)
     return NULL;
   }
 
-  state = xrshr128p_init(clock());
+  getrandom(&seed, sizeof(seed), 0);
+  if (seed == (int)-1) {
+    fprintf(stderr, "Failed to get clock time.\n");
+    free(array);
+    return NULL;
+  }
+
+  state = xrshr128p_init(seed);
   for (size_t i = 0; i < config->length; ++i) {
     int val = rand_pos(state, config->min, config->max);
 
@@ -45,8 +54,7 @@ arraygen(struct array_config* config)
     } else if (config->sign == NEG) {
       val = -abs(val);
     } else if (config->sign == RND) {
-      sign = rand_pos(state, 0, 1) ? 1 : -1;
-      val *= sign;
+      val *= rand_pos(state, 0, 1) ? 1 : -1;
     }
 
     array[i] = val;

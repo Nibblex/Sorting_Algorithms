@@ -1,26 +1,23 @@
 #include "algorithms.h"
 
-void selection_sort(int a[], size_t length, double *counters)
+void
+selection_sort(int a[], size_t length, double* counters)
 {
-    int *key, *min_ptr;
+  int *key, *min_ptr;
 
-    for (size_t i = 0; i < length - 1; ++i)
-    {
-        min_ptr = a + i;
+  for (size_t i = 0; i < length - 1; ++i) {
+    min_ptr = a + i;
 
-        // Find the minimum element in the unsorted array
-        for (key = a + i + 1; key < a + length; ++key)
-        {
-            if (cmp(key, min_ptr, counters) < 0)
-            {
-                min_ptr = key;
-            }
-        }
-
-        if (min_ptr != a + i)
-        {
-            // Swap the minimum element with the first element of the unsorted array
-            ptr_swap(min_ptr, a + i, counters);
-        }
+    // Find the minimum element in the unsorted array
+    for (key = a + i + 1; key < a + length; ++key) {
+      if (cmp(key, min_ptr, counters) < 0) {
+        min_ptr = key;
+      }
     }
+
+    if (min_ptr != a + i) {
+      // Swap the minimum element with the first element of the unsorted array
+      ptr_swap(min_ptr, a + i, counters);
+    }
+  }
 }

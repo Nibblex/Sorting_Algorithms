@@ -9,9 +9,9 @@
  */
 enum order_type
 {
-    ASC,  /**< Ascending order */
-    DESC, /**< Descending order */
-    UNS   /**< Unsorted order */
+  ASC,  /**< Ascending order */
+  DESC, /**< Descending order */
+  UNS   /**< Unsorted order */
 };
 
 /**
@@ -20,20 +20,21 @@ enum order_type
  */
 enum sign_type
 {
-    POS, /**< Positive sign */
-    NEG, /**< Negative sign */
-    BOTH /**< Both positive and negative signs */
+  POS, /**< Positive sign */
+  NEG, /**< Negative sign */
+  RND, /**< Random sign */
+  NONE /**< Keep original sign */
 };
 
 typedef int (*sign_func)(xrshr128p_state_t state);
 
 struct array_config
 {
-    size_t length;
-    int min;
-    int max;
-    enum order_type order;
-    enum sign_type sign;
+  size_t length;
+  int min;
+  int max;
+  enum order_type order;
+  enum sign_type sign;
 };
 
 /**
@@ -42,8 +43,10 @@ struct array_config
  * @param config The configuration for the array generation.
  * @return A pointer to the generated array.
  *
- * @note The caller is responsible for freeing the memory allocated for the array.
+ * @note The caller is responsible for freeing the memory allocated for the
+ * array.
  */
-int *arraygen(struct array_config *config);
+int*
+arraygen(struct array_config* config);
 
 #endif

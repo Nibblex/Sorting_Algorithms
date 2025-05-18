@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -5,66 +6,56 @@
 
 #include "arraygen.h"
 
-extern int qsort_r(void *base, size_t nmemb, size_t size,
-                   int (*compar)(const void *, const void *, void *),
-                   void *arg);
+extern int
+qsort_r(void* base,
+        size_t nmemb,
+        size_t size,
+        int (*compar)(const void*, const void*, void*),
+        void* arg);
 
-static inline int pos_sign(xrshr128p_state_t state)
+static inline int
+cmp_desc(const void* a, const void* b, void* arg)
 {
-    state = state;
-    return 1;
+  return cmp(b, a, arg);
 }
 
-static inline int neg_sign(xrshr128p_state_t state)
+int*
+arraygen(struct array_config* config)
 {
-    state = state;
-    return -1;
-}
+  int *array, sign;
+  xrshr128p_state_t state;
 
-static inline int both_sign(xrshr128p_state_t state)
-{
-    return rand_pos(state, 0, 1) ? 1 : -1;
-}
+  if (config->max < config->min) {
+    fprintf(stderr, "Invalid range: max (%d) < min (%d)\n", config->max, config->min);
+    return NULL;
+  }
 
-static sign_func sign_func_ptr(enum sign_type sign)
-{
-    switch (sign)
-    {
-    case POS:
-        return pos_sign;
-    case NEG:
-        return neg_sign;
-    case BOTH:
-        return both_sign;
-    default:
-        return pos_sign;
-    }
-}
+  array = malloc(config->length * sizeof(int));
+  if (array == NULL) {
+    fprintf(stderr, "Memory allocation failed.\n");
+    return NULL;
+  }
 
-static inline int cmp_desc(const void *a, const void *b, void *arg)
-{
-    return cmp(b, a, arg);
-}
+  state = xrshr128p_init(clock());
+  for (size_t i = 0; i < config->length; ++i) {
+    int val = rand_pos(state, config->min, config->max);
 
-int *arraygen(struct array_config *config)
-{
-    int *array;
-    sign_func sign;
-    xrshr128p_state_t state;
-
-    array = malloc(config->length * sizeof(int));
-    sign = sign_func_ptr(config->sign);
-    state = xrshr128p_init(time(NULL));
-
-    for (size_t i = 0; i < config->length; ++i)
-    {
-        array[i] = sign(state) * rand_pos(state, config->min, config->max);
+    if (config->sign == POS) {
+      val = abs(val);
+    } else if (config->sign == NEG) {
+      val = -abs(val);
+    } else if (config->sign == RND) {
+      sign = rand_pos(state, 0, 1) ? 1 : -1;
+      val *= sign;
     }
 
-    if (config->order != UNS)
-    {
-        qsort_r(array, config->length, sizeof(int), config->order == ASC ? cmp : cmp_desc, NULL);
-    }
+    array[i] = val;
+  }
 
-    return array;
+  if (config->order != UNS) {
+    qsort_r(
+      array, config->length, sizeof(int), config->order == ASC ? cmp : cmp_desc, NULL);
+  }
+
+  return array;
 }

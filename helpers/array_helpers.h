@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-typedef int (*compare_func)(const void *, const void *, void *);
+typedef int (*compare_func)(const void*, const void*, void*);
 
 /**
  * Each element is read from stdin and stored in the array 'a'.
@@ -26,7 +26,8 @@ typedef int (*compare_func)(const void *, const void *, void *);
  * @param a The array to store the elements in.
  * @return The length of the array.
  */
-size_t array_from_stdin(int *a[]);
+size_t
+array_from_stdin(int* a[]);
 
 /**
  * Prints the contents of an integer array to the console.
@@ -34,7 +35,8 @@ size_t array_from_stdin(int *a[]);
  * @param a The integer array to be printed.
  * @param length The length of the integer array.
  */
-void array_dump(int a[], size_t length);
+void
+array_dump(int a[], size_t length);
 
 /**
  * Creates a copy of an integer array.
@@ -43,7 +45,8 @@ void array_dump(int a[], size_t length);
  * @param length The length of the source array.
  * @return A pointer to the newly created copy of the source array.
  */
-int *array_copy(int src[], size_t length);
+int*
+array_copy(int src[], size_t length);
 
 /**
  * Checks if an array is sorted in ascending order.
@@ -52,7 +55,8 @@ int *array_copy(int src[], size_t length);
  * @param length The length of the array.
  * @return true if the array is sorted in ascending order, false otherwise.
  */
-bool array_is_sorted(int a[], size_t length, compare_func cmp);
+bool
+array_is_sorted(int a[], size_t length, compare_func cmp);
 
 /**
  * Checks if an array is a permutation of another array.
@@ -62,6 +66,7 @@ bool array_is_sorted(int a[], size_t length, compare_func cmp);
  * @param length The length of the arrays.
  * @return true if the arrays are permutations of each other, false otherwise.
  */
-bool array_is_permutation_of(int a[], int b[], size_t length, compare_func cmp);
+bool
+array_is_permutation_of(int a[], int b[], size_t length, compare_func cmp);
 
 #endif

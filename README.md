@@ -83,7 +83,7 @@ Sort arrays and benchmark algorithm performance:
 - `-a, --algorithms <alg1,alg2,...>` : Specify algorithms to run (comma-separated)
 - `-t, --tests <test1,test2,...>` : Specify tests to run (comma-separated)
 - `-f, --format <format>` : Output format - `human`, `csv`, `default`
-- `-s, --sort-by <column>` : Sort results by column (2-7 for elapsed, comparisons, swaps, etc.)
+- `-s, --sort-by <column>` : Sort results by column number (2-7) - columns are: elapsed, cmp, swap, recursion, isort, heapsort
 - `-d, --dump` : Dump the input array to stdout
 - `-h, --help` : Print help message
 
@@ -205,8 +205,11 @@ See the `input/` directory for example input files.
 │   └── xoroshiro128plus.h  # Random number generator
 ├── helpers/              # Utility functions
 │   ├── array_helpers.c   # Array I/O and manipulation
+│   ├── array_helpers.h
 │   ├── sort_helpers.c    # Sorting utility functions
-│   └── workbench.c       # Benchmarking framework
+│   ├── sort_helpers.h
+│   ├── workbench.c       # Benchmarking framework
+│   └── workbench.h
 ├── array_generator/      # Array generation tool
 │   ├── main.c
 │   ├── arraygen.c
@@ -235,8 +238,13 @@ See the `input/` directory for example input files.
 The project is built with strict compiler warnings enabled:
 - `-std=c99` - C99 standard
 - `-Wall -Werror -Wextra` - All warnings as errors
-- `-Wshadow -Wconversion -Wuninitialized` - Additional safety checks
-- `-Wstrict-prototypes -Wmissing-prototypes` - Function declaration checks
+- `-Wshadow` - Warn about variable shadowing
+- `-Wconversion` - Warn about implicit conversions
+- `-Wuninitialized` - Warn about uninitialized variables
+- `-Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations` - Function declaration checks
+- `-Wunreachable-code` - Warn about unreachable code
+- `-Wunused-const-variable -Wunused-function -Wunused-parameter -Wunused-macros` - Warn about unused elements
+- `-Wbad-function-cast` - Warn about suspicious function casts
 - `-g` - Debug symbols
 
 ## Contributing
